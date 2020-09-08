@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabula", "Tabula\Tabula.csproj", "{8FCCBCB3-2595-45C0-9A2A-5EC6924D9D7C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabula.Tests", "Tabula.Tests\Tabula.Tests.csproj", "{D6D53FC9-0423-42FC-872A-C5329B306F7B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8FCCBCB3-2595-45C0-9A2A-5EC6924D9D7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FCCBCB3-2595-45C0-9A2A-5EC6924D9D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FCCBCB3-2595-45C0-9A2A-5EC6924D9D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FCCBCB3-2595-45C0-9A2A-5EC6924D9D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6D53FC9-0423-42FC-872A-C5329B306F7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6D53FC9-0423-42FC-872A-C5329B306F7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6D53FC9-0423-42FC-872A-C5329B306F7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6D53FC9-0423-42FC-872A-C5329B306F7B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CEBF744E-844C-47CF-A1DD-B86E45D32FAF}
+	EndGlobalSection
+EndGlobal
