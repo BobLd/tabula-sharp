@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using UglyToad.PdfPig.Core;
@@ -21,9 +22,7 @@ namespace Tabula
                 if (o1.Equals(o2)) return 0;
                 if (o1.verticalOverlap(o2) > VERTICAL_COMPARISON_THRESHOLD)
                 {
-                    return o1.isLtrDominant() == -1 && o2.isLtrDominant() == -1
-                         ? -o1.getX().CompareTo(o2.getX())
-                         : o1.getX().CompareTo(o2.getX());
+                    return (o1.isLtrDominant() == -1 && o2.isLtrDominant() == -1) ? -o1.getX().CompareTo(o2.getX()) : o1.getX().CompareTo(o2.getX());
                 }
                 else
                 {
@@ -34,16 +33,32 @@ namespace Tabula
 
         protected static float VERTICAL_COMPARISON_THRESHOLD = 0.4f;
 
-        public PdfRectangle BoundingBox { get; private set; }
+        public PdfRectangle BoundingBox { get; internal set; }
 
         public TableRectangle() : base()
         {
             BoundingBox = new PdfRectangle();
         }
 
+        public TableRectangle(PdfRectangle rectangle) : this()
+        {
+            if (rectangle.Height == 0)
+            {
+                // hack: force height to be at least 1
+                Debug.Print("ERROR: PdfRectangle with Height=0. Forcing to Height=1.");
+                BoundingBox = new PdfRectangle(rectangle.BottomLeft.X, rectangle.BottomLeft.Y,
+                rectangle.TopRight.X, rectangle.TopRight.Y + 1);
+            }
+            else
+            {
+                BoundingBox = rectangle;
+            }
+        }
+
         public TableRectangle(double top, double left, double width, double height) : this()
         {
             this.setRect(left, top, width, height);
+            throw new ArgumentException();
         }
 
         public int CompareTo([AllowNull] TableRectangle other)
@@ -51,10 +66,14 @@ namespace Tabula
             return new ILL_DEFINED_ORDER().Compare(this, other);
         }
 
-        // I'm bad at Java and need this for fancy sorting in
-        // technology.tabula.TextChunk.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public virtual int isLtrDominant()
         {
+            // I'm bad at Java and need this for fancy sorting in
+            // technology.tabula.TextChunk.
             return 0;
         }
 
@@ -66,7 +85,8 @@ namespace Tabula
 
         public double verticalOverlap(TableRectangle other)
         {
-            return Math.Max(0, Math.Min(this.getBottom(), other.getBottom()) - Math.Max(this.getTop(), other.getTop()));
+            return Math.Max(0, Math.Min(this.BoundingBox.Top, other.BoundingBox.Top)
+                             - Math.Max(this.BoundingBox.Bottom, other.BoundingBox.Bottom));
         }
 
         public bool verticallyOverlaps(TableRectangle other)
@@ -86,38 +106,17 @@ namespace Tabula
 
         public double verticalOverlapRatio(TableRectangle other)
         {
-            double rv = 0, delta = Math.Min(this.getBottom() - this.getTop(), other.getBottom() - other.getTop());
-
-            if (other.getTop() <= this.getTop() && this.getTop() <= other.getBottom()
-                    && other.getBottom() <= this.getBottom())
-            {
-                rv = (other.getBottom() - this.getTop()) / delta;
-            }
-            else if (this.getTop() <= other.getTop() && other.getTop() <= this.getBottom()
-                  && this.getBottom() <= other.getBottom())
-            {
-                rv = (this.getBottom() - other.getTop()) / delta;
-            }
-            else if (this.getTop() <= other.getTop() && other.getTop() <= other.getBottom()
-                  && other.getBottom() <= this.getBottom())
-            {
-                rv = (other.getBottom() - other.getTop()) / delta;
-            }
-            else if (other.getTop() <= this.getTop() && this.getTop() <= this.getBottom()
-                  && this.getBottom() <= other.getBottom())
-            {
-                rv = (this.getBottom() - this.getTop()) / delta;
-            }
-
-            return rv;
+            double delta = Math.Min(this.BoundingBox.Top - this.BoundingBox.Bottom,
+                                                other.BoundingBox.Top - other.BoundingBox.Bottom);
+            //if (delta == 0) delta = 1; // set min delta to 1
+            var overl = verticalOverlap(other);
+            return overl / delta;
         }
 
         public double overlapRatio(TableRectangle other)
         {
-            double intersectionWidth = Math.Max(0,
-                    Math.Min(this.getRight(), other.getRight()) - Math.Max(this.getLeft(), other.getLeft()));
-            double intersectionHeight = Math.Max(0,
-                    Math.Min(this.getBottom(), other.getBottom()) - Math.Max(this.getTop(), other.getTop()));
+            double intersectionWidth = Math.Max(0, Math.Min(this.getRight(), other.getRight()) - Math.Max(this.getLeft(), other.getLeft()));
+            double intersectionHeight = Math.Max(0, Math.Min(this.getBottom(), other.getBottom()) - Math.Max(this.getTop(), other.getTop()));
             double intersectionArea = Math.Max(0, intersectionWidth * intersectionHeight);
             double unionArea = this.getArea() + other.getArea() - intersectionArea;
 
@@ -130,7 +129,7 @@ namespace Tabula
             return this;
         }
 
-        public double getTop() => BoundingBox.Bottom; //.Top;
+        public double getTop() => BoundingBox.Top;
 
         public void setTop(double top)
         {
@@ -153,31 +152,70 @@ namespace Tabula
             this.setRect(left, this.y, this.width - deltaWidth, this.height);
         }
 
-        public double getBottom() => BoundingBox.Top; //.Bottom;
+        public double getBottom() => BoundingBox.Bottom;
 
         public void setBottom(float bottom)
         {
             this.setRect(this.x, this.y, this.width, bottom - this.y);
         }
 
+        /// <summary>
+        /// Counter-clockwise, starting from bottom left point.
+        /// </summary>
+        /// <returns></returns>
         public PdfPoint[] getPoints()
         {
-            return new PdfPoint[] { new PdfPoint(this.getLeft(), this.getTop()),
-                new PdfPoint(this.getRight(), this.getTop()), new PdfPoint(this.getRight(), this.getBottom()),
-                new PdfPoint(this.getLeft(), this.getBottom()) };
+            return new PdfPoint[]
+            {
+                this.BoundingBox.BottomLeft,
+                this.BoundingBox.BottomRight,
+                this.BoundingBox.TopRight,
+                this.BoundingBox.TopLeft
+            };
+        }
+
+        public override int GetHashCode()
+        {
+            int prime = 31;
+            int result = base.GetHashCode();
+            // need to implement hash and equal in PdfPig's PdfRectangle
+            result = prime * result + BoundingBox.BottomLeft.GetHashCode();
+            result = prime * result + BoundingBox.TopLeft.GetHashCode();
+            result = prime * result + BoundingBox.TopRight.GetHashCode();
+            result = prime * result + BoundingBox.BottomRight.GetHashCode();
+            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(BoundingBox.Rotation), 0);
+            return result;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is TableRectangle other)
+            {
+                if (!this.BoundingBox.BottomLeft.Equals(other.BoundingBox.BottomLeft)) return false;
+                if (!this.BoundingBox.TopLeft.Equals(other.BoundingBox.TopLeft)) return false;
+                if (!this.BoundingBox.TopRight.Equals(other.BoundingBox.TopRight)) return false;
+                if (!this.BoundingBox.BottomRight.Equals(other.BoundingBox.BottomRight)) return false;
+                //other ???
+                return true;
+            }
+            return false;
         }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            string s = base.ToString();
+            sb.Append(this.GetType());
+            string s = this.BoundingBox.ToString();
             sb.Append(s, 0, s.Length - 1);
-            sb.Append($",bottom={this.getBottom()},right={this.getRight()}]");
+            sb.Append($",bottom={this.getBottom():0.00},right={this.getRight():0.00}]");
             return sb.ToString();
         }
 
         public static TableRectangle boundingBoxOf(IEnumerable<TableRectangle> rectangles)
         {
+            return Utils.bounds(rectangles);
+
+            /*
             double minx = double.MaxValue;
             double miny = double.MaxValue;
             double maxx = double.MinValue;
@@ -191,6 +229,7 @@ namespace Tabula
                 maxy = Math.Max(r.getMaxY(), maxy);
             }
             return new TableRectangle(miny, minx, maxx - minx, maxy - miny);
+            */
         }
 
         public bool intersects(TableRectangle tableRectangle)
@@ -216,13 +255,13 @@ namespace Tabula
         private double getX() => this.x;
 
         private double getY() => this.y;
-        private double getMinX() => this.BoundingBox.Left;
+        public double getMinX() => this.BoundingBox.Left;
 
-        private double getMaxX() => this.BoundingBox.Right;
+        public double getMaxX() => this.BoundingBox.Right;
 
-        private double getMinY() => this.BoundingBox.Bottom;
+        public double getMinY() => this.BoundingBox.Bottom;
 
-        private double getMaxY() => this.BoundingBox.Top;
+        public double getMaxY() => this.BoundingBox.Top;
 
         /// <summary>
         /// Sets the location and size of this Rectangle2D to the specified double values.
@@ -233,7 +272,8 @@ namespace Tabula
         /// <param name="h">the height of this Rectangle2D</param>
         internal void setRect(double x, double y, double w, double h)
         {
-            setRect(new PdfRectangle(x, y - h, x + w, y));
+            //setRect(new PdfRectangle(x, y - h, x + w, y));
+            throw new ArgumentOutOfRangeException();
         }
 
         internal void setRect(PdfRectangle rectangle)
@@ -248,11 +288,12 @@ namespace Tabula
 
         private PdfRectangle createUnion(PdfRectangle rectangle, PdfRectangle other)
         {
-            double left = Math.Min(rectangle.Left, other.Left);
-            double right = Math.Max(rectangle.Right, other.Right);
-            double bottom = Math.Min(rectangle.Bottom, other.Bottom);
-            double top = Math.Max(rectangle.Top, other.Top);
-            return new PdfRectangle(left, bottom, right, top);
+            return Utils.bounds(new[] { rectangle, other });
+            //double left = Math.Min(rectangle.Left, other.Left);
+            //double right = Math.Max(rectangle.Right, other.Right);
+            //double bottom = Math.Min(rectangle.Bottom, other.Bottom);
+            //double top = Math.Max(rectangle.Top, other.Top);
+            //return new PdfRectangle(left, bottom, right, top);
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion

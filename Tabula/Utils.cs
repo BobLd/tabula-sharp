@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using UglyToad.PdfPig.Core;
+using UglyToad.PdfPig.Geometry;
 
 namespace Tabula
 {
@@ -33,7 +34,7 @@ namespace Tabula
 
         public static bool feq(double f1, double f2)
         {
-            return (Math.Abs(f1 - f2) < EPSILON);
+            return Math.Abs(f1 - f2) < EPSILON;
         }
 
         public static double round(double d, int decimalPlace)
@@ -45,6 +46,40 @@ namespace Tabula
             return bd.floatValue();
             */
         }
+
+        public static PdfRectangle bounds(IEnumerable<Ruling> shapes)
+        {
+            return bounds(shapes.Select(r => r.line.GetBoundingRectangle()));
+        }
+
+        public static PdfRectangle bounds(IEnumerable<PdfRectangle> shapes)
+        {
+            if (!shapes.Any())
+            {
+                throw new ArgumentException("shapes can't be empty");
+            }
+
+            var minX = shapes.Min(r => r.Left);
+            var minY = shapes.Min(r => r.Bottom);
+            var maxX = shapes.Max(r => r.Right);
+            var maxY = shapes.Max(r => r.Top);
+            return new PdfRectangle(minX, minY, maxX, maxY);
+
+            /*
+            Iterator <? extends Shape > iter = shapes.iterator();
+            Rectangle rv = new Rectangle();
+            rv.setRect(iter.next().getBounds2D());
+
+            while (iter.hasNext())
+            {
+                Rectangle2D.union(iter.next().getBounds2D(), rv, rv);
+            }
+
+            return rv;
+            */
+
+        }
+
         public static TableRectangle bounds(IEnumerable<TableRectangle> shapes)
         {
             if (!shapes.Any()) //(shapes.isEmpty())
@@ -52,7 +87,7 @@ namespace Tabula
                 throw new ArgumentException("shapes can't be empty");
             }
 
-            throw new NotImplementedException();
+            return new TableRectangle(bounds(shapes.Select(s => s.BoundingBox)));
 
             /*
             Iterator <? extends Shape > iter = shapes.iterator();
@@ -72,7 +107,7 @@ namespace Tabula
         // range iterator
         public static List<int> range(int begin, int end)
         {
-            return Enumerable.Range(begin, end).ToList();
+            return Enumerable.Range(begin, end - begin).ToList();
             /* return new IList<int>()
              {
                  @Override
@@ -88,12 +123,10 @@ namespace Tabula
              }*/
         }
 
-
-
         /* from apache.commons-lang */
-        public static bool isNumeric(string cs) //CharSequence cs)
+        public static bool isNumeric(string cs)
         {
-            if (string.IsNullOrEmpty(cs)) // cs == null || cs.length() == 0)
+            if (string.IsNullOrEmpty(cs))
             {
                 return false;
             }
@@ -101,7 +134,7 @@ namespace Tabula
             int sz = cs.Length;
             for (int i = 0; i < sz; i++)
             {
-                if (!char.IsNumber(cs, i)) // Character.isDigit(cs.charAt(i)))
+                if (!char.IsNumber(cs, i))
                 {
                     return false;
                 }
@@ -198,7 +231,6 @@ namespace Tabula
             */
         }
 
-
         public static List<int> parsePagesOption(string pagesSpec)
         {
             if (pagesSpec.Equals("all"))
@@ -212,10 +244,9 @@ namespace Tabula
             for (int i = 0; i < ranges.Length; i++)
             {
                 String[] r = ranges[i].Split("-");
-                if (r.Length == 0 || !Utils.isNumeric(r[0]) || r.Length > 1 && !Utils.isNumeric(r[1]))
+                if (r.Length == 0 || !Utils.isNumeric(r[0]) || (r.Length > 1 && !Utils.isNumeric(r[1])))
                 {
-                    // TODO: too generic
-                    throw new Exception("Syntax error in page range specification");// ParseException("Syntax error in page range specification");
+                    throw new FormatException("Syntax error in page range specification");// ParseException("Syntax error in page range specification");
                 }
 
                 if (r.Length < 2)
@@ -227,8 +258,8 @@ namespace Tabula
                     int t = int.Parse(r[0]);
                     int f = int.Parse(r[1]);
                     if (t > f)
-                    {// TODO: too generic
-                        throw new Exception("Syntax error in page range specification");// throw new ParseException("Syntax error in page range specification");
+                    {
+                        throw new FormatException("Syntax error in page range specification");// throw new ParseException("Syntax error in page range specification");
                     }
                     rv.AddRange(Utils.range(t, f + 1));
                 }
@@ -242,7 +273,6 @@ namespace Tabula
         {
             public int Compare([AllowNull] PdfPoint arg0, [AllowNull] PdfPoint arg1)
             {
-                // return java.lang.Double.compare(arg0.getX(), arg1.getX());
                 return arg0.X.CompareTo(arg1.X);
             }
         }
@@ -316,7 +346,7 @@ namespace Tabula
             groupedPoints = new List<List<PdfPoint>>();
             groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { points[0] }));
 
-            foreach (PdfPoint p in points.Skip(1)) // points.subList(1, points.size() - 1)) 
+            foreach (PdfPoint p in points.subList(1, points.Count - 1))
             {
                 List<PdfPoint> last = groupedPoints[groupedPoints.Count - 1];
                 if (Math.Abs(p.Y - last[0].Y) < yThreshold)
@@ -371,6 +401,5 @@ namespace Tabula
             int count = toIndex - fromIndex; // - 1;
             return list.GetRange(fromIndex, count);
         }
-
     }
 }

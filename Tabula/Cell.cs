@@ -8,11 +8,18 @@ namespace Tabula
     // https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Cell.java
     public class Cell : RectangularTextContainer<TextChunk>
     {
-        public static Cell EMPTY = new Cell(0, 0, 0, 0);
+        public static Cell EMPTY = new Cell(new PdfRectangle());
 
-        public Cell(TextChunk chunk):this(chunk.getTop(), chunk.getLeft(), chunk.width, chunk.height)
+        public Cell(TextChunk chunk) : this(chunk.BoundingBox)
         {
             setTextElements(new List<TextChunk>() { chunk });
+        }
+
+        public Cell(PdfRectangle pdfRectangle) : base(pdfRectangle)
+        {
+            this.setPlaceholder(false);
+            this.setSpanning(false);
+            this.setTextElements(new List<TextChunk>());
         }
 
         public Cell(double top, double left, double width, double height) : base(top, left, width, height)
@@ -21,15 +28,17 @@ namespace Tabula
             this.setPlaceholder(false);
             this.setSpanning(false);
             this.setTextElements(new List<TextChunk>());
+            throw new ArgumentOutOfRangeException();
         }
 
-        public Cell(PdfPoint topLeft, PdfPoint bottomRight) 
-            :base(topLeft.Y, topLeft.X, (bottomRight.X - topLeft.X), (bottomRight.Y- topLeft.Y))
+        public Cell(PdfPoint topLeft, PdfPoint bottomRight)
+            : base(topLeft.Y, topLeft.X, (bottomRight.X - topLeft.X), (bottomRight.Y - topLeft.Y))
         {
             //super((float)topLeft.getY(), (float)topLeft.getX(), (float)(bottomRight.getX() - topLeft.getX()), (float)(bottomRight.getY() - topLeft.getY()));
             this.setPlaceholder(false);
             this.setSpanning(false);
             this.setTextElements(new List<TextChunk>());
+            throw new ArgumentOutOfRangeException();
         }
 
         private bool spanning;
@@ -42,17 +51,24 @@ namespace Tabula
             {
                 return "";
             }
+
             StringBuilder sb = new StringBuilder();
             this.textElements.Sort(new ILL_DEFINED_ORDER()); //Collections.sort(this.textElements, Rectangle.ILL_DEFINED_ORDER);
-            double curTop = this.textElements[0].getTop();
+            double curTop = this.textElements[0].getBottom(); //.word.BoundingBox.Bottom; //.getTop();
             foreach (TextChunk tc in this.textElements)
             {
-                if (useLineReturns && tc.getTop() > curTop)
+                if (useLineReturns && tc.getBottom()< curTop) //.getTop() < curTop)
                 {
                     sb.Append('\r');
                 }
+                /*
+                else
+                {
+                    sb.Append(' ');
+                }
+                */
                 sb.Append(tc.getText());
-                curTop = tc.getTop();
+                curTop = tc.getBottom(); //.word.BoundingBox.Bottom; //.getTop();
             }
             return sb.ToString().Trim();
         }

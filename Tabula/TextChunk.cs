@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
@@ -11,18 +12,26 @@ namespace Tabula
     {
         public Word word;
 
-        public static TextChunk EMPTY = new TextChunk(0, 0, 0, 0);
+        public static TextChunk EMPTY = new TextChunk();
+
         public List<TextElement> textElements = new List<TextElement>();
 
+        private TextChunk() : base(new PdfRectangle())
+        { }
+
+        /*
         public TextChunk(Word word) : this(word.Letters.Select(l => new TextElement(l)).ToList())
         {
             this.word = word;
         }
+        */
 
         public TextChunk(double top, double left, double width, double height) : base(top, left, width, height)
-        { }
+        {
+            throw new ArgumentOutOfRangeException();
+        }
 
-        public TextChunk(TextElement textElement) : base(textElement.y, textElement.x, textElement.width, textElement.height)
+        public TextChunk(TextElement textElement) : base(textElement.BoundingBox)
         {
             this.add(textElement);
         }
@@ -40,67 +49,33 @@ namespace Tabula
             LTR, NONE, RTL
         }
 
-        // I hate Java so bad.
-        // we're making this HashMap static! which requires really funky initialization per http://stackoverflow.com/questions/6802483/how-to-directly-initialize-a-hashmap-in-a-literal-way/6802502#6802502
-        //private static HashMap<Byte, DirectionalityOptions> directionalities;
         private static Dictionary<string, DirectionalityOptions> directionalities = new Dictionary<string, DirectionalityOptions>()
         {
-            //https://docs.microsoft.com/en-us/dotnet/api/system.globalization.unicodecategory?view=netcore-3.1
-            // BCT = bidirectional character type
-            /*
-            directionalities.put(java.lang.Character.DIRECTIONALITY_ARABIC_NUMBER, DirectionalityOptions.LTR),               // Weak BCT    "AN" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_BOUNDARY_NEUTRAL, DirectionalityOptions.NONE),            // Weak BCT    "BN" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_COMMON_NUMBER_SEPARATOR, DirectionalityOptions.LTR),     // Weak BCT    "CS" in the Unicode specification.
-            
-            directionalities.put(java.lang.Character.DIRECTIONALITY_EUROPEAN_NUMBER, DirectionalityOptions.LTR),             // Weak BCT    "EN" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR, DirectionalityOptions.LTR),   // Weak BCT    "ES" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR, DirectionalityOptions.LTR),  // Weak BCT    "ET" in the Unicode specification.
-            
-            directionalities.put(java.lang.Character.DIRECTIONALITY_LEFT_TO_RIGHT, DirectionalityOptions.LTR),              // Strong BCT  "L" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING, DirectionalityOptions.LTR),     // Strong BCT  "LRE" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE, DirectionalityOptions.LTR),      // Strong BCT  "LRO" in the Unicode specification.
-            
-            directionalities.put(java.lang.Character.DIRECTIONALITY_NONSPACING_MARK, DirectionalityOptions.NONE),             // Weak BCT    "NSM" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_OTHER_NEUTRALS, DirectionalityOptions.NONE),              // Neutral BCT "ON" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_PARAGRAPH_SEPARATOR, DirectionalityOptions.NONE),         // Neutral BCT "B" in the Unicode specification.
-            
-            directionalities.put(java.lang.Character.DIRECTIONALITY_POP_DIRECTIONAL_FORMAT, DirectionalityOptions.NONE),      // Weak BCT    "PDF" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_RIGHT_TO_LEFT, DirectionalityOptions.RTL),              // Strong BCT  "R" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC, DirectionalityOptions.RTL),      // Strong BCT  "AL" in the Unicode specification.
-            
-            directionalities.put(java.lang.Character.DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING, DirectionalityOptions.RTL),    // Strong BCT  "RLE" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE, DirectionalityOptions.RTL),     // Strong BCT  "RLO" in the Unicode specification.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_SEGMENT_SEPARATOR, DirectionalityOptions.RTL),          // Neutral BCT "S" in the Unicode specification.
-            
-            directionalities.put(java.lang.Character.DIRECTIONALITY_UNDEFINED, DirectionalityOptions.NONE),                   // Undefined BCT.
-            directionalities.put(java.lang.Character.DIRECTIONALITY_WHITESPACE, DirectionalityOptions.NONE)                 // Neutral BCT "WS" in the Unicode specification.
-            */
+            { "AN", DirectionalityOptions.LTR },    // DIRECTIONALITY_ARABIC_NUMBER, Weak BCT
+            { "BN", DirectionalityOptions.NONE },   // DIRECTIONALITY_BOUNDARY_NEUTRAL, Weak BCT
+            { "CS", DirectionalityOptions.LTR },    // DIRECTIONALITY_COMMON_NUMBER_SEPARATOR, Weak BCT
 
-            { "AN", DirectionalityOptions.LTR },
-            { "BN", DirectionalityOptions.NONE },
-            { "CS", DirectionalityOptions.LTR },
+            { "EN", DirectionalityOptions.LTR },    // DIRECTIONALITY_EUROPEAN_NUMBER, Weak BCT
+            { "ES", DirectionalityOptions.LTR },    // DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR, Weak BCT
+            { "ET", DirectionalityOptions.LTR },    // DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR, Weak BCT
 
-            { "EN", DirectionalityOptions.LTR },
-            { "ES", DirectionalityOptions.LTR },
-            { "ET", DirectionalityOptions.LTR },
+            { "L", DirectionalityOptions.LTR },     // DIRECTIONALITY_LEFT_TO_RIGHT, Strong BCT
+            { "LRE", DirectionalityOptions.LTR },   // DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING, Strong BCT
+            { "LRO", DirectionalityOptions.LTR },   // DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE, Strong BCT
 
-            { "L", DirectionalityOptions.LTR },
-            { "LRE", DirectionalityOptions.LTR },
-            { "LRO", DirectionalityOptions.LTR },
+            { "NSM", DirectionalityOptions.NONE },  // DIRECTIONALITY_NONSPACING_MARK, Weak BCT
+            { "ON", DirectionalityOptions.NONE },   // DIRECTIONALITY_OTHER_NEUTRALS, Neutral BCT
+            { "B", DirectionalityOptions.NONE },    // DIRECTIONALITY_PARAGRAPH_SEPARATOR, Neutral BCT
 
-            { "NSM", DirectionalityOptions.NONE },
-            { "ON", DirectionalityOptions.NONE },
-            { "B", DirectionalityOptions.NONE },
+            { "PDF", DirectionalityOptions.NONE },  // DIRECTIONALITY_POP_DIRECTIONAL_FORMAT, Weak BCT
+            { "R", DirectionalityOptions.RTL },     // DIRECTIONALITY_RIGHT_TO_LEFT, Strong BCT
+            { "AL", DirectionalityOptions.RTL },    // DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC, Strong BCT
 
-            { "PDF", DirectionalityOptions.NONE },
-            { "R", DirectionalityOptions.RTL },
-            { "AL", DirectionalityOptions.RTL },
+            { "RLE", DirectionalityOptions.RTL },   // DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING, Strong BCT
+            { "RLO", DirectionalityOptions.RTL },   // DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE, Strong BCT
+            { "S", DirectionalityOptions.RTL },     // DIRECTIONALITY_SEGMENT_SEPARATOR, Weak BCT, Neutral BCT
 
-            { "RLE", DirectionalityOptions.RTL },
-            { "RLO", DirectionalityOptions.RTL },
-            { "S", DirectionalityOptions.RTL },
-
-            { "WS", DirectionalityOptions.NONE },
+            { "WS", DirectionalityOptions.NONE },   // DIRECTIONALITY_WHITESPACE, Neutral BCT
 
             { "LRI", DirectionalityOptions.LTR },
             { "RLI", DirectionalityOptions.RTL },
@@ -108,13 +83,15 @@ namespace Tabula
             { "PDI", DirectionalityOptions.NONE },
         };
 
-        /**
-     * Splits a TextChunk into N TextChunks, where each chunk is of a single directionality, and
-     * then reverse the RTL ones.
-     * what we're doing here is *reversing* the Unicode bidi algorithm
-     * in the language of that algorithm, each chunk is a (maximal) directional run.
-     * We attach whitespace to the beginning of non-RTL
-     **/
+        /// <summary>
+        /// Splits a TextChunk into N TextChunks, where each chunk is of a single directionality, and
+        /// then reverse the RTL ones.
+        /// what we're doing here is *reversing* the Unicode bidi algorithm
+        /// in the language of that algorithm, each chunk is a(maximal) directional run.
+        /// We attach whitespace to the beginning of non-RTL
+        /// </summary>
+        /// <param name="isLtrDominant"></param>
+        /// <returns></returns>
         public TextChunk groupByDirectionality(bool isLtrDominant)
         {
             if (this.getTextElements().Count <= 0)
@@ -136,7 +113,6 @@ namespace Tabula
                 if (buff.Count == 0)
                 {
                     buff.Add(te);
-                    //buffDirectionality = directionalities.get(Character.getDirectionality(te.getText().charAt(0)));
                     buffDirectionality = directionalities[te.getText()[0].getDirectionality()];
                 }
                 else
@@ -179,6 +155,7 @@ namespace Tabula
                 buff.Reverse();
             }
             chunks.Add(buff);
+
             List<TextElement> everything = new List<TextElement>();
             if (!isLtrDominant)
             {
@@ -191,6 +168,10 @@ namespace Tabula
             return new TextChunk(everything);
         }
 
+        /// <summary>
+        /// 1 is LTR, 0 is neutral, -1 is RTL
+        /// </summary>
+        /// <returns></returns>
         public override int isLtrDominant()
         {
             int ltrCnt = 0;
@@ -211,7 +192,7 @@ namespace Tabula
                     }
                 }
             }
-            return ltrCnt.CompareTo(rtlCnt); // 1 is LTR, 0 is neutral, -1 is RTL
+            return ltrCnt.CompareTo(rtlCnt);
         }
 
         public TextChunk merge(TextChunk other)
@@ -223,7 +204,8 @@ namespace Tabula
         public void add(TextElement textElement)
         {
             this.textElements.Add(textElement);
-            this.merge(textElement);
+            this.BoundingBox = Utils.bounds(new[] { this.BoundingBox, textElement.BoundingBox });
+            //this.merge(textElement);
         }
 
         public void add(List<TextElement> elements)
@@ -239,7 +221,7 @@ namespace Tabula
             return textElements;
         }
 
-        public override String getText()
+        public override string getText()
         {
             if (this.textElements.Count == 0)
             {
@@ -251,10 +233,11 @@ namespace Tabula
             {
                 sb.Append(te.getText());
             }
+
             return sb.ToString().Normalize(NormalizationForm.FormKC).Trim();
         }
 
-        public override String getText(bool useLineReturns)
+        public override string getText(bool useLineReturns)
         {
             // TODO Auto-generated method stub
             return null;
@@ -297,8 +280,8 @@ namespace Tabula
 
             TextChunk[] rv = new TextChunk[]
             {
-                new TextChunk(this.getTextElements().Take(i).ToList()), //.subList(0, i)),
-                new TextChunk(this.getTextElements().Skip(i).ToList()) //.subList(i, this.getTextElements().size()))
+                new TextChunk(this.getTextElements().subList(0, i)), //.subList(0, i)),
+                new TextChunk(this.getTextElements().subList(i, this.getTextElements().Count)) //.subList(i, this.getTextElements().size()))
             };
 
             // TODO: remove below
@@ -368,8 +351,9 @@ namespace Tabula
                 lastChar = currentChar;
             }
 
-            if (!rv.Any()) //.isEmpty())
-            { // no splits occurred, hence this.squeeze() == [this]
+            if (rv.Count == 0)
+            {
+                // no splits occurred, hence this.squeeze() == [this]
                 if (subSequenceLength >= minRunLength && subSequenceLength < this.textElements.Count)
                 {
                     TextChunk[] chunks = this.splitAt(subSequenceStart);
@@ -452,11 +436,11 @@ namespace Tabula
                 return lines;
             }
 
-            double bbwidth = TableRectangle.boundingBoxOf(textChunks.Cast<TableRectangle>().ToList()).width; // TODO: not sure
+            double bbwidth = TableRectangle.boundingBoxOf(textChunks).width;
 
             TableLine l = new TableLine();
             l.addTextChunk(textChunks[0]);
-            textChunks.RemoveAt(0);//remove(0);
+            textChunks.RemoveAt(0);
             lines.Add(l);
 
             TableLine last = lines[lines.Count - 1];
@@ -466,7 +450,7 @@ namespace Tabula
                 {
                     if (last.width / bbwidth > 0.9 && TextChunk.allSameChar(last.getTextElements()))
                     {
-                        lines.RemoveAt(lines.Count - 1);//remove(lines.size() - 1);
+                        lines.RemoveAt(lines.Count - 1);
                     }
                     lines.Add(new TableLine());
                     last = lines[lines.Count - 1];
@@ -476,10 +460,10 @@ namespace Tabula
 
             if (last.width / bbwidth > 0.9 && TextChunk.allSameChar(last.getTextElements()))
             {
-                lines.RemoveAt(lines.Count - 1);//remove(lines.size() - 1);
+                lines.RemoveAt(lines.Count - 1);
             }
 
-            List<TableLine> rv = new List<TableLine>(lines.Count); //new ArrayList<>(lines.size());
+            List<TableLine> rv = new List<TableLine>(lines.Count);
 
             foreach (TableLine line in lines)
             {

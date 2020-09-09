@@ -30,8 +30,8 @@ namespace Tabula
 
 
         public Ruling(double top, double left, double width, double height)
+            : this(new PdfPoint(left, top), new PdfPoint(left + width, height + top))
         {
-            line = new PdfLine(new PdfPoint(left, top), new PdfPoint(left + width, top + height));
         }
 
         public Ruling(PdfPoint p1, PdfPoint p2)
@@ -379,7 +379,7 @@ namespace Tabula
             return $"{this.GetType()}[x1={this.x1} y1={this.y1} x2={this.x2} y2={this.y2}]";
         }
 
-        public static List<Ruling> cropRulingsToArea(List<Ruling> rulings, TableRectangle area)
+        public static List<Ruling> cropRulingsToArea(List<Ruling> rulings, PdfRectangle area)
         {
             return rulings; // should already be croped
 
