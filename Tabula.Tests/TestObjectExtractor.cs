@@ -12,7 +12,7 @@ namespace Tabula.Tests
         [Fact]
         public void testEmptyOnEncryptedFileRaisesException()
         {
-            Assert.Throws<PdfDocumentEncryptedException>(() => PdfDocument.Open(@"Resources/encrypted.pdf"));
+            Assert.Throws<PdfDocumentEncryptedException>(() => PdfDocument.Open("Resources/encrypted.pdf"));
             //PdfDocument pdf_document = PdfDocument.Open(@"Resources/encrypted.pdf");
             //ObjectExtractor oe = new ObjectExtractor(pdf_document);
             //Assert.Throws<Exception>(() => oe.extract().next());
@@ -21,7 +21,7 @@ namespace Tabula.Tests
         [Fact]
         public void testCanReadPDFWithOwnerEncryption()
         {
-            using (PdfDocument pdf_document = PdfDocument.Open(@"Resources/S2MNCEbirdisland.pdf"))
+            using (PdfDocument pdf_document = PdfDocument.Open("Resources/S2MNCEbirdisland.pdf"))
             {
                 ObjectExtractor oe = new ObjectExtractor(pdf_document);
                 PageIterator pi = oe.extract();

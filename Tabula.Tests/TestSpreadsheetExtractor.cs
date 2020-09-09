@@ -16,14 +16,14 @@ namespace Tabula.Tests
             new TableRectangle(84.0f, 18.0f, 962.0f, 464.0f)
         };
 
-        private static Ruling[] VERTICAL_RULING_LINES = new[]
+        private static readonly Ruling[] VERTICAL_RULING_LINES = new[]
         {
             new Ruling(40.0f, 18.0f, 0.0f, 40.0f),
             new Ruling(44.0f, 70.0f, 0.0f, 36.0f),
             new Ruling(40.0f, 226.0f, 0.0f, 40.0f)
         };
 
-        private static Ruling[] HORIZONTAL_RULING_LINES = new[]
+        private static readonly Ruling[] HORIZONTAL_RULING_LINES = new[]
         {
             new Ruling(40.0f, 18.0f, 208.0f, 0.0f),
             new Ruling(44.0f, 18.0f, 208.0f, 0.0f),
@@ -36,7 +36,7 @@ namespace Tabula.Tests
             new Ruling(80.0f, 18.0f, 208.0f, 0.0f)
         };
 
-        private static Cell[] EXPECTED_CELLS = new[]
+        private static readonly Cell[] EXPECTED_CELLS = new[]
         {
             new Cell(40.0f, 18.0f, 208.0f, 4.0f),
             new Cell(44.0f, 18.0f, 52.0f, 6.0f),
@@ -55,7 +55,7 @@ namespace Tabula.Tests
             new Cell(74.0f, 70.0f, 156.0f, 6.0f)
         };
 
-        private static Ruling[][] SINGLE_CELL_RULINGS = new[]
+        private static readonly Ruling[][] SINGLE_CELL_RULINGS = new[]
         {
             new[]
             {
@@ -69,7 +69,7 @@ namespace Tabula.Tests
             }
         };
 
-        private static Ruling[][] TWO_SINGLE_CELL_RULINGS = new[]
+        private static readonly Ruling[][] TWO_SINGLE_CELL_RULINGS = new[]
         {
             new[]
             {
@@ -87,7 +87,7 @@ namespace Tabula.Tests
             }
         };
 
-        private static Ruling[] EXTERNALLY_DEFINED_RULINGS = new[]
+        private static readonly Ruling[] EXTERNALLY_DEFINED_RULINGS = new[]
         {
             new Ruling(new PdfPoint(320.0f, 285.0f), new PdfPoint(564.4409f, 285.0f)),
             new Ruling(new PdfPoint(320.0f, 457.0f), new PdfPoint(564.4409f, 457.0f)),
@@ -105,7 +105,7 @@ namespace Tabula.Tests
             new Ruling(new PdfPoint(470.5542f, 285.0f), new PdfPoint(470.36865f, 457.0f))
         };
 
-        private static Ruling[] EXTERNALLY_DEFINED_RULINGS2 = new[]
+        private static readonly Ruling[] EXTERNALLY_DEFINED_RULINGS2 = new[]
         {
             new Ruling(new PdfPoint(51.796964f, 180.0f), new PdfPoint(560.20312f, 180.0f)),
             new Ruling(new PdfPoint(51.797017f, 219.0f), new PdfPoint(560.2031f, 219.0f)),

@@ -14,9 +14,11 @@ namespace Tabula.Tests
 
 			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "test", 5, 0);
 			TextChunk tChunk = new TextChunk(tElement);
-			List<TextChunk> tList = new List<TextChunk>();
-			tList.Add(tChunk);
-			line.setTextElements(tList);
+            List<TextChunk> tList = new List<TextChunk>
+            {
+                tChunk
+            };
+            line.setTextElements(tList);
 
 			Assert.Equal("test", line.getTextElements()[0].getText());
 		}

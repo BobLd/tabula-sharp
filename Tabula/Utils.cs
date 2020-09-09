@@ -34,7 +34,7 @@ namespace Tabula
 
         public static bool feq(double f1, double f2)
         {
-            return (Math.Abs(f1 - f2) < EPSILON);
+            return Math.Abs(f1 - f2) < EPSILON;
         }
 
         public static double round(double d, int decimalPlace)
@@ -123,12 +123,10 @@ namespace Tabula
              }*/
         }
 
-
-
         /* from apache.commons-lang */
-        public static bool isNumeric(string cs) //CharSequence cs)
+        public static bool isNumeric(string cs)
         {
-            if (string.IsNullOrEmpty(cs)) // cs == null || cs.length() == 0)
+            if (string.IsNullOrEmpty(cs))
             {
                 return false;
             }
@@ -136,7 +134,7 @@ namespace Tabula
             int sz = cs.Length;
             for (int i = 0; i < sz; i++)
             {
-                if (!char.IsNumber(cs, i)) // Character.isDigit(cs.charAt(i)))
+                if (!char.IsNumber(cs, i))
                 {
                     return false;
                 }
@@ -233,7 +231,6 @@ namespace Tabula
             */
         }
 
-
         public static List<int> parsePagesOption(string pagesSpec)
         {
             if (pagesSpec.Equals("all"))
@@ -247,7 +244,7 @@ namespace Tabula
             for (int i = 0; i < ranges.Length; i++)
             {
                 String[] r = ranges[i].Split("-");
-                if (r.Length == 0 || !Utils.isNumeric(r[0]) || r.Length > 1 && !Utils.isNumeric(r[1]))
+                if (r.Length == 0 || !Utils.isNumeric(r[0]) || (r.Length > 1 && !Utils.isNumeric(r[1])))
                 {
                     throw new FormatException("Syntax error in page range specification");// ParseException("Syntax error in page range specification");
                 }
@@ -349,7 +346,7 @@ namespace Tabula
             groupedPoints = new List<List<PdfPoint>>();
             groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { points[0] }));
 
-            foreach (PdfPoint p in points.Skip(1)) // points.subList(1, points.size() - 1)) 
+            foreach (PdfPoint p in points.subList(1, points.Count - 1))
             {
                 List<PdfPoint> last = groupedPoints[groupedPoints.Count - 1];
                 if (Math.Abs(p.Y - last[0].Y) < yThreshold)
@@ -404,6 +401,5 @@ namespace Tabula
             int count = toIndex - fromIndex; // - 1;
             return list.GetRange(fromIndex, count);
         }
-
     }
 }

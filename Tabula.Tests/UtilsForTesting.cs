@@ -39,7 +39,7 @@ namespace Tabula.Tests
             }
             finally
             {
-                if (oe != null) oe.close();
+                oe?.close();
             }
         }
 

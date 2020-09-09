@@ -10,8 +10,8 @@ namespace Tabula.Tests
 {
     public class TestBasicExtractor
     {
-        private static string EU_002_PDF = "Resources/eu-002.pdf";
-        private static string[][] EU_002_EXPECTED = new[]
+        private static readonly string EU_002_PDF = "Resources/eu-002.pdf";
+        private static readonly string[][] EU_002_EXPECTED = new[]
         {
             new[] {"",                                              "",                "Involvement of pupils in", ""},
             new[] {"",                                              "Preperation and", "Production of",            "Presentation an"},
@@ -23,8 +23,8 @@ namespace Tabula.Tests
             new[] {"Self competence",                               "0,3791",          "0,3320",                   "0,4617"}
         };
 
-        private static string ARGENTINA_DIPUTADOS_VOTING_RECORD_PDF = "Resources/argentina_diputados_voting_record.pdf";
-        private static string[][] ARGENTINA_DIPUTADOS_VOTING_RECORD_EXPECTED = new[]
+        private static readonly string ARGENTINA_DIPUTADOS_VOTING_RECORD_PDF = "Resources/argentina_diputados_voting_record.pdf";
+        private static readonly string[][] ARGENTINA_DIPUTADOS_VOTING_RECORD_EXPECTED = new[]
         {
             new[] {"ABDALA de MATARAZZO, Norma Amanda",                 "Frente Cívico por Santiago",   "Santiago del Estero", "AFIRMATIVO"},
             new[] {"ALBRIEU, Oscar Edmundo Nicolas",                    "Frente para la Victoria - PJ", "Rio Negro",           "AFIRMATIVO"},
@@ -59,8 +59,8 @@ namespace Tabula.Tests
             new[] {"CURRILEN, Oscar Rubén",                             "Frente para la Victoria - PJ", "Chubut",              "AFIRMATIVO"}
         };
 
-        private static string EU_017_PDF = "Resources/eu-017.pdf";
-        private static string[][] EU_017_EXPECTED = new[]
+        private static readonly string EU_017_PDF = "Resources/eu-017.pdf";
+        private static readonly string[][] EU_017_EXPECTED = new[]
         {
             new[] {"", "Austria",         "77",  "1",  "78"},
             new[] {"", "Belgium",        "159",  "2", "161"},
@@ -97,8 +97,8 @@ namespace Tabula.Tests
             new[] {"", "United Kingdom", "572", "14", "586"}
         };
 
-        private static string FRX_2012_DISCLOSURE_PDF = "Resources/frx_2012_disclosure.pdf";
-        private static string[][] FRX_2012_DISCLOSURE_EXPECTED = new[]
+        private static readonly string FRX_2012_DISCLOSURE_PDF = "Resources/frx_2012_disclosure.pdf";
+        private static readonly string[][] FRX_2012_DISCLOSURE_EXPECTED = new[]
         {
             new[] {"AANONSEN, DEBORAH, A", "",                           "STATEN ISLAND, NY", "MEALS",                "$85.00"},
             new[] {"TOTAL",                "",                           "",                  "",                     "$85.00"},
@@ -119,7 +119,7 @@ namespace Tabula.Tests
             new[] {"AARON, MICHAEL, R",    "",                           "BROOKLYN, NY",      "MEALS",                "$65.92"}
         };
 
-        private static string[][] EXPECTED_EMPTY_TABLE = { /* actually empty! */ };
+        private static readonly string[][] EXPECTED_EMPTY_TABLE = { /* actually empty! */ };
 
         [Fact]
         public void testRemoveSequentialSpaces()
@@ -334,7 +334,7 @@ namespace Tabula.Tests
         [Fact]
         public void testEmptyRegion()
         {
-            PageArea page = UtilsForTesting.getAreaFromPage(@"Resources/indictb1h_14.pdf", 1, new PdfRectangle(0, 700, 100.9, 800));  //0, 0, 80.82f, 100.9f); // an empty area
+            PageArea page = UtilsForTesting.getAreaFromPage("Resources/indictb1h_14.pdf", 1, new PdfRectangle(0, 700, 100.9, 800));  //0, 0, 80.82f, 100.9f); // an empty area
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.extract(page)[0];
             Assert.Equal(EXPECTED_EMPTY_TABLE, UtilsForTesting.tableToArrayOfRows(table));

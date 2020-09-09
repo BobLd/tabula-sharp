@@ -52,8 +52,6 @@ namespace Tabula.Tests
 			Assert.True(lower.CompareTo(upper) < 0);
 		}
 
-
-
 		[Fact]
 		public void testQuickSortOneUpperThanOther()
 		{
@@ -67,7 +65,6 @@ namespace Tabula.Tests
 
 			Assert.True(lower.CompareTo(upper) > 0);
 		}
-
 
 		[Fact]
 		public void testQuickSortRectangleList()
@@ -99,24 +96,26 @@ namespace Tabula.Tests
 			Assert.Equal(4.329999923706055, sixth.width);
 			Assert.Equal(4.309999942779541, sixth.height);
 
-			List<TableRectangle> expectedList = new List<TableRectangle>();
-			expectedList.Add(first);
-			expectedList.Add(sixth);
-			expectedList.Add(second);
-			expectedList.Add(third);
-			expectedList.Add(fourth);
-			expectedList.Add(fifth);
-			List<TableRectangle> toSortList = new List<TableRectangle>();
-			toSortList.Add(sixth);
-			toSortList.Add(second);
-			toSortList.Add(third);
-			toSortList.Add(fifth);
-			toSortList.Add(first);
-			toSortList.Add(fourth);
+            List<TableRectangle> expectedList = new List<TableRectangle>
+            {
+                first,
+                sixth,
+                second,
+                third,
+                fourth,
+                fifth
+            };
+            List<TableRectangle> toSortList = new List<TableRectangle>
+            {
+                sixth,
+                second,
+                third,
+                fifth,
+                first,
+                fourth
+            };
 
-			toSortList.Sort(new TableRectangle.ILL_DEFINED_ORDER());
-			//Collections.sort(toSortList, TableRectangle.ILL_DEFINED_ORDER);
-
+            toSortList.Sort(new TableRectangle.ILL_DEFINED_ORDER()); //Collections.sort(toSortList, TableRectangle.ILL_DEFINED_ORDER);
 			Assert.Equal(expectedList, toSortList);
 		}
 
@@ -137,7 +136,7 @@ namespace Tabula.Tests
 		[Fact]
 		public void testGetVerticalOverlapShouldReturnMoreThanZero()
 		{
-			TableRectangle lower = new TableRectangle(new PdfRectangle(10, 15, 20, 25));//15f, 10f, 10f, 10f);
+			TableRectangle lower = new TableRectangle(new PdfRectangle(10, 15, 20, 25)); //15f, 10f, 10f, 10f);
 			TableRectangle upper = new TableRectangle(new PdfRectangle(0, 20, 10, 30)); //20f, 0f, 10f, 10f);
 
 			double overlap = lower.verticalOverlap(upper);
@@ -151,26 +150,22 @@ namespace Tabula.Tests
 		[Fact]
 		public void testGetHorizontalOverlapShouldReturnZero()
 		{
-
 			TableRectangle one = new TableRectangle(new PdfRectangle(0, 0, 10, 10)); //0f, 0f, 10f, 10f);
-			TableRectangle two = new TableRectangle(new PdfRectangle(10, 10, 20, 20));//10f, 10f, 10f, 10f);
+			TableRectangle two = new TableRectangle(new PdfRectangle(10, 10, 20, 20)); //10f, 10f, 10f, 10f);
 
 			Assert.True(!one.horizontallyOverlaps(two));
 			Assert.Equal(0f, one.overlapRatio(two), 0);
-
 		}
 
 		[Fact]
 		public void testGetHorizontalOverlapShouldReturnMoreThanZero()
 		{
-
 			TableRectangle one = new TableRectangle(new PdfRectangle(0, 0, 10, 10)); //0f, 0f, 10f, 10f);
-			TableRectangle two = new TableRectangle(new PdfRectangle(5, 0, 15, 10));//10f, 5f, 10f, 10f);
+			TableRectangle two = new TableRectangle(new PdfRectangle(5, 0, 15, 10)); //10f, 5f, 10f, 10f);
 
 			Assert.True(one.horizontallyOverlaps(two));
 			Assert.Equal(5f, one.horizontalOverlap(two), 0);
 			Assert.Equal(0f, one.overlapRatio(two), 0);
-
 		}
 
 		[Fact]
@@ -184,7 +179,6 @@ namespace Tabula.Tests
 			Assert.Equal(5f, one.horizontalOverlap(two), 0);
 			Assert.Equal(5f, one.verticalOverlap(two), 0);
 			Assert.Equal(25f / 175, one.overlapRatio(two), 0);
-
 		}
 
 		[Fact]
@@ -292,7 +286,7 @@ namespace Tabula.Tests
 			Assert.True(a.CompareTo(c) < 0);
 		}
 
-		//[Fact] // @Ignore
+		[Fact(Skip = "Comparison is not transitive. Needs to be implemented.")]
 		public void testWellDefinedComparison1()
 		{
 			/*

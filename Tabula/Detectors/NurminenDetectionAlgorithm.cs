@@ -15,15 +15,15 @@ namespace Tabula.Detectors
  */
     public class NurminenDetectionAlgorithm : DetectionAlgorithm
     {
-        private static readonly int GRAYSCALE_INTENSITY_THRESHOLD = 25;
-        private static readonly int HORIZONTAL_EDGE_WIDTH_MINIMUM = 50;
-        private static readonly int VERTICAL_EDGE_HEIGHT_MINIMUM = 10;
-        private static readonly int CELL_CORNER_DISTANCE_MAXIMUM = 10;
-        private static readonly float POINT_SNAP_DISTANCE_THRESHOLD = 8f;
-        private static readonly float TABLE_PADDING_AMOUNT = 1.0f;
-        private static readonly int REQUIRED_TEXT_LINES_FOR_EDGE = 4;
-        private static readonly int REQUIRED_CELLS_FOR_TABLE = 4;
-        private static readonly float IDENTICAL_TABLE_OVERLAP_RATIO = 0.9f;
+        private const int GRAYSCALE_INTENSITY_THRESHOLD = 25;
+        private const int HORIZONTAL_EDGE_WIDTH_MINIMUM = 50;
+        private const int VERTICAL_EDGE_HEIGHT_MINIMUM = 10;
+        private const int CELL_CORNER_DISTANCE_MAXIMUM = 10;
+        private const float POINT_SNAP_DISTANCE_THRESHOLD = 8f;
+        private const float TABLE_PADDING_AMOUNT = 1.0f;
+        private const int REQUIRED_TEXT_LINES_FOR_EDGE = 4;
+        private const int REQUIRED_CELLS_FOR_TABLE = 4;
+        private const float IDENTICAL_TABLE_OVERLAP_RATIO = 0.9f;
 
         /// <summary>
         /// Helper class that encapsulates a text edge

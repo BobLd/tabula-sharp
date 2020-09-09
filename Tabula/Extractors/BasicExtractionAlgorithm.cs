@@ -59,7 +59,7 @@ namespace Tabula.Extractors
             List<TextChunk> textChunks = this.verticalRulings == null ? TextElement.mergeWords(page.getText()) : TextElement.mergeWords(page.getText(), this.verticalRulings);
             List<TableLine> lines = TextChunk.groupByLines(textChunks);
 
-            List<double> columns = null;
+            List<double> columns;
             if (this.verticalRulings != null)
             {
                 this.verticalRulings.Sort(new VerticalRulingComparer());
