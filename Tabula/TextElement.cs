@@ -284,14 +284,16 @@ namespace Tabula
                 if (!acrossVerticalRuling && sameLine && expectedStartOfNextWordX < chr.getLeft() && !prevChar.getText().EndsWith(" "))
                 {
 
-                    sp = new TextElement(prevChar.getBottom(), // .getTop()
-                        prevChar.getLeft(),
-                        expectedStartOfNextWordX - prevChar.getLeft(),
-                            prevChar.getHeight(),
+                    sp = new TextElement(
+                        new PdfRectangle(prevChar.BoundingBox.BottomLeft, new PdfPoint(expectedStartOfNextWordX, prevChar.BoundingBox.TopRight.Y)),
+                            //prevChar.getBottom(), // .getTop()
+                            //prevChar.getLeft(),
+                            //expectedStartOfNextWordX - prevChar.getLeft(),
+                            //prevChar.getHeight(),
                             prevChar.getFont(),
                             prevChar.getFontSize(),
                             " ",
-                            prevChar.getWidthOfSpace());
+                            prevChar.getWidthOfSpace(), 0);
 
                     currentChunk.add(sp);
                 }
