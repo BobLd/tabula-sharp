@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using UglyToad.PdfPig.Core;
 using Xunit;
 
 namespace Tabula.Tests
 {
-	public class TestRuling
+    public class TestRuling
 	{
 		Ruling ruling = new Ruling(0, 0, 10, 10);
 
@@ -50,53 +48,46 @@ namespace Tabula.Tests
 			Assert.True(ruling.nearlyIntersects(another));
 		}
 
-
-		[Fact]//	@Test(expected = UnsupportedOperationException.class)
+		[Fact]
 		public void testGetPositionError()
 		{
 			Ruling other = new Ruling(0, 0, 1, 1);
 			Assert.Throws<InvalidOperationException>(() => other.getPosition());
-			//fail();
 		}
 
-		[Fact]// @Test(expected = UnsupportedOperationException.class)
+		[Fact]
 		public void testSetPositionError()
 		{
 			Ruling other = new Ruling(0, 0, 1, 1);
 			Assert.Throws<InvalidOperationException>(() => other.setPosition(5f));
-			//fail();
 		}
 
-		[Fact]  //@Test(expected = UnsupportedOperationException.class)
+		[Fact]
 		public void testsetPosition()
 		{
 			Assert.Throws<InvalidOperationException>(() => ruling.setPosition(0));
 		}
 
-		[Fact]  //@Test(expected = UnsupportedOperationException.class)
+		[Fact]
 		public void testGetStartError()
 		{
 			Ruling other = new Ruling(0, 0, 1, 1);
 			Assert.Throws<InvalidOperationException>(() => other.getStart());
-			//fail();
 		}
 
-		[Fact]// @Test(expected = UnsupportedOperationException.class)
+		[Fact]
 		public void testGetEndError()
 		{
 			Ruling other = new Ruling(0, 0, 1, 1);
 			Assert.Throws<InvalidOperationException>(() => other.getEnd());
-			//fail();
 		}
 
-		[Fact]// @Test(expected = UnsupportedOperationException.class)
+		[Fact]
 		public void testSetEndError()
 		{
 			Ruling other = new Ruling(0, 0, 1, 1);
 			Assert.Throws<InvalidOperationException>(() => other.setEnd(5f));
-			//fail();
 		}
-
 
 		[Fact]
 		public void testColinear()
@@ -111,9 +102,6 @@ namespace Tabula.Tests
 			Assert.True(ruling.colinear(float2));
 			Assert.False(ruling.colinear(float3));
 			Assert.False(ruling.colinear(float4));
-
-
 		}
-
 	}
 }

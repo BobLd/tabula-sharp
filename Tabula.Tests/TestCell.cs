@@ -9,7 +9,7 @@ namespace Tabula.Tests
 		[Fact]
 		public void testIsSpanning()
 		{
-			Cell cell = Cell.EMPTY; //new Cell(0, 0, 0, 0);
+			Cell cell = Cell.EMPTY;
 			Assert.False(cell.isSpanning());
 			cell.setSpanning(true);
 			Assert.True(cell.isSpanning());
@@ -18,7 +18,7 @@ namespace Tabula.Tests
 		[Fact]
 		public void testIsPlaceholder()
 		{
-			Cell cell = new Cell(new PdfRectangle()); // Cell(0, 0, 0, 0);
+			Cell cell = new Cell(new PdfRectangle());
 			Assert.False(cell.isPlaceholder());
 			cell.setPlaceholder(true);
 			Assert.True(cell.isPlaceholder());
@@ -27,7 +27,7 @@ namespace Tabula.Tests
 		[Fact]
 		public void testGetTextElements()
 		{
-			Cell cell = Cell.EMPTY; // new Cell(0, 0, 0, 0);
+			Cell cell = Cell.EMPTY;
 			Assert.True(cell.getTextElements().Count == 0);
 
 			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "test", 5, 0); //PDType1Font.HELVETICA_BOLD

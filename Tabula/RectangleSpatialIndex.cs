@@ -48,11 +48,30 @@ namespace Tabula
 
         public List<T> intersects(TableRectangle r)
         {
-            return rectangles.Where(tr => r.BoundingBox.IntersectsWith(tr.BoundingBox)).ToList();
+            return rectangles.Where(tr => IntersectsWithNoBug(r.BoundingBox, tr.BoundingBox)).ToList();
+
             /*
             List rv = si.query(new Envelope(r.getLeft(), r.getRight(), r.getTop(), r.getBottom()));
             return rv;
             */
+        }
+
+        /// <summary>
+        /// TO REMOVE: need to check PdfPig's 'IntersectsWith' for bug with empty rectangles. they should instersect
+        /// </summary>
+        private bool IntersectsWithNoBug(PdfRectangle rectangle, PdfRectangle other)
+        {
+            if (rectangle.Left > other.Right || other.Left > rectangle.Right)
+            {
+                return false;
+            }
+
+            if (rectangle.Top < other.Bottom || other.Top < rectangle.Bottom)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>

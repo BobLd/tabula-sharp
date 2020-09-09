@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UglyToad.PdfPig.Core;
 using Xunit;
 
 namespace Tabula.Tests
@@ -10,28 +11,26 @@ namespace Tabula.Tests
 		[Fact]
 		public void createTextElement()
 		{
-
-			TextElement textElement = new TextElement(5f, 15f, 10f, 20f, UtilsForTesting.HELVETICA_BOLD, 1f, "A", 1f);
+			TextElement textElement = new TextElement(new PdfRectangle(15, 5, 25, 25), UtilsForTesting.HELVETICA_BOLD, 1f, "A", 1f, 0); //5f, 15f, 10f, 20f, 
+			Assert.Equal(10, textElement.width);
+			Assert.Equal(20, textElement.height);
 
 			Assert.NotNull(textElement);
 			Assert.Equal("A", textElement.getText());
 			Assert.Equal(1f, textElement.getFontSize(), 0);
 			Assert.Equal(15f, textElement.getLeft(), 0);
-			Assert.Equal(5f, textElement.getTop(), 0);
+			Assert.Equal(5f, textElement.getBottom(), 0); // getTop()
 			Assert.Equal(10f, textElement.getWidth(), 0);
 			Assert.Equal(20f, textElement.getHeight(), 0);
 			Assert.Equal(UtilsForTesting.HELVETICA_BOLD, textElement.getFont());
 			Assert.Equal(1f, textElement.getWidthOfSpace(), 0);
 			Assert.Equal(0f, textElement.getDirection(), 0);
-
-
 		}
 
 		[Fact]
 		public void createTextElementWithDirection()
 		{
-
-			TextElement textElement = new TextElement(5f, 15f, 10f, 20f, UtilsForTesting.HELVETICA_BOLD, 1f, "A", 1f, 6f);
+			TextElement textElement = new TextElement(new PdfRectangle(15, 5, 25, 25), UtilsForTesting.HELVETICA_BOLD, 1f, "A", 1f, 6f); // 5f, 15f, 10f, 20f,
 
 			Assert.NotNull(textElement);
 			Assert.Equal("A", textElement.getText());
@@ -43,30 +42,26 @@ namespace Tabula.Tests
 			Assert.Equal(UtilsForTesting.HELVETICA_BOLD, textElement.getFont());
 			Assert.Equal(1f, textElement.getWidthOfSpace(), 0);
 			Assert.Equal(6f, textElement.getDirection(), 0);
-
-
 		}
 
 		[Fact]
 		public void mergeFourElementsIntoFourWords()
 		{
-
 			List<TextElement> elements = new List<TextElement>();
-			elements.Add(new TextElement(0f, 15f, 10f, 20f, UtilsForTesting.HELVETICA_BOLD, 1f, "A", 1f, 6f));
-			elements.Add(new TextElement(20f, 15f, 10f, 20f, UtilsForTesting.HELVETICA_BOLD, 1f, "B", 1f, 6f));
-			elements.Add(new TextElement(40f, 15f, 10f, 20f, UtilsForTesting.HELVETICA_BOLD, 1f, "C", 1f, 6f));
-			elements.Add(new TextElement(60f, 15f, 10f, 20f, UtilsForTesting.HELVETICA_BOLD, 1f, "D", 1f, 6f));
+			elements.Add(new TextElement(new PdfRectangle(15, 0, 15 + 10, 0 + 20), UtilsForTesting.HELVETICA_BOLD, 1f, "A", 1f, 6f));   // 0f, 15f, 10f, 20f,
+			elements.Add(new TextElement(new PdfRectangle(15, 20, 15 + 10, 20 + 20), UtilsForTesting.HELVETICA_BOLD, 1f, "B", 1f, 6f)); // 20f, 15f, 10f, 20f,
+			elements.Add(new TextElement(new PdfRectangle(15, 40, 15 + 10, 40 + 20), UtilsForTesting.HELVETICA_BOLD, 1f, "C", 1f, 6f)); // 40f, 15f, 10f, 20f, 
+			elements.Add(new TextElement(new PdfRectangle(15, 60, 15 + 10, 60 + 20), UtilsForTesting.HELVETICA_BOLD, 1f, "D", 1f, 6f)); // 60f, 15f, 10f, 20f, 
 
 			List<TextChunk> words = TextElement.mergeWords(elements);
 
 			List<TextChunk> expectedWords = new List<TextChunk>();
-			expectedWords.Add(new TextChunk(new TextElement(0f, 15f, 10f, 20f, UtilsForTesting.HELVETICA_BOLD, 1f, "A", 1f, 6f)));
-			expectedWords.Add(new TextChunk(new TextElement(20f, 15f, 10f, 20f, UtilsForTesting.HELVETICA_BOLD, 1f, "B", 1f, 6f)));
-			expectedWords.Add(new TextChunk(new TextElement(40f, 15f, 10f, 20f, UtilsForTesting.HELVETICA_BOLD, 1f, "C", 1f, 6f)));
-			expectedWords.Add(new TextChunk(new TextElement(60f, 15f, 10f, 20f, UtilsForTesting.HELVETICA_BOLD, 1f, "D", 1f, 6f)));
+			expectedWords.Add(new TextChunk(new TextElement(new PdfRectangle(15, 0, 15 + 10, 0 + 20), UtilsForTesting.HELVETICA_BOLD, 1f, "A", 1f, 6f)));   // 0f, 15f, 10f, 20f,
+			expectedWords.Add(new TextChunk(new TextElement(new PdfRectangle(15, 20, 15 + 10, 20 + 20), UtilsForTesting.HELVETICA_BOLD, 1f, "B", 1f, 6f))); // 20f, 15f, 10f, 20f,
+			expectedWords.Add(new TextChunk(new TextElement(new PdfRectangle(15, 40, 15 + 10, 40 + 20), UtilsForTesting.HELVETICA_BOLD, 1f, "C", 1f, 6f))); // 40f, 15f, 10f, 20f,
+			expectedWords.Add(new TextChunk(new TextElement(new PdfRectangle(15, 60, 15 + 10, 60 + 20), UtilsForTesting.HELVETICA_BOLD, 1f, "D", 1f, 6f))); // 60f, 15f, 10f, 20f
 
 			Assert.Equal(expectedWords, words);
-
 		}
 
 		[Fact]
@@ -89,7 +84,6 @@ namespace Tabula.Tests
 			expectedWords.Add(textChunk);
 
 			Assert.Equal(expectedWords, words);
-
 		}
 
 		[Fact]

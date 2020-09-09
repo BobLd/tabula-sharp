@@ -252,7 +252,7 @@ namespace Tabula.Tests
 			Assert.Equal(new TableRectangle(new PdfRectangle(0, 0, 40, 20)), boundingBoxOf); // 0f, 0f, 40f, 30f)
 		}
 
-		// ignore for the moment [Fact]
+		[Fact(Skip = "Comparison is not transitive. Needs to be implemented.")]
 		public void testTransitiveComparison1()
 		{
 			// +-------+
@@ -272,7 +272,7 @@ namespace Tabula.Tests
 			Assert.True(a.CompareTo(c) < 0);
 		}
 
-		// ignore for the moment [Fact]
+		[Fact(Skip = "Comparison is not transitive. Needs to be implemented.")]
 		public void testTransitiveComparison2()
 		{
 			//                     +-------+
@@ -308,6 +308,5 @@ namespace Tabula.Tests
 			Assert.Equal(l1.get(2), l2.get(2));
 			*/
 		}
-
 	}
 }

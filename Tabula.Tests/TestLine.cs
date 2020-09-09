@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using UglyToad.PdfPig.Core;
 using Xunit;
 
 namespace Tabula.Tests
 {
-	public class TestLine
+    public class TestLine
 	{
 		[Fact]
 		public void testSetTextElements()

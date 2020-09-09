@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Exceptions;
 using UglyToad.PdfPig.Geometry;

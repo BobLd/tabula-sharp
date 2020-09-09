@@ -30,8 +30,8 @@ namespace Tabula
 
 
         public Ruling(double top, double left, double width, double height)
+            : this(new PdfPoint(left, top), new PdfPoint(left + width, height + top))
         {
-            line = new PdfLine(new PdfPoint(left, top), new PdfPoint(left + width, height - top));
         }
 
         public Ruling(PdfPoint p1, PdfPoint p2)

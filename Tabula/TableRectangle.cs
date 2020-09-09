@@ -69,7 +69,7 @@ namespace Tabula
         /// </summary>
         /// <returns></returns>
         public virtual int isLtrDominant()
-        {        
+        {
             // I'm bad at Java and need this for fancy sorting in
             // technology.tabula.TextChunk.
             return 0;
@@ -255,13 +255,13 @@ namespace Tabula
         private double getX() => this.x;
 
         private double getY() => this.y;
-        private double getMinX() => this.BoundingBox.Left;
+        public double getMinX() => this.BoundingBox.Left;
 
-        private double getMaxX() => this.BoundingBox.Right;
+        public double getMaxX() => this.BoundingBox.Right;
 
-        private double getMinY() => this.BoundingBox.Bottom;
+        public double getMinY() => this.BoundingBox.Bottom;
 
-        private double getMaxY() => this.BoundingBox.Top;
+        public double getMaxY() => this.BoundingBox.Top;
 
         /// <summary>
         /// Sets the location and size of this Rectangle2D to the specified double values.

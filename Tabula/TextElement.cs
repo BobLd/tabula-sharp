@@ -17,7 +17,7 @@ namespace Tabula
         private FontDetails font; // PDFont
         private double fontSize;
         private double widthOfSpace, dir;
-        private static double AVERAGE_CHAR_TOLERANCE = 0.3f;
+        private static double AVERAGE_CHAR_TOLERANCE = 0.3;
 
         public TextElement(Letter letter)
             : this(letter.GlyphRectangle, letter.Font, letter.FontSize, letter.Value, double.NaN, 0)
@@ -148,12 +148,14 @@ namespace Tabula
         public static List<TextChunk> mergeWords(List<TextElement> textElements, List<Ruling> verticalRulings)
         {
             // hack
+            /*
             if (textElements.All(te => te.letter != null))
             {
                 NearestNeighbourWordExtractor nnwe = NearestNeighbourWordExtractor.Instance;
                 var words = nnwe.GetWords(textElements.Select(te => te.letter).ToList());
                 return words.Select(w => new TextChunk(w)).ToList();
             }
+            */
 
             List<TextChunk> textChunks = new List<TextChunk>();
 
@@ -167,14 +169,19 @@ namespace Tabula
             // not appearing in the final output because it's been removed here.
             // https://github.com/tabulapdf/tabula-java/issues/78
             List<TextElement> copyOfTextElements = new  List<TextElement>(textElements);
-            textChunks.Add(new TextChunk(copyOfTextElements.Skip(1).ToList())); //remove(0)));
+
+            //remove(0)));
+            var removed = copyOfTextElements[0];
+            copyOfTextElements.RemoveAt(0);
+
+            textChunks.Add(new TextChunk(removed));
             TextChunk firstTC = textChunks[0];
 
             double previousAveCharWidth = firstTC.getWidth();
             double endOfLastTextX = firstTC.getRight();
-            double maxYForLine = firstTC.getBottom();
+            double maxYForLine = firstTC.getTop(); //.getBottom();
             double maxHeightForLine = firstTC.getHeight();
-            double minYTopForLine = firstTC.getTop();
+            double minYTopForLine = firstTC.getBottom();//.getTop();
             double lastWordSpacing = -1;
             double wordSpacing, deltaSpace, averageCharWidth, deltaCharWidth;
             double expectedStartOfNextWordX, dist;
@@ -194,7 +201,7 @@ namespace Tabula
                 }
 
                 // if chr is a space that overlaps with prevChar, skip
-                if (chr.getText().Equals(" ") && Utils.feq(prevChar.getLeft(), chr.getLeft()) && Utils.feq(prevChar.getTop(), chr.getTop()))
+                if (chr.getText().Equals(" ") && Utils.feq(prevChar.getLeft(), chr.getLeft()) && Utils.feq(prevChar.getBottom(), chr.getBottom())) // getTop() getTop()
                 {
                     continue;
                 }
@@ -210,8 +217,7 @@ namespace Tabula
                 acrossVerticalRuling = false;
                 foreach (Ruling r in verticalRulings)
                 {
-                    if ((verticallyOverlapsRuling(prevChar, r) && verticallyOverlapsRuling(chr, r)) &&
-                        (prevChar.x < r.getPosition() && chr.x > r.getPosition()) ||
+                    if (verticallyOverlapsRuling(prevChar, r) && verticallyOverlapsRuling(chr, r) && prevChar.x < r.getPosition() && chr.x > r.getPosition() ||
                         (prevChar.x > r.getPosition() && chr.x < r.getPosition()))
                     {
                         acrossVerticalRuling = true;
@@ -243,11 +249,11 @@ namespace Tabula
                 // .3 worked well.
                 if (previousAveCharWidth < 0)
                 {
-                    averageCharWidth = (float)(chr.getWidth() / chr.getText().Length);
+                    averageCharWidth = chr.getWidth() / chr.getText().Length;
                 }
                 else
                 {
-                    averageCharWidth = (float)((previousAveCharWidth + (chr.getWidth() / chr.getText().Length)) / 2.0f);
+                    averageCharWidth = (previousAveCharWidth + (chr.getWidth() / chr.getText().Length)) / 2.0f;
                 }
                 deltaCharWidth = averageCharWidth * AVERAGE_CHAR_TOLERANCE;
 
@@ -262,7 +268,7 @@ namespace Tabula
 
                 // new line?
                 sameLine = true;
-                if (!Utils.overlap(chr.getBottom(), chr.height, maxYForLine, maxHeightForLine))
+                if (!Utils.overlap(chr.getTop(), chr.height, maxYForLine, maxHeightForLine)) // getBottom()
                 {
                     endOfLastTextX = -1;
                     expectedStartOfNextWordX = -double.MaxValue;
@@ -275,16 +281,13 @@ namespace Tabula
                 endOfLastTextX = chr.getRight();
 
                 // should we add a space?
-                if (!acrossVerticalRuling &&
-                        sameLine &&
-                        expectedStartOfNextWordX < chr.getLeft() &&
-                        !prevChar.getText().EndsWith(" "))
+                if (!acrossVerticalRuling && sameLine && expectedStartOfNextWordX < chr.getLeft() && !prevChar.getText().EndsWith(" "))
                 {
 
-                    sp = new TextElement(prevChar.getTop(),
+                    sp = new TextElement(prevChar.getBottom(), // .getTop()
                         prevChar.getLeft(),
                         expectedStartOfNextWordX - prevChar.getLeft(),
-                            (float)prevChar.getHeight(),
+                            prevChar.getHeight(),
                             prevChar.getFont(),
                             prevChar.getFontSize(),
                             " ",
@@ -297,15 +300,13 @@ namespace Tabula
                     sp = null;
                 }
 
-                maxYForLine = Math.Max(chr.getBottom(), maxYForLine);
-                maxHeightForLine = (float)Math.Max(maxHeightForLine, chr.getHeight());
-                minYTopForLine = Math.Min(minYTopForLine, chr.getTop());
+                maxYForLine = Math.Max(chr.getTop(), maxYForLine); // getBottom()
+                maxHeightForLine = Math.Max(maxHeightForLine, chr.getHeight());
+                minYTopForLine = Math.Min(minYTopForLine, chr.getBottom()); // .getTop()
 
                 dist = chr.getLeft() - (sp != null ? sp.getRight() : prevChar.getRight());
 
-                if (!acrossVerticalRuling &&
-                        sameLine &&
-                        (dist < 0 ? currentChunk.verticallyOverlaps(chr) : dist < wordSpacing))
+                if (!acrossVerticalRuling && sameLine && (dist < 0 ? currentChunk.verticallyOverlaps(chr) : dist < wordSpacing))
                 {
                     currentChunk.add(chr);
                 }
@@ -315,9 +316,8 @@ namespace Tabula
                 }
 
                 lastWordSpacing = wordSpacing;
-                previousAveCharWidth = (float)(sp != null ? (averageCharWidth + sp.getWidth()) / 2.0f : averageCharWidth);
+                previousAveCharWidth = sp != null ? (averageCharWidth + sp.getWidth()) / 2.0f : averageCharWidth;
             }
-
 
             List<TextChunk> textChunksSeparatedByDirectionality = new List<TextChunk>();
             // count up characters by directionality
@@ -334,7 +334,7 @@ namespace Tabula
 
         private static bool verticallyOverlapsRuling(TextElement te, Ruling r)
         {
-            return Math.Max(0, Math.Min(te.getBottom(), r.getY2()) - Math.Max(te.getTop(), r.getY1())) > 0;
+            return Math.Max(0, Math.Min(te.getTop(), r.getY2()) - Math.Max(te.getBottom(), r.getY1())) > 0; // .getBottom() .getTop()
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
+﻿using Xunit;
 
 namespace Tabula.Tests
 {
@@ -27,7 +24,7 @@ namespace Tabula.Tests
 
 			Assert.Equal(0, empty.getArea(), 0);
 		}
-		
+
 		[Fact]
 		public void testRowColCounts()
 		{

@@ -47,9 +47,14 @@ namespace Tabula
             */
         }
 
+        public static PdfRectangle bounds(IEnumerable<Ruling> shapes)
+        {
+            return bounds(shapes.Select(r => r.line.GetBoundingRectangle()));
+        }
+
         public static PdfRectangle bounds(IEnumerable<PdfRectangle> shapes)
         {
-            if (!shapes.Any()) //(shapes.isEmpty())
+            if (!shapes.Any())
             {
                 throw new ArgumentException("shapes can't be empty");
             }
@@ -244,8 +249,7 @@ namespace Tabula
                 String[] r = ranges[i].Split("-");
                 if (r.Length == 0 || !Utils.isNumeric(r[0]) || r.Length > 1 && !Utils.isNumeric(r[1]))
                 {
-                    // TODO: too generic
-                    throw new Exception("Syntax error in page range specification");// ParseException("Syntax error in page range specification");
+                    throw new FormatException("Syntax error in page range specification");// ParseException("Syntax error in page range specification");
                 }
 
                 if (r.Length < 2)
@@ -257,8 +261,8 @@ namespace Tabula
                     int t = int.Parse(r[0]);
                     int f = int.Parse(r[1]);
                     if (t > f)
-                    {// TODO: too generic
-                        throw new Exception("Syntax error in page range specification");// throw new ParseException("Syntax error in page range specification");
+                    {
+                        throw new FormatException("Syntax error in page range specification");// throw new ParseException("Syntax error in page range specification");
                     }
                     rv.AddRange(Utils.range(t, f + 1));
                 }
@@ -272,7 +276,6 @@ namespace Tabula
         {
             public int Compare([AllowNull] PdfPoint arg0, [AllowNull] PdfPoint arg1)
             {
-                // return java.lang.Double.compare(arg0.getX(), arg1.getX());
                 return arg0.X.CompareTo(arg1.X);
             }
         }
