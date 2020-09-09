@@ -54,10 +54,10 @@ namespace Tabula
 
             StringBuilder sb = new StringBuilder();
             this.textElements.Sort(new ILL_DEFINED_ORDER()); //Collections.sort(this.textElements, Rectangle.ILL_DEFINED_ORDER);
-            double curTop = this.textElements[0].word.BoundingBox.Bottom; //.getTop();
+            double curTop = this.textElements[0].getBottom(); //.word.BoundingBox.Bottom; //.getTop();
             foreach (TextChunk tc in this.textElements)
             {
-                if (useLineReturns && tc.word.BoundingBox.Bottom < curTop) //.getTop() < curTop)
+                if (useLineReturns && tc.getBottom()< curTop) //.getTop() < curTop)
                 {
                     sb.Append('\r');
                 }
@@ -68,7 +68,7 @@ namespace Tabula
                 }
                 */
                 sb.Append(tc.getText());
-                curTop = tc.word.BoundingBox.Bottom; //.getTop();
+                curTop = tc.getBottom(); //.word.BoundingBox.Bottom; //.getTop();
             }
             return sb.ToString().Trim();
         }

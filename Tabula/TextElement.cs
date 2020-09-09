@@ -5,7 +5,9 @@ using System.Text;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
+using UglyToad.PdfPig.Geometry;
 using UglyToad.PdfPig.PdfFonts;
+using UglyToad.PdfPig.Util;
 
 namespace Tabula
 {
@@ -19,8 +21,22 @@ namespace Tabula
         private double widthOfSpace, dir;
         private static double AVERAGE_CHAR_TOLERANCE = 0.3;
 
+        static double GetExpectedWhitespaceSize(Letter letter)
+        {
+            if (letter.Value == " ")
+            {
+                return letter.Width;
+            }
+            return WhitespaceSizeStatistics.GetExpectedWhitespaceSize(letter);
+        }
+
+        static PdfRectangle GetBbox(Letter letter)
+        {
+            return GeometryExtensions.MinimumAreaRectangle(new[] { letter.StartBaseLine, letter.EndBaseLine, letter.GlyphRectangle.TopLeft, letter.GlyphRectangle.TopRight });
+        }
+
         public TextElement(Letter letter)
-            : this(letter.GlyphRectangle, letter.Font, letter.FontSize, letter.Value, double.NaN, 0)
+            : this(GetBbox(letter), letter.Font, letter.FontSize, letter.Value, GetExpectedWhitespaceSize(letter), 0) // hackish... WhitespaceSizeStatistics
         {
             this.letter = letter;
         }
@@ -168,7 +184,7 @@ namespace Tabula
             // other things depend on `textElements` and it can sometimes lead to the first textElement in textElement
             // not appearing in the final output because it's been removed here.
             // https://github.com/tabulapdf/tabula-java/issues/78
-            List<TextElement> copyOfTextElements = new  List<TextElement>(textElements);
+            List<TextElement> copyOfTextElements = new List<TextElement>(textElements);
 
             //remove(0)));
             var removed = copyOfTextElements[0];
@@ -177,10 +193,10 @@ namespace Tabula
             textChunks.Add(new TextChunk(removed));
             TextChunk firstTC = textChunks[0];
 
-            double previousAveCharWidth = firstTC.getWidth();
+            double previousAveCharWidth = firstTC.width;
             double endOfLastTextX = firstTC.getRight();
             double maxYForLine = firstTC.getTop(); //.getBottom();
-            double maxHeightForLine = firstTC.getHeight();
+            double maxHeightForLine = firstTC.height;
             double minYTopForLine = firstTC.getBottom();//.getTop();
             double lastWordSpacing = -1;
             double wordSpacing, deltaSpace, averageCharWidth, deltaCharWidth;
@@ -191,6 +207,10 @@ namespace Tabula
 
             foreach (TextElement chr in copyOfTextElements)
             {
+                //################ to remove ################
+                if (chr.getText() == " ") continue;
+                //###########################################
+
                 currentChunk = textChunks[textChunks.Count - 1];
                 prevChar = currentChunk.textElements[currentChunk.textElements.Count - 1];
 
@@ -283,13 +303,8 @@ namespace Tabula
                 // should we add a space?
                 if (!acrossVerticalRuling && sameLine && expectedStartOfNextWordX < chr.getLeft() && !prevChar.getText().EndsWith(" "))
                 {
-
                     sp = new TextElement(
                         new PdfRectangle(prevChar.BoundingBox.BottomLeft, new PdfPoint(expectedStartOfNextWordX, prevChar.BoundingBox.TopRight.Y)),
-                            //prevChar.getBottom(), // .getTop()
-                            //prevChar.getLeft(),
-                            //expectedStartOfNextWordX - prevChar.getLeft(),
-                            //prevChar.getHeight(),
                             prevChar.getFont(),
                             prevChar.getFontSize(),
                             " ",
@@ -302,9 +317,12 @@ namespace Tabula
                     sp = null;
                 }
 
+                //if (chr.getText() != " ") // added by BobLd
+                //{
                 maxYForLine = Math.Max(chr.getTop(), maxYForLine); // getBottom()
-                maxHeightForLine = Math.Max(maxHeightForLine, chr.getHeight());
+                maxHeightForLine = Math.Max(maxHeightForLine, chr.height);
                 minYTopForLine = Math.Min(minYTopForLine, chr.getBottom()); // .getTop()
+                //}
 
                 dist = chr.getLeft() - (sp != null ? sp.getRight() : prevChar.getRight());
 
@@ -313,7 +331,8 @@ namespace Tabula
                     currentChunk.add(chr);
                 }
                 else
-                { // create a new chunk
+                {
+                    // create a new chunk
                     textChunks.Add(new TextChunk(chr));
                 }
 

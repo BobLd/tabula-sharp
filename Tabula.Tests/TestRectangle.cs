@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Tabula.Tests
 {
-    public class TestRectangle
+	public class TestRectangle
 	{
 		[Fact]
 		public void testCompareEqualsRectangles()
@@ -87,7 +87,7 @@ namespace Tabula.Tests
 			Assert.Equal(4.0, third.width);
 			Assert.Equal(4.309999942779541, third.height);
 
-			TableRectangle fourth = new TableRectangle(new PdfRectangle(100.31999969482422, 175.72000122070312, 100.31999969482422+ 1.6699999570846558, 175.72000122070312+ 1.5199999809265137));//175.72000122070312f, 100.31999969482422f, 1.6699999570846558f, 1.5199999809265137f); //,
+			TableRectangle fourth = new TableRectangle(new PdfRectangle(100.31999969482422, 175.72000122070312, 100.31999969482422 + 1.6699999570846558, 175.72000122070312 + 1.5199999809265137));//175.72000122070312f, 100.31999969482422f, 1.6699999570846558f, 1.5199999809265137f); //,
 			Assert.Equal(1.6699999570846558, fourth.width);
 			Assert.Equal(1.5199999809265137, fourth.height);
 
@@ -264,15 +264,15 @@ namespace Tabula.Tests
 			//           +-------+ |   C   |
 			//                     |       |
 			//                     +-------+
-			TableRectangle a = new TableRectangle(0, 0, 2, 2);
-			TableRectangle b = new TableRectangle(1, 1, 2, 2);
-			TableRectangle c = new TableRectangle(2, 2, 2, 2);
+			TableRectangle c = new TableRectangle(new PdfRectangle(0, 0, 2, 2)); // 0, 0, 2, 2); // a
+			TableRectangle b = new TableRectangle(new PdfRectangle(1, 1, 3, 3)); // 1, 1, 2, 2);
+			TableRectangle a = new TableRectangle(new PdfRectangle(2, 2, 4, 4)); // 2, 2, 2, 2); // c
 			Assert.True(a.CompareTo(b) < 0);
 			Assert.True(b.CompareTo(c) < 0);
 			Assert.True(a.CompareTo(c) < 0);
 		}
 
-		[Fact(Skip = "Comparison is not transitive. Needs to be implemented.")]
+		[Fact] //(Skip = "Comparison is not transitive. Needs to be implemented.")]
 		public void testTransitiveComparison2()
 		{
 			//                     +-------+
@@ -284,9 +284,9 @@ namespace Tabula.Tests
 			// |   A   | +-------+
 			// |       |
 			// +-------+
-			TableRectangle a = new TableRectangle(2, 0, 2, 2);
-			TableRectangle b = new TableRectangle(1, 1, 2, 2);
-			TableRectangle c = new TableRectangle(0, 2, 2, 2);
+			TableRectangle c = new TableRectangle(new PdfRectangle(0, 2, 2, 4)); // 2, 0, 2, 2); // a
+			TableRectangle b = new TableRectangle(new PdfRectangle(1, 1, 3, 3)); // 1, 1, 2, 2);
+			TableRectangle a = new TableRectangle(new PdfRectangle(2, 0, 4, 2)); // 0, 2, 2, 2); // c
 			Assert.True(a.CompareTo(b) < 0);
 			Assert.True(b.CompareTo(c) < 0);
 			Assert.True(a.CompareTo(c) < 0);

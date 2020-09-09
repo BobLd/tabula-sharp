@@ -19,10 +19,12 @@ namespace Tabula
         private TextChunk() : base(new PdfRectangle())
         { }
 
+        /*
         public TextChunk(Word word) : this(word.Letters.Select(l => new TextElement(l)).ToList())
         {
             this.word = word;
         }
+        */
 
         public TextChunk(double top, double left, double width, double height) : base(top, left, width, height)
         {
@@ -349,8 +351,9 @@ namespace Tabula
                 lastChar = currentChar;
             }
 
-            if (!rv.Any()) //.isEmpty())
-            { // no splits occurred, hence this.squeeze() == [this]
+            if (rv.Count == 0)
+            {
+                // no splits occurred, hence this.squeeze() == [this]
                 if (subSequenceLength >= minRunLength && subSequenceLength < this.textElements.Count)
                 {
                     TextChunk[] chunks = this.splitAt(subSequenceStart);
@@ -433,7 +436,7 @@ namespace Tabula
                 return lines;
             }
 
-            double bbwidth = TableRectangle.boundingBoxOf(textChunks).width; //TableRectangle.boundingBoxOf(textChunks.Cast<TableRectangle>().ToList()).width; // TODO: not sure
+            double bbwidth = TableRectangle.boundingBoxOf(textChunks).width;
 
             TableLine l = new TableLine();
             l.addTextChunk(textChunks[0]);

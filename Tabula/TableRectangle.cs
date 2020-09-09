@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using UglyToad.PdfPig.Core;
@@ -41,16 +42,17 @@ namespace Tabula
 
         public TableRectangle(PdfRectangle rectangle) : this()
         {
-            //if (rectangle.Height == 0)
-            //{
-            //// hack: force height to be at least 1
-            //BoundingBox = new PdfRectangle(rectangle.BottomLeft.X, rectangle.BottomLeft.Y,
-            //rectangle.TopRight.X, rectangle.TopRight.Y + 1);
-            //}
-            //else
-            //{
-            BoundingBox = rectangle;
-            //}
+            if (rectangle.Height == 0)
+            {
+                // hack: force height to be at least 1
+                Debug.Print("ERROR: PdfRectangle with Height=0. Forcing to Height=1.");
+                BoundingBox = new PdfRectangle(rectangle.BottomLeft.X, rectangle.BottomLeft.Y,
+                rectangle.TopRight.X, rectangle.TopRight.Y + 1);
+            }
+            else
+            {
+                BoundingBox = rectangle;
+            }
         }
 
         public TableRectangle(double top, double left, double width, double height) : this()
@@ -113,10 +115,8 @@ namespace Tabula
 
         public double overlapRatio(TableRectangle other)
         {
-            double intersectionWidth = Math.Max(0,
-                    Math.Min(this.getRight(), other.getRight()) - Math.Max(this.getLeft(), other.getLeft()));
-            double intersectionHeight = Math.Max(0,
-                    Math.Min(this.getBottom(), other.getBottom()) - Math.Max(this.getTop(), other.getTop()));
+            double intersectionWidth = Math.Max(0, Math.Min(this.getRight(), other.getRight()) - Math.Max(this.getLeft(), other.getLeft()));
+            double intersectionHeight = Math.Max(0, Math.Min(this.getBottom(), other.getBottom()) - Math.Max(this.getTop(), other.getTop()));
             double intersectionArea = Math.Max(0, intersectionWidth * intersectionHeight);
             double unionArea = this.getArea() + other.getArea() - intersectionArea;
 

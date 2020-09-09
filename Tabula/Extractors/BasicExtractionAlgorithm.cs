@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using UglyToad.PdfPig.Core;
 
 namespace Tabula.Extractors
 {
@@ -24,7 +25,7 @@ namespace Tabula.Extractors
             List<Ruling> verticalRulings = new List<Ruling>(verticalRulingPositions.Count);
             foreach (float p in verticalRulingPositions)
             {
-                verticalRulings.Add(new Ruling(page.getTop(), p, 0.0f, (float)page.getHeight()));
+                verticalRulings.Add(new Ruling(page.getHeight(), p, 0.0f, page.getHeight()));
             }
             this.verticalRulings = verticalRulings;
             return this.extract(page);
@@ -140,7 +141,6 @@ namespace Tabula.Extractors
 
                 foreach (TableRectangle cr in regions)
                 {
-
                     List<TextChunk> overlaps = new List<TextChunk>();
                     foreach (TextChunk te in lineTextElements)
                     {
