@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
@@ -11,8 +12,12 @@ namespace Tabula
     {
         public Word word;
 
-        public static TextChunk EMPTY = new TextChunk(0, 0, 0, 0);
+        public static TextChunk EMPTY = new TextChunk();
+
         public List<TextElement> textElements = new List<TextElement>();
+
+        private TextChunk() : base(new PdfRectangle())
+        { }
 
         public TextChunk(Word word) : this(word.Letters.Select(l => new TextElement(l)).ToList())
         {
@@ -20,9 +25,11 @@ namespace Tabula
         }
 
         public TextChunk(double top, double left, double width, double height) : base(top, left, width, height)
-        { }
+        {
+            throw new ArgumentOutOfRangeException();
+        }
 
-        public TextChunk(TextElement textElement) : base(textElement.y, textElement.x, textElement.width, textElement.height)
+        public TextChunk(TextElement textElement) : base(textElement.BoundingBox)
         {
             this.add(textElement);
         }
@@ -179,6 +186,7 @@ namespace Tabula
                 buff.Reverse();
             }
             chunks.Add(buff);
+
             List<TextElement> everything = new List<TextElement>();
             if (!isLtrDominant)
             {
@@ -223,7 +231,8 @@ namespace Tabula
         public void add(TextElement textElement)
         {
             this.textElements.Add(textElement);
-            this.merge(textElement);
+            this.BoundingBox = Utils.bounds(new[] { this.BoundingBox, textElement.BoundingBox });
+            //this.merge(textElement);
         }
 
         public void add(List<TextElement> elements)
@@ -239,7 +248,7 @@ namespace Tabula
             return textElements;
         }
 
-        public override String getText()
+        public override string getText()
         {
             if (this.textElements.Count == 0)
             {
@@ -251,10 +260,11 @@ namespace Tabula
             {
                 sb.Append(te.getText());
             }
+
             return sb.ToString().Normalize(NormalizationForm.FormKC).Trim();
         }
 
-        public override String getText(bool useLineReturns)
+        public override string getText(bool useLineReturns)
         {
             // TODO Auto-generated method stub
             return null;
@@ -452,7 +462,7 @@ namespace Tabula
                 return lines;
             }
 
-            double bbwidth = TableRectangle.boundingBoxOf(textChunks.Cast<TableRectangle>().ToList()).width; // TODO: not sure
+            double bbwidth = Utils.bounds(textChunks.Select(tc => tc.BoundingBox)).Width; //TableRectangle.boundingBoxOf(textChunks.Cast<TableRectangle>().ToList()).width; // TODO: not sure
 
             TableLine l = new TableLine();
             l.addTextChunk(textChunks[0]);

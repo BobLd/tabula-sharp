@@ -51,11 +51,13 @@ namespace Tabula
         {
             if (this.textChunks.Count == 0) //if (this.textChunks.isEmpty())
             {
-                this.setRect(textChunk.BoundingBox);
+                this.BoundingBox = textChunk.BoundingBox;
+                //this.setRect(textChunk.BoundingBox);
             }
             else
             {
-                this.merge(textChunk);
+                this.BoundingBox = Utils.bounds(new[] { this.BoundingBox, textChunk.BoundingBox });
+                //this.merge(textChunk);
             }
             this.textChunks.Add(textChunk);
         }

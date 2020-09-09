@@ -57,8 +57,8 @@ namespace Tabula.Extractors
 
             List<TextChunk> textChunks = this.verticalRulings == null ? TextElement.mergeWords(page.getText()) : TextElement.mergeWords(page.getText(), this.verticalRulings);
             List<TableLine> lines = TextChunk.groupByLines(textChunks);
-            List<double> columns = null;
 
+            List<double> columns = null;
             if (this.verticalRulings != null)
             {
                 this.verticalRulings.Sort(new VerticalRulingComparer());
@@ -74,7 +74,7 @@ namespace Tabula.Extractors
             }
 
             Table table = new Table(this);
-            table.setRect(page.getLeft(), page.getTop(), page.getWidth(), page.getHeight());
+            table.setRect(page.BoundingBox); //.getLeft(), page.getTop(), page.getWidth(), page.getHeight());
 
             for (int i = 0; i < lines.Count; i++)
             {
@@ -100,10 +100,6 @@ namespace Tabula.Extractors
                             break;
                         }
                     }
-
-                    // for debug
-                    var type = tc.GetType();
-                    // 
 
                     table.add(new Cell(tc), i, found ? j : columns.Count);
                 }

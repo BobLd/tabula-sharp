@@ -19,6 +19,11 @@ namespace Tabula
             //si.insert(new Envelope(te.getLeft(), te.getRight(), te.getBottom(), te.getTop()), te);
         }
 
+        public List<T> contains(PdfRectangle r)
+        {
+            return rectangles.Where(tr => r.Contains(tr.BoundingBox)).ToList();
+        }
+
         public List<T> contains(TableRectangle r)
         {
 

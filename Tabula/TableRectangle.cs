@@ -34,11 +34,25 @@ namespace Tabula
 
         protected static float VERTICAL_COMPARISON_THRESHOLD = 0.4f;
 
-        public PdfRectangle BoundingBox { get; private set; }
+        public PdfRectangle BoundingBox { get; internal set; }
 
         public TableRectangle() : base()
         {
             BoundingBox = new PdfRectangle();
+        }
+
+        public TableRectangle(PdfRectangle rectangle) : this()
+        {
+            if (rectangle.Height == 0)
+            {
+                // hack: force height to be at least 1
+                BoundingBox = new PdfRectangle(rectangle.BottomLeft.X, rectangle.BottomLeft.Y,
+                                               rectangle.TopRight.X, rectangle.TopRight.Y + 1);
+            }
+            else
+            {
+                BoundingBox = rectangle;
+            }
         }
 
         public TableRectangle(double top, double left, double width, double height) : this()
@@ -66,7 +80,23 @@ namespace Tabula
 
         public double verticalOverlap(TableRectangle other)
         {
-            return Math.Max(0, Math.Min(this.getBottom(), other.getBottom()) - Math.Max(this.getTop(), other.getTop()));
+            return Math.Max(0, Math.Min(this.BoundingBox.Top, other.BoundingBox.Top)
+                             - Math.Max(this.BoundingBox.Bottom, other.BoundingBox.Bottom));
+
+            /*
+                var overl = Math.Min(this.BoundingBox.Top, other.BoundingBox.Top)
+                        - Math.Max(this.BoundingBox.Bottom, other.BoundingBox.Bottom);
+
+                if (overl < 0)
+                {
+                    return 0;
+                }
+                else if (overl == 0)
+                {
+                    return 1; // set min overlap to 1
+                }
+                return overl;
+             */
         }
 
         public bool verticallyOverlaps(TableRectangle other)
@@ -86,30 +116,40 @@ namespace Tabula
 
         public double verticalOverlapRatio(TableRectangle other)
         {
-            double rv = 0, delta = Math.Min(this.getBottom() - this.getTop(), other.getBottom() - other.getTop());
+            double delta = Math.Min(this.BoundingBox.Top - this.BoundingBox.Bottom,
+                                                other.BoundingBox.Top - other.BoundingBox.Bottom);
+            //if (delta == 0) delta = 1; // set min delta to 1
+            var overl = verticalOverlap(other);
+            return overl / delta;
 
-            if (other.getTop() <= this.getTop() && this.getTop() <= other.getBottom()
-                    && other.getBottom() <= this.getBottom())
+            /*
+            if (other.getTop() <= this.getTop()
+                && this.getTop() <= other.getBottom()
+                && other.getBottom() <= this.getBottom())
             {
                 rv = (other.getBottom() - this.getTop()) / delta;
             }
-            else if (this.getTop() <= other.getTop() && other.getTop() <= this.getBottom()
-                  && this.getBottom() <= other.getBottom())
+            else if (this.getTop() <= other.getTop() 
+                && other.getTop() <= this.getBottom()
+                && this.getBottom() <= other.getBottom())
             {
                 rv = (this.getBottom() - other.getTop()) / delta;
             }
-            else if (this.getTop() <= other.getTop() && other.getTop() <= other.getBottom()
-                  && other.getBottom() <= this.getBottom())
+            else if (this.getTop() <= other.getTop() 
+                && other.getTop() <= other.getBottom()
+                && other.getBottom() <= this.getBottom())
             {
                 rv = (other.getBottom() - other.getTop()) / delta;
             }
-            else if (other.getTop() <= this.getTop() && this.getTop() <= this.getBottom()
-                  && this.getBottom() <= other.getBottom())
+            else if (other.getTop() <= this.getTop()
+                && this.getTop() <= this.getBottom()
+                && this.getBottom() <= other.getBottom())
             {
                 rv = (this.getBottom() - this.getTop()) / delta;
             }
 
             return rv;
+            */
         }
 
         public double overlapRatio(TableRectangle other)
@@ -130,7 +170,7 @@ namespace Tabula
             return this;
         }
 
-        public double getTop() => BoundingBox.Bottom; //.Top;
+        public double getTop() => BoundingBox.Top;
 
         public void setTop(double top)
         {
@@ -153,7 +193,7 @@ namespace Tabula
             this.setRect(left, this.y, this.width - deltaWidth, this.height);
         }
 
-        public double getBottom() => BoundingBox.Top; //.Bottom;
+        public double getBottom() => BoundingBox.Bottom;
 
         public void setBottom(float bottom)
         {
@@ -170,9 +210,10 @@ namespace Tabula
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            string s = base.ToString();
+            sb.Append(this.GetType());
+            string s = this.BoundingBox.ToString();
             sb.Append(s, 0, s.Length - 1);
-            sb.Append($",bottom={this.getBottom()},right={this.getRight()}]");
+            sb.Append($",bottom={this.getBottom():0.00},right={this.getRight():0.00}]");
             return sb.ToString();
         }
 
@@ -234,6 +275,7 @@ namespace Tabula
         internal void setRect(double x, double y, double w, double h)
         {
             setRect(new PdfRectangle(x, y - h, x + w, y));
+            throw new ArgumentOutOfRangeException();
         }
 
         internal void setRect(PdfRectangle rectangle)

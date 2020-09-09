@@ -2,22 +2,26 @@
 using System.IO;
 using System.Text;
 using UglyToad.PdfPig;
+using UglyToad.PdfPig.Core;
+using UglyToad.PdfPig.PdfFonts;
 using Xunit;
 
 namespace Tabula.Tests
 {
     public static class UtilsForTesting
     {
-        public static PageArea getAreaFromFirstPage(string path, float top, float left, float bottom, float right)
+        public static readonly FontDetails HELVETICA_BOLD = new FontDetails("HELVETICA_BOLD", true, 0, false);
+
+        public static PageArea getAreaFromFirstPage(string path, PdfRectangle pdfRectangle)
         {
-            return getAreaFromPage(path, 1, top, left, bottom, right);
+            return getAreaFromPage(path, 1, pdfRectangle);
         }
 
-        public static PageArea getAreaFromPage(string path, int page, float top, float left, float bottom, float right)
+        public static PageArea getAreaFromPage(string path, int page, PdfRectangle pdfRectangle)
         {
             var area = getPage(path, page);
-            
-            return area.getArea(top, left, bottom, right);
+
+            return area.getArea(pdfRectangle);
         }
 
         public static PageArea getPage(string path, int pageNumber)

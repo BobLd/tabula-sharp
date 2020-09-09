@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
 using UglyToad.PdfPig.PdfFonts;
 
@@ -18,22 +19,28 @@ namespace Tabula
         private double widthOfSpace, dir;
         private static double AVERAGE_CHAR_TOLERANCE = 0.3f;
 
-        public TextElement(Letter letter):this(letter.GlyphRectangle.TopLeft.Y,
-            letter.GlyphRectangle.TopLeft.X,
-            letter.GlyphRectangle.Width,
-            letter.GlyphRectangle.Height,
-            letter.Font,
-            letter.FontSize,
-            letter.Value,
-            double.NaN)
+        public TextElement(Letter letter)
+            : this(letter.GlyphRectangle, letter.Font, letter.FontSize, letter.Value, double.NaN, 0)
         {
             this.letter = letter;
         }
 
+        public TextElement(PdfRectangle pdfRectangle, FontDetails font, double fontSize, string c, double widthOfSpace, double dir)
+            : base(pdfRectangle)
+        {
+            this.text = c;
+            this.widthOfSpace = widthOfSpace;
+            this.fontSize = fontSize;
+            this.font = font;
+            this.dir = dir;
+        }
+
         public TextElement(double y, double x, double width, double height,
-                      FontDetails font, double fontSize, string c, double widthOfSpace) :
+            FontDetails font, double fontSize, string c, double widthOfSpace) :
             this(y, x, width, height, font, fontSize, c, widthOfSpace, 0f)
-        { }
+        {
+            throw new ArgumentOutOfRangeException();
+        }
 
         public TextElement(double y, double x, double width,
             double height, FontDetails font, double fontSize, string c, double widthOfSpace, double dir)
@@ -45,6 +52,7 @@ namespace Tabula
             this.fontSize = fontSize;
             this.font = font;
             this.dir = dir;
+            throw new ArgumentOutOfRangeException();
         }
 
         public string getText()

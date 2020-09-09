@@ -15,7 +15,7 @@ namespace Tabula
             this.pdfDocument = pdfDocument;
         }
 
-        internal PageArea extractPage(int pageNumber)// throws IOException
+        public PageArea extractPage(int pageNumber)// throws IOException
         {
             if (pageNumber > this.pdfDocument.NumberOfPages || pageNumber < 1)
             {
@@ -87,7 +87,7 @@ namespace Tabula
                 h = p.CropBox.Bounds.Height; //.getCropBox().getHeight();
             }
 
-            return new PageArea(0, 0, w, h,
+            return new PageArea(p.CropBox.Bounds, //.TopLeft.Y, p.CropBox.Bounds.TopLeft.X, w, h,
                 pageRotation,
                 pageNumber,
                 p,

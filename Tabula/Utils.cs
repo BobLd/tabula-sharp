@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using UglyToad.PdfPig.Core;
+using UglyToad.PdfPig.Geometry;
 
 namespace Tabula
 {
@@ -45,6 +46,35 @@ namespace Tabula
             return bd.floatValue();
             */
         }
+
+        public static PdfRectangle bounds(IEnumerable<PdfRectangle> shapes)
+        {
+            if (!shapes.Any()) //(shapes.isEmpty())
+            {
+                throw new ArgumentException("shapes can't be empty");
+            }
+
+            var minX = shapes.Min(r => r.Left);
+            var minY = shapes.Min(r => r.Bottom);
+            var maxX = shapes.Max(r => r.Right);
+            var maxY = shapes.Max(r => r.Top);
+            return new PdfRectangle(minX, minY, maxX, maxY);
+
+            /*
+            Iterator <? extends Shape > iter = shapes.iterator();
+            Rectangle rv = new Rectangle();
+            rv.setRect(iter.next().getBounds2D());
+
+            while (iter.hasNext())
+            {
+                Rectangle2D.union(iter.next().getBounds2D(), rv, rv);
+            }
+
+            return rv;
+            */
+
+        }
+
         public static TableRectangle bounds(IEnumerable<TableRectangle> shapes)
         {
             if (!shapes.Any()) //(shapes.isEmpty())
@@ -72,7 +102,7 @@ namespace Tabula
         // range iterator
         public static List<int> range(int begin, int end)
         {
-            return Enumerable.Range(begin, end).ToList();
+            return Enumerable.Range(begin, end - begin).ToList();
             /* return new IList<int>()
              {
                  @Override

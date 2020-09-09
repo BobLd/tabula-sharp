@@ -6,6 +6,7 @@ using System.Text;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
+using UglyToad.PdfPig.Geometry;
 
 namespace Tabula
 {
@@ -23,7 +24,6 @@ namespace Tabula
         private RectangleSpatialIndex<TextElement> spatial_index;
         private Page pdPage;
         private PdfDocument pdDoc;
-
         public PageArea(double top, double left, double width, double height, int rotation, int page_number, Page pdPage, PdfDocument doc)
             : base(top, left, width, height)
         {
@@ -56,7 +56,22 @@ namespace Tabula
             this.spatial_index = index;
         }
 
-        public PageArea getArea(TableRectangle area)
+        public PageArea(PdfRectangle area, int rotation, int page_number, Page pdPage, PdfDocument doc,
+             List<TextElement> characters, List<Ruling> rulings,
+             double minCharWidth, double minCharHeight, RectangleSpatialIndex<TextElement> index) : base(area)
+        {
+            this.rotation = rotation;
+            this.pageNumber = page_number;
+            this.pdPage = pdPage;
+            this.pdDoc = doc;
+            this.texts = characters;
+            this.rulings = rulings;
+            this.minCharHeight = minCharHeight;
+            this.minCharWidth = minCharWidth;
+            this.spatial_index = index;
+        }
+
+        public PageArea getArea(PdfRectangle area)
         {
             List<TextElement> t = getText(area);
             double min_char_width = 7;
@@ -68,6 +83,7 @@ namespace Tabula
                 min_char_height = t.Min(x => x.height);
             }
 
+            /*
             PageArea rv = new PageArea(
                 area.getTop(),
                 area.getLeft(),
@@ -82,6 +98,12 @@ namespace Tabula
                 min_char_width,
                 min_char_height,
                 spatial_index);
+            */
+            PageArea rv = new PageArea(area, rotation, pageNumber,
+                                       pdPage, pdDoc, t, Ruling.cropRulingsToArea(getRulings(), area),
+                                       min_char_width,
+                                       min_char_height,
+                                       spatial_index);
 
             rv.addRuling(new Ruling(
                 new PdfPoint(rv.getLeft(), rv.getTop()),
@@ -102,9 +124,11 @@ namespace Tabula
             return rv;
         }
 
-        public PageArea getArea(float top, float left, float bottom, float right)
+        public PageArea getArea(double top, double left, double bottom, double right)
         {
-            TableRectangle area = new TableRectangle(top, left, right - left, bottom - top);
+            //TableRectangle area = new TableRectangle(top, left, right - left, bottom - top);
+            PdfRectangle area = new PdfRectangle(left, bottom, right, top);
+            var normzed = area.Normalise();
             return this.getArea(area);
         }
 
@@ -113,16 +137,18 @@ namespace Tabula
             return texts;
         }
 
-        public List<TextElement> getText(TableRectangle area)
+        public List<TextElement> getText(PdfRectangle area)
         {
             return this.spatial_index.contains(area);
         }
 
+        /*
         [Obsolete("use {@linkplain #getText(Rectangle)} instead")]
         public List<TextElement> getText(float top, float left, float bottom, float right)
         {
             return this.getText(new TableRectangle(top, left, right - left, bottom - top));
         }
+        */
 
         public int getRotation()
         {

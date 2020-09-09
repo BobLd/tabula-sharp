@@ -117,7 +117,7 @@ namespace Tabula.Extractors
                     if (c.intersects(area))
                     {
 
-                        c.setTextElements(TextElement.mergeWords(page.getText(c)));
+                        c.setTextElements(TextElement.mergeWords(page.getText(c.BoundingBox)));
                         overlappingCells.Add(c);
                     }
                 }
@@ -160,7 +160,7 @@ namespace Tabula.Extractors
 
             // get minimal region of page that contains every character (in effect,
             // removes white "margins")
-            PageArea minimalRegion = page.getArea(Utils.bounds(page.getText()));
+            PageArea minimalRegion = page.getArea(Utils.bounds(page.getText().Select(t => t.BoundingBox).ToList()));
 
             List<Table> tables = new SpreadsheetExtractionAlgorithm().extract(minimalRegion);
             if (tables.Count == 0)
