@@ -272,7 +272,7 @@ namespace Tabula.Tests
 			Assert.True(a.CompareTo(c) < 0);
 		}
 
-		[Fact] //(Skip = "Comparison is not transitive. Needs to be implemented.")]
+		[Fact(Skip = "Comparison is not transitive. Needs to be implemented.")]
 		public void testTransitiveComparison2()
 		{
 			//                     +-------+

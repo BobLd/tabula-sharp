@@ -84,6 +84,5 @@ namespace Tabula.Detectors
             // person sees when they look at the PDF
             throw new NotImplementedException();
         }
-
     }
 }
