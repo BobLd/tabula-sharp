@@ -147,6 +147,7 @@ namespace Tabula
         /// <returns></returns>
         public static List<TextChunk> mergeWords(List<TextElement> textElements, List<Ruling> verticalRulings)
         {
+            // hack
             if (textElements.All(te => te.letter != null))
             {
                 NearestNeighbourWordExtractor nnwe = NearestNeighbourWordExtractor.Instance;
@@ -280,8 +281,8 @@ namespace Tabula
                         !prevChar.getText().EndsWith(" "))
                 {
 
-                    sp = new TextElement(prevChar.getTop(),               
-                        prevChar.getLeft(),                   
+                    sp = new TextElement(prevChar.getTop(),
+                        prevChar.getLeft(),
                         expectedStartOfNextWordX - prevChar.getLeft(),
                             (float)prevChar.getHeight(),
                             prevChar.getFont(),

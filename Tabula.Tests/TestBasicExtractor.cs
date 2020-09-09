@@ -206,7 +206,7 @@ namespace Tabula.Tests
             var lastRow = rows[rows.Count - 1];
             var lastRowLastCell = lastRow[lastRow.Count - 1].getText();
 
-            //Assert.True(firstRowFirstCell.Equals("Violent crime  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ."));
+            Assert.True(firstRowFirstCell.Equals("Violent crime  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ."));
             Assert.True(lastRowLastCell.Equals("(X)"));
         }
 

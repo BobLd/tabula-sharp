@@ -82,7 +82,7 @@ namespace Tabula
                 throw new ArgumentException("shapes can't be empty");
             }
 
-            throw new NotImplementedException();
+            return new TableRectangle(bounds(shapes.Select(s => s.BoundingBox)));
 
             /*
             Iterator <? extends Shape > iter = shapes.iterator();

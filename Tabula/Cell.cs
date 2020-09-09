@@ -61,10 +61,12 @@ namespace Tabula
                 {
                     sb.Append('\r');
                 }
+                /*
                 else
                 {
                     sb.Append(' ');
                 }
+                */
                 sb.Append(tc.getText());
                 curTop = tc.word.BoundingBox.Bottom; //.getTop();
             }

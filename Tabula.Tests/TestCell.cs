@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UglyToad.PdfPig.PdfFonts;
+﻿using System.Collections.Generic;
+using UglyToad.PdfPig.Core;
 using Xunit;
 
 namespace Tabula.Tests
@@ -11,7 +9,7 @@ namespace Tabula.Tests
 		[Fact]
 		public void testIsSpanning()
 		{
-			Cell cell = new Cell(0, 0, 0, 0);
+			Cell cell = Cell.EMPTY; //new Cell(0, 0, 0, 0);
 			Assert.False(cell.isSpanning());
 			cell.setSpanning(true);
 			Assert.True(cell.isSpanning());
@@ -20,7 +18,7 @@ namespace Tabula.Tests
 		[Fact]
 		public void testIsPlaceholder()
 		{
-			Cell cell = new Cell(0, 0, 0, 0);
+			Cell cell = new Cell(new PdfRectangle()); // Cell(0, 0, 0, 0);
 			Assert.False(cell.isPlaceholder());
 			cell.setPlaceholder(true);
 			Assert.True(cell.isPlaceholder());
@@ -29,10 +27,10 @@ namespace Tabula.Tests
 		[Fact]
 		public void testGetTextElements()
 		{
-			Cell cell = new Cell(0, 0, 0, 0);
+			Cell cell = Cell.EMPTY; // new Cell(0, 0, 0, 0);
 			Assert.True(cell.getTextElements().Count == 0);
 
-			TextElement tElement = new TextElement(0, 0, 0, 0, UtilsForTesting.HELVETICA_BOLD, 10, "test", 5);//PDType1Font.HELVETICA_BOLD
+			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "test", 5, 0); //PDType1Font.HELVETICA_BOLD
 			TextChunk tChunk = new TextChunk(tElement);
 			List<TextChunk> tList = new List<TextChunk>();
 			tList.Add(tChunk);

@@ -74,7 +74,7 @@ namespace Tabula.Extractors
             }
 
             Table table = new Table(this);
-            table.setRect(page.BoundingBox); //.getLeft(), page.getTop(), page.getWidth(), page.getHeight());
+            table.setRect(page.BoundingBox);
 
             for (int i = 0; i < lines.Count; i++)
             {
