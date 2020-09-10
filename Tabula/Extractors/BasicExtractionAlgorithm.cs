@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using UglyToad.PdfPig.Core;
 
 namespace Tabula.Extractors
 {
@@ -63,6 +60,8 @@ namespace Tabula.Extractors
             if (this.verticalRulings != null)
             {
                 this.verticalRulings.Sort(new VerticalRulingComparer());
+                // need to filter/clip only for area
+
                 columns = new List<double>(this.verticalRulings.Count);
                 foreach (Ruling vr in this.verticalRulings)
                 {
@@ -73,6 +72,7 @@ namespace Tabula.Extractors
             {
                 columns = columnPositions(lines);
             }
+            columns = columns.Distinct().ToList(); // added by bobld: remove duplicates
 
             Table table = new Table(this);
             table.setRect(page.BoundingBox);

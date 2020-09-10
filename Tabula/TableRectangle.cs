@@ -11,22 +11,34 @@ namespace Tabula
     public class TableRectangle : IComparable<TableRectangle>
     {
         /// <summary>
+        /// Sort top to bottom (as in reading order).
         /// Ill-defined comparator, from when Rectangle was Comparable.
         /// @see <a href="https://github.com/tabulapdf/tabula-java/issues/116">PR 116</a>
         /// </summary>
         [Obsolete("with no replacement")]
         public class ILL_DEFINED_ORDER : IComparer<TableRectangle>
         {
+            /// <summary>
+            /// Sort top to bottom (as in reading order).
+            /// </summary>
+            /// <param name="o1"></param>
+            /// <param name="o2"></param>
+            /// <returns></returns>
             public int Compare([AllowNull] TableRectangle o1, [AllowNull] TableRectangle o2)
             {
                 if (o1.Equals(o2)) return 0;
                 if (o1.verticalOverlap(o2) > VERTICAL_COMPARISON_THRESHOLD)
                 {
-                    return (o1.isLtrDominant() == -1 && o2.isLtrDominant() == -1) ? -o1.getX().CompareTo(o2.getX()) : o1.getX().CompareTo(o2.getX());
+                    if (o1.isLtrDominant() == -1 && o2.isLtrDominant() == -1)
+                    {
+                        return -o1.getX().CompareTo(o2.getX());
+                    }
+                    return o1.getX().CompareTo(o2.getX());
+                    //return (o1.isLtrDominant() == -1 && o2.isLtrDominant() == -1) ? -o1.getX().CompareTo(o2.getX()) : o1.getX().CompareTo(o2.getX());
                 }
                 else
                 {
-                    return o1.getBottom().CompareTo(o2.getBottom());
+                    return -o1.getBottom().CompareTo(o2.getBottom()); //bobld multiply by -1
                 }
             }
         }
@@ -42,17 +54,7 @@ namespace Tabula
 
         public TableRectangle(PdfRectangle rectangle) : this()
         {
-            if (rectangle.Height == 0)
-            {
-                // hack: force height to be at least 1
-                Debug.Print("ERROR: PdfRectangle with Height=0. Forcing to Height=1.");
-                BoundingBox = new PdfRectangle(rectangle.BottomLeft.X, rectangle.BottomLeft.Y,
-                rectangle.TopRight.X, rectangle.TopRight.Y + 1);
-            }
-            else
-            {
-                BoundingBox = rectangle;
-            }
+            BoundingBox = rectangle;
         }
 
         public TableRectangle(double top, double left, double width, double height) : this()

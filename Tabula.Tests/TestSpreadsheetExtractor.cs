@@ -126,9 +126,9 @@ namespace Tabula.Tests
         public void testLinesToCells()
         {
             List<Cell> cells = SpreadsheetExtractionAlgorithm.findCells(HORIZONTAL_RULING_LINES.ToList(), VERTICAL_RULING_LINES.ToList());
-            cells.Sort(new TableRectangle.ILL_DEFINED_ORDER());
+            Utils.sort(cells, new TableRectangle.ILL_DEFINED_ORDER()); //cells.Sort(new TableRectangle.ILL_DEFINED_ORDER());
             List<Cell> expected = EXPECTED_CELLS.ToList();
-            expected.Sort(new TableRectangle.ILL_DEFINED_ORDER());
+            Utils.sort(expected, new TableRectangle.ILL_DEFINED_ORDER()); //expected.Sort(new TableRectangle.ILL_DEFINED_ORDER());
             Assert.Equal(expected, cells);
         }
 
