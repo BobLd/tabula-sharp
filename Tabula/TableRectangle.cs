@@ -118,7 +118,7 @@ namespace Tabula
         public double overlapRatio(TableRectangle other)
         {
             double intersectionWidth = Math.Max(0, Math.Min(this.getRight(), other.getRight()) - Math.Max(this.getLeft(), other.getLeft()));
-            double intersectionHeight = Math.Max(0, Math.Min(this.getBottom(), other.getBottom()) - Math.Max(this.getTop(), other.getTop()));
+            double intersectionHeight = Math.Max(0, Math.Min(this.getTop(), other.getTop()) - Math.Max(this.getBottom(), other.getBottom()));
             double intersectionArea = Math.Max(0, intersectionWidth * intersectionHeight);
             double unionArea = this.getArea() + other.getArea() - intersectionArea;
 
