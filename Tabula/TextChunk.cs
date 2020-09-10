@@ -19,13 +19,6 @@ namespace Tabula
         private TextChunk() : base(new PdfRectangle())
         { }
 
-        /*
-        public TextChunk(Word word) : this(word.Letters.Select(l => new TextElement(l)).ToList())
-        {
-            this.word = word;
-        }
-        */
-
         public TextChunk(double top, double left, double width, double height) : base(top, left, width, height)
         {
             throw new ArgumentOutOfRangeException();
@@ -73,7 +66,7 @@ namespace Tabula
 
             { "RLE", DirectionalityOptions.RTL },   // DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING, Strong BCT
             { "RLO", DirectionalityOptions.RTL },   // DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE, Strong BCT
-            { "S", DirectionalityOptions.RTL },     // DIRECTIONALITY_SEGMENT_SEPARATOR, Weak BCT, Neutral BCT
+            { "S", DirectionalityOptions.RTL },     // DIRECTIONALITY_SEGMENT_SEPARATOR, Neutral BCT // Bobld: should be none??
 
             { "WS", DirectionalityOptions.NONE },   // DIRECTIONALITY_WHITESPACE, Neutral BCT
 

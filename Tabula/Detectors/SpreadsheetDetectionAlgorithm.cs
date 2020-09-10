@@ -25,8 +25,7 @@ namespace Tabula.Detectors
 
             // we want tables to be returned from top to bottom on the page
             //Collections.sort(tables, TableRectangle.ILL_DEFINED_ORDER);
-            tables.Sort(new TableRectangle.ILL_DEFINED_ORDER());
-
+            Utils.sort(tables, new TableRectangle.ILL_DEFINED_ORDER()); // tables.Sort(new TableRectangle.ILL_DEFINED_ORDER());
             return tables;
         }
     }

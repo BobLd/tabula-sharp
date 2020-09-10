@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Tabula.Tests
 {
-	public class TestRectangle
+    public class TestRectangle
 	{
 		[Fact]
 		public void testCompareEqualsRectangles()
@@ -115,7 +115,7 @@ namespace Tabula.Tests
                 fourth
             };
 
-            toSortList.Sort(new TableRectangle.ILL_DEFINED_ORDER()); //Collections.sort(toSortList, TableRectangle.ILL_DEFINED_ORDER);
+			Utils.sort(toSortList, new TableRectangle.ILL_DEFINED_ORDER()); // toSortList.Sort(new TableRectangle.ILL_DEFINED_ORDER()); //Collections.sort(toSortList, TableRectangle.ILL_DEFINED_ORDER);
 			Assert.Equal(expectedList, toSortList);
 		}
 
@@ -237,7 +237,7 @@ namespace Tabula.Tests
 		{
 			List<TableRectangle> rectangles = new List<TableRectangle>
 			{
-				new TableRectangle(new PdfRectangle(0, 0, 10, 10)), //0f, 0f, 10f, 10f)
+				new TableRectangle(new PdfRectangle(0, 0, 10, 10)),  //0f, 0f, 10f, 10f)
                 new TableRectangle(new PdfRectangle(30, 10, 40, 20)) //20f, 30f, 10f, 10f)
 			};
 
@@ -246,29 +246,33 @@ namespace Tabula.Tests
 			Assert.Equal(new TableRectangle(new PdfRectangle(0, 0, 40, 20)), boundingBoxOf); // 0f, 0f, 40f, 30f)
 		}
 
-		[Fact(Skip = "Comparison is not transitive. Needs to be implemented.")]
+		[Fact]//(Skip = "Comparison is not transitive. Transitivity needs to be implemented.")]
 		public void testTransitiveComparison1()
 		{
 			// +-------+
 			// |       |
-			// |   A   | +-------+
+			// |   a   | +-------+
 			// |       | |       |
-			// +-------+ |   B   | +-------+
+			// +-------+ |   b   | +-------+
 			//           |       | |       |
-			//           +-------+ |   C   |
+			//           +-------+ |   c   |
 			//                     |       |
 			//                     +-------+
-			TableRectangle c = new TableRectangle(new PdfRectangle(0, 0, 2, 2)); // 0, 0, 2, 2); // a
-			TableRectangle b = new TableRectangle(new PdfRectangle(1, 1, 3, 3)); // 1, 1, 2, 2);
-			TableRectangle a = new TableRectangle(new PdfRectangle(2, 2, 4, 4)); // 2, 2, 2, 2); // c
+			TableRectangle a = new TableRectangle(new PdfRectangle(0, 2, 2, 4));
+			TableRectangle b = new TableRectangle(new PdfRectangle(1, 1, 3, 3));
+			TableRectangle c = new TableRectangle(new PdfRectangle(2, 0, 4, 2));
 			Assert.True(a.CompareTo(b) < 0);
 			Assert.True(b.CompareTo(c) < 0);
 			Assert.True(a.CompareTo(c) < 0);
 		}
 
-		[Fact(Skip = "Comparison is not transitive. Needs to be implemented.")]
+		[Fact(Skip = "Comparison is not transitive. Transitivity needs to be implemented.")]
 		public void testTransitiveComparison2()
 		{
+			// need to rewrite
+
+
+
 			//                     +-------+
 			//                     |       |
 			//           +-------+ |   C   |

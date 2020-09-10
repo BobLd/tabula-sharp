@@ -21,25 +21,13 @@ namespace Tabula
         private double widthOfSpace, dir;
         private static double AVERAGE_CHAR_TOLERANCE = 0.3;
 
-        static double GetExpectedWhitespaceSize(Letter letter)
-        {
-            if (letter.Value == " ")
-            {
-                return letter.Width;
-            }
-            return WhitespaceSizeStatistics.GetExpectedWhitespaceSize(letter);
-        }
-
-        static PdfRectangle GetBbox(Letter letter)
-        {
-            return GeometryExtensions.MinimumAreaRectangle(new[] { letter.StartBaseLine, letter.EndBaseLine, letter.GlyphRectangle.TopLeft, letter.GlyphRectangle.TopRight });
-        }
-
+        /*
         public TextElement(Letter letter)
             : this(GetBbox(letter), letter.Font, letter.FontSize, letter.Value, GetExpectedWhitespaceSize(letter), 0) // hackish... WhitespaceSizeStatistics
         {
             this.letter = letter;
         }
+        */
 
         public TextElement(PdfRectangle pdfRectangle, FontDetails font, double fontSize, string c, double widthOfSpace, double dir)
             : base(pdfRectangle)
@@ -163,16 +151,6 @@ namespace Tabula
         /// <returns></returns>
         public static List<TextChunk> mergeWords(List<TextElement> textElements, List<Ruling> verticalRulings)
         {
-            // hack
-            /*
-            if (textElements.All(te => te.letter != null))
-            {
-                NearestNeighbourWordExtractor nnwe = NearestNeighbourWordExtractor.Instance;
-                var words = nnwe.GetWords(textElements.Select(te => te.letter).ToList());
-                return words.Select(w => new TextChunk(w)).ToList();
-            }
-            */
-
             List<TextChunk> textChunks = new List<TextChunk>();
 
             if (textElements.Count == 0)
@@ -207,15 +185,11 @@ namespace Tabula
 
             foreach (TextElement chr in copyOfTextElements)
             {
-                //################ to remove ################
-                if (chr.getText() == " ") continue;
-                //###########################################
-
                 currentChunk = textChunks[textChunks.Count - 1];
                 prevChar = currentChunk.textElements[currentChunk.textElements.Count - 1];
 
                 // if same char AND overlapped, skip
-                if ((chr.getText().Equals(prevChar.getText())) && (prevChar.overlapRatio(chr) > 0.5))
+                if (chr.getText().Equals(prevChar.getText()) && (prevChar.overlapRatio(chr) > 0.5))
                 {
                     continue;
                 }
@@ -269,11 +243,11 @@ namespace Tabula
                 // .3 worked well.
                 if (previousAveCharWidth < 0)
                 {
-                    averageCharWidth = chr.getWidth() / chr.getText().Length;
+                    averageCharWidth = chr.width / chr.getText().Length;
                 }
                 else
                 {
-                    averageCharWidth = (previousAveCharWidth + (chr.getWidth() / chr.getText().Length)) / 2.0f;
+                    averageCharWidth = (previousAveCharWidth + (chr.width / chr.getText().Length)) / 2.0f;
                 }
                 deltaCharWidth = averageCharWidth * AVERAGE_CHAR_TOLERANCE;
 
@@ -326,6 +300,14 @@ namespace Tabula
 
                 dist = chr.getLeft() - (sp != null ? sp.getRight() : prevChar.getRight());
 
+                // added by BobLd
+                // handle cases where order of character is not good, implement quicksort???
+                if (dist < -wordSpacing)
+                {
+                    dist = double.MaxValue; // force create new word
+                }
+                // end added
+
                 if (!acrossVerticalRuling && sameLine && (dist < 0 ? currentChunk.verticallyOverlaps(chr) : dist < wordSpacing))
                 {
                     currentChunk.add(chr);
@@ -337,7 +319,7 @@ namespace Tabula
                 }
 
                 lastWordSpacing = wordSpacing;
-                previousAveCharWidth = sp != null ? (averageCharWidth + sp.getWidth()) / 2.0f : averageCharWidth;
+                previousAveCharWidth = sp != null ? (averageCharWidth + sp.width) / 2.0f : averageCharWidth;
             }
 
             List<TextChunk> textChunksSeparatedByDirectionality = new List<TextChunk>();

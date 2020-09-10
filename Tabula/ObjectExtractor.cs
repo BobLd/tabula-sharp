@@ -74,6 +74,7 @@ namespace Tabula
             pdfTextStripper.process();
             Utils.sort(pdfTextStripper.textElements, new TableRectangle.ILL_DEFINED_ORDER());
 
+            /*
             double w, h;
             int pageRotation = p.Rotation.Value; //.getRotation();
             if (Math.Abs(pageRotation) == 90 || Math.Abs(pageRotation) == 270)
@@ -86,9 +87,10 @@ namespace Tabula
                 w = p.CropBox.Bounds.Width;  // .getCropBox().getWidth();
                 h = p.CropBox.Bounds.Height; //.getCropBox().getHeight();
             }
+            */
 
             return new PageArea(p.CropBox.Bounds, //.TopLeft.Y, p.CropBox.Bounds.TopLeft.X, w, h,
-                pageRotation,
+                p.Rotation.Value,
                 pageNumber,
                 p,
                 this.pdfDocument,
@@ -114,7 +116,7 @@ namespace Tabula
             return extract(Utils.range(pageNumber, pageNumber + 1)).next();
         }
 
-        public void close() //throws IOException
+        public void close()
         {
             this.pdfDocument.Dispose(); // .close();
         }

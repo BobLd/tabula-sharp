@@ -179,18 +179,18 @@ namespace Tabula
          * Wrap Collections.sort so we can fallback to a non-stable quicksort if we're
          * running on JDK7+
          */
-        public static void sort<T>(List<T> list) where T : IComparable<T> // <T extends Comparable<? super T>> 
+        public static void sort<T>(List<T> list) where T : TableRectangle //IComparable<T> // <T extends Comparable<? super T>> 
         {
             list.Sort();
-            /*
-            if (useQuickSort) QuickSort.sort(list);
-            else list.Sort();
-            */
+
+            //if (useQuickSort) QuickSort.sort(list);
+            //else list.Sort();
         }
 
-        public static void sort<T>(List<T> list, IComparer<T> comparator)
+        public static void sort<T>(List<T> list, IComparer<T> comparator) where T : TableRectangle
         {
             list.Sort(comparator);
+
             //if (useQuickSort) QuickSort.sort(list, comparator);
             //else Collections.sort(list, comparator);
         }

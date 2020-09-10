@@ -124,23 +124,51 @@ namespace Tabula.Tests
         [Fact]
         public void testRemoveSequentialSpaces()
         {
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/m27.pdf", new PdfRectangle(28.28, 50, 732.6, 532)); // 79.2f, 28.28f, 103.04f, 732.6f);
+            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/m27.pdf", new PdfRectangle(28.28, 532 - (103.04 - 79.2), 732.6, 532)); // 79.2f, 28.28f, 103.04f, 732.6f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.extract(page)[0];
             var firstRow = table.getRows()[0];
 
-            Assert.True(firstRow[2].getText().Equals("ALLEGIANT AIR"));     // 1
-            Assert.True(firstRow[3].getText().Equals("ALLEGIANT AIR LLC")); // 2
+            Assert.Equal("ALLEGIANT AIR", firstRow[1].getText());
+            Assert.Equal("ALLEGIANT AIR LLC", firstRow[2].getText());
         }
 
         [Fact]
         public void testColumnRecognition()
         {
             PageArea page = UtilsForTesting.getAreaFromFirstPage(ARGENTINA_DIPUTADOS_VOTING_RECORD_PDF, new PdfRectangle(12.75, 55, 557, 567)); // 269.875f, 12.75f, 790.5f, 561f);
+
+            //PageArea page = UtilsForTesting.getAreaFromFirstPage(ARGENTINA_DIPUTADOS_VOTING_RECORD_PDF, new PdfRectangle(395, 388, 420, 400));
+
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.extract(page)[0];
-            var result = UtilsForTesting.tableToArrayOfRows(table);
-            Assert.Equal(ARGENTINA_DIPUTADOS_VOTING_RECORD_EXPECTED, result);
+            var results = UtilsForTesting.tableToArrayOfRows(table);
+
+            Assert.Equal(ARGENTINA_DIPUTADOS_VOTING_RECORD_EXPECTED.Length, results.Length);
+
+            for (int i = 0; i < ARGENTINA_DIPUTADOS_VOTING_RECORD_EXPECTED.Length; i++)
+            {
+                var expected = ARGENTINA_DIPUTADOS_VOTING_RECORD_EXPECTED[i];
+                var result = results[i];
+                Assert.Equal(expected.Length, result.Length);
+                for (int j = 0; j < expected.Length; j++)
+                {
+                    // problems with too much spaces
+                    //if (i == 10 && j == 2) continue;
+                    //if (i == 16 && j == 0) continue;
+                    // end
+
+                    var e = expected[j];
+                    var r = result[j];
+                    if (e != r)
+                    {
+                        Console.WriteLine();
+                    }
+                    Assert.Equal(e, r);
+                }
+            }
+
+            //Assert.Equal(ARGENTINA_DIPUTADOS_VOTING_RECORD_EXPECTED, results);
         }
 
         [Fact]
@@ -204,7 +232,7 @@ namespace Tabula.Tests
             var lastRow = rows[rows.Count - 1];
             var lastRowLastCell = lastRow[lastRow.Count - 1].getText();
 
-            Assert.Equal("Violent crime.  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .", firstRowFirstCell); // original="Violent crime  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ."
+            Assert.Equal("Violent crime  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .", firstRowFirstCell); // original="Violent crime  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ."
             Assert.Equal("(X)", lastRowLastCell);
         }
 
