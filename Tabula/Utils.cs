@@ -281,12 +281,11 @@ namespace Tabula
         {
             public int Compare([AllowNull] PdfPoint arg0, [AllowNull] PdfPoint arg1)
             {
-                // return java.lang.Double.compare(arg0.getY(), arg1.getY());
                 return arg0.Y.CompareTo(arg1.Y);
             }
         }
 
-        public static void snapPoints(this List<Ruling> rulings, double xThreshold, double yThreshold)
+        public static void snapPoints_old(this List<Ruling> rulings, double xThreshold, double yThreshold)
         {
             // collect points and keep a Line -> p1,p2 map
             Dictionary<Ruling, PdfPoint[]> linesToPoints = new Dictionary<Ruling, PdfPoint[]>();
@@ -306,7 +305,7 @@ namespace Tabula
             List<List<PdfPoint>> groupedPoints = new List<List<PdfPoint>>();
             groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { points[0] }));
 
-            foreach (PdfPoint p in points.Skip(1)) // points.subList(1, points.Count - 1)) // also remove last??
+            foreach (PdfPoint p in points.subList(1, points.Count - 1))
             {
                 List<PdfPoint> last = groupedPoints[groupedPoints.Count - 1];
                 if (Math.Abs(p.X - last[0].X) < xThreshold)
@@ -328,12 +327,9 @@ namespace Tabula
                 }
 
                 avgLoc /= group.Count;
-                //foreach (PdfPoint p in group)
-                //{
-                //    p.setLocation(avgLoc, p.Y);
-                //}
                 for (int p = 0; p < group.Count; p++)
                 {
+                    //p.setLocation(avgLoc, p.Y);
                     var current = group[p];
                     group[p] = new PdfPoint(avgLoc, current.Y);
                 }
@@ -368,12 +364,9 @@ namespace Tabula
                 }
 
                 avgLoc /= group.Count;
-                //foreach (PdfPoint p in group)
-                //{
-                //    p.setLocation(p.X, avgLoc);
-                //}
                 for (int p = 0; p < group.Count; p++)
                 {
+                    //p.setLocation(p.X, avgLoc);
                     var current = group[p];
                     group[p] = new PdfPoint(current.X, avgLoc);
                 }
@@ -385,6 +378,99 @@ namespace Tabula
             {
                 PdfPoint[] p = ltp.Value;
                 ltp.Key.setLine(p[0], p[1]);
+                rulings[rulings.IndexOf(ltp.Key)] = new Ruling(p[0], p[1]);
+            }
+        }
+
+        public static void snapPoints(this List<Ruling> rulings, double xThreshold, double yThreshold)
+        {
+            // collect points and keep a Line -> p1,p2 map
+            Dictionary<double, double> newXCoordinates = new Dictionary<double, double>();
+            Dictionary<double, double> newYCoordinates = new Dictionary<double, double>();
+
+            List<PdfPoint> points = new List<PdfPoint>();
+            foreach (Ruling r in rulings)
+            {
+                points.Add(r.getP1());
+                points.Add(r.getP2());
+            }
+
+            // snap by X
+            points.Sort(new PointXComparer());
+
+            List<List<PdfPoint>> groupedPoints = new List<List<PdfPoint>>();
+            groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { points[0] }));
+
+            foreach (PdfPoint p in points.subList(1, points.Count)) // - 1)) error in the java version: the second bound is exclusive. fails 'testColumnRecognition' test
+            {
+                List<PdfPoint> last = groupedPoints[groupedPoints.Count - 1];
+                if (Math.Abs(p.X - last[0].X) < xThreshold)
+                {
+                    groupedPoints[groupedPoints.Count - 1].Add(p);
+                }
+                else
+                {
+                    groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { p }));
+                }
+            }
+
+            foreach (List<PdfPoint> group in groupedPoints)
+            {
+                double avgLoc = 0;
+                foreach (PdfPoint p in group)
+                {
+                    avgLoc += p.X;
+                }
+
+                avgLoc /= group.Count;
+                for (int p = 0; p < group.Count; p++)
+                {
+                    newXCoordinates[group[p].X] = Utils.round(avgLoc, 2); // round?
+                }
+            }
+            // ---
+
+            // snap by Y
+            points.Sort(new PointYComparer());
+
+            groupedPoints = new List<List<PdfPoint>>();
+            groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { points[0] }));
+
+            foreach (PdfPoint p in points.subList(1, points.Count - 1))
+            {
+                List<PdfPoint> last = groupedPoints[groupedPoints.Count - 1];
+                if (Math.Abs(p.Y - last[0].Y) < yThreshold)
+                {
+                    groupedPoints[groupedPoints.Count - 1].Add(p);
+                }
+                else
+                {
+                    groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { p }));
+                }
+            }
+
+            foreach (List<PdfPoint> group in groupedPoints)
+            {
+                double avgLoc = 0;
+                foreach (PdfPoint p in group)
+                {
+                    avgLoc += p.Y;
+                }
+
+                avgLoc /= group.Count;
+                for (int p = 0; p < group.Count; p++)
+                {
+                    newYCoordinates[group[p].Y] = Utils.round(avgLoc, 2); // round?
+                }
+            }
+            // ---
+
+            // finally, modify lines
+            for (int i = 0; i < rulings.Count; i++)
+            {
+                var current = rulings[i];
+                rulings[i] = new Ruling(new PdfPoint(newXCoordinates[current.line.Point1.X], newYCoordinates[current.line.Point1.Y]),
+                                        new PdfPoint(newXCoordinates[current.line.Point2.X], newYCoordinates[current.line.Point2.Y]));
             }
         }
 

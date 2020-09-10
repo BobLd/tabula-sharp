@@ -47,11 +47,13 @@ namespace Tabula
         {
             double angle = this.getAngle();
             if (Utils.within(angle, 0, 1) || Utils.within(angle, 180, 1))
-            { // almost horizontal
+            {
+                // almost horizontal
                 this.setLine(this.x1, this.y1, this.x2, this.y1);
             }
             else if (Utils.within(angle, 90, 1) || Utils.within(angle, 270, 1))
-            { // almost vertical
+            {
+                // almost vertical
                 this.setLine(this.x1, this.y1, this.x1, this.y2);
             }
             //        else {
@@ -87,7 +89,7 @@ namespace Tabula
                 throw new InvalidOperationException(); // UnsupportedOperationException();
             }
 
-            return this.vertical() ? this.getLeft() : this.getTop();
+            return this.vertical() ? this.getLeft() : this.getBottom(); //this.getTop();
         }
 
         public void setPosition(float v)
@@ -480,7 +482,13 @@ namespace Tabula
 
         public bool intersectsLine(Ruling other)
         {
-            return this.line.IntersectsWith(other.line);
+            // include case point are the same
+            if (this.line.Point1.Equals(other.line.Point1) ||
+                this.line.Point1.Equals(other.line.Point2) ||
+                this.line.Point2.Equals(other.line.Point1) ||
+                this.line.Point2.Equals(other.line.Point2)) return true;
+
+                return this.line.IntersectsWith(other.line);
         }
         #endregion
     }

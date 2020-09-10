@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Text.Unicode;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
@@ -40,22 +37,19 @@ namespace Tabula
 
             foreach (var letter in page.Letters)
             {
-                String c = letter.Value; //  textPosition.getUnicode();
+                String c = letter.Value; //textPosition.getUnicode();
 
                 // if c not printable, return
                 if (!isPrintable(c)) continue;
 
-                // Float h = textPosition.getHeightDir();
-
                 if (c.Equals(NBSP))
                 {
-                    // replace non-breaking space for space
-                    c = " ";
+                    c = " "; // replace non-breaking space for space
                 }
 
                 double wos = GetExpectedWhitespaceSize(letter); //textPosition.getWidthOfSpace();
 
-                TextElement te = new TextElement(GetBbox(letter), letter.Font, letter.PointSize, c, wos, letter.GlyphRectangle.Rotation); //Rotation->The direction of the text(0, 90, 180, or 270)
+                TextElement te = new TextElement(GetBbox(letter), letter.Font, letter.PointSize, c, wos, letter.GlyphRectangle.Rotation); // Rotation->The direction of the text(0, 90, 180, or 270)
                 te.letter = letter;
 
                 this.minCharWidth = (float)Math.Min(this.minCharWidth, te.width);
@@ -65,8 +59,7 @@ namespace Tabula
                 totalHeight += te.height;
                 double avgHeight = totalHeight / countHeight;
 
-
-                if (avgHeight > 0 && te.getHeight() >= (avgHeight * AVG_HEIGHT_MULT_THRESHOLD) && (te.getText() == null || te.getText().Trim().Equals("")))
+                if (avgHeight > 0 && te.height >= (avgHeight * AVG_HEIGHT_MULT_THRESHOLD) && (te.getText()?.Trim().Equals("") != false))
                 {
                     continue;
                 }
@@ -74,21 +67,15 @@ namespace Tabula
                 textElements.Add(te);
                 spatialIndex.add(te);
             }
-
-            //minCharWidth = page.Letters.Min(l => l.GlyphRectangle.Width);
-            //minCharHeight = page.Letters.Min(l => l.GlyphRectangle.Height);
         }
 
         private bool isPrintable(string s)
         {
             char c;
-            //UnicodeCategory block; //Character.UnicodeBlock block;
             bool printable = false;
             for (int i = 0; i < s.Length; i++)
             {
-                c = s[i];//.charAt(i);
-                //block = char.GetUnicodeCategory(c); // Character.UnicodeBlock.of(c);
-
+                c = s[i];
                 bool isSpecial = c >= UnicodeRanges.Specials.FirstCodePoint && c <= (UnicodeRanges.Specials.FirstCodePoint + UnicodeRanges.Specials.Length); // really not sure!!
 
                 printable |= !char.IsControl(c) && !isSpecial; //!Character.isISOControl(c) && block != null && block != Character.UnicodeBlock.SPECIALS;

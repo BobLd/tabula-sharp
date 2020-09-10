@@ -422,6 +422,8 @@ namespace Tabula
 
         public static List<TableLine> groupByLines(List<TextChunk> textChunks)
         {
+            Utils.sort(textChunks); // added by bld: force re-sorting
+
             List<TableLine> lines = new List<TableLine>();
 
             if (textChunks.Count == 0)

@@ -17,21 +17,21 @@ namespace Tabula.Tests
 		}
 
 		[Fact]
-		public void testCompareAlignedVerticalRectangle()
+		public void testCompareAlignedHorizontalRectangle()
 		{
-			TableRectangle lower = new TableRectangle(new PdfRectangle(0, 0, 10, 10)); //0f, 10f, 10f, 10f));
-			TableRectangle upper = new TableRectangle(new PdfRectangle(0, 10, 10, 20));//0f, 20f, 10f, 10f));
+			TableRectangle lower = new TableRectangle(new PdfRectangle(10, 0, 20, 10)); //0f, 10f, 10f, 10f));
+			TableRectangle upper = new TableRectangle(new PdfRectangle(20, 0, 30, 10));//0f, 20f, 10f, 10f));
 
 			Assert.True(lower.CompareTo(upper) < 0);
 		}
 
 		[Fact]
-		public void testCompareAlignedHorizontalRectangle()
+		public void testCompareAlignedVerticalRectangle()
 		{
-			TableRectangle lower = new TableRectangle(new PdfRectangle(10, 0, 10, 10));//10f, 0f, 10f, 10f);
-			TableRectangle upper = new TableRectangle(new PdfRectangle(20, 0, 30, 10)); //20f, 0f, 10f, 10f);
+			TableRectangle lower = new TableRectangle(new PdfRectangle(0, 10, 10, 20)); //10f, 0f, 10f, 10f);
+			TableRectangle upper = new TableRectangle(new PdfRectangle(0, 20, 10, 30)); //20f, 0f, 10f, 10f);
 
-			Assert.True(lower.CompareTo(upper) < 0);
+			Assert.True(lower.CompareTo(upper) > 0);  // upper precedes lower (reading order) // was < 0
 		}
 
 		[Fact]
@@ -49,7 +49,7 @@ namespace Tabula.Tests
 			TableRectangle lower = new TableRectangle(new PdfRectangle(10, 0, 20, 10));//0f, 10f, 10f, 10f);
 			TableRectangle upper = new TableRectangle(new PdfRectangle(0, 9.8, 10, 19.8)); //9.8f, 0f, 10f, 10f);
 
-			Assert.True(lower.CompareTo(upper) < 0);
+			Assert.True(lower.CompareTo(upper) > 0); // upper precedes lower (reading order) // was < 0
 		}
 
 		[Fact]
@@ -63,7 +63,7 @@ namespace Tabula.Tests
 			Assert.Equal(4.33, upper.width, 2);
 			Assert.Equal(4.31, upper.height, 2);
 
-			Assert.True(lower.CompareTo(upper) > 0);
+			Assert.True(lower.CompareTo(upper) < 0); // > 0
 		}
 
 		[Fact]

@@ -11,12 +11,19 @@ namespace Tabula
     public class TableRectangle : IComparable<TableRectangle>
     {
         /// <summary>
+        /// Sort top to bottom (as in reading order).
         /// Ill-defined comparator, from when Rectangle was Comparable.
         /// @see <a href="https://github.com/tabulapdf/tabula-java/issues/116">PR 116</a>
         /// </summary>
         [Obsolete("with no replacement")]
         public class ILL_DEFINED_ORDER : IComparer<TableRectangle>
         {
+            /// <summary>
+            /// Sort top to bottom (as in reading order).
+            /// </summary>
+            /// <param name="o1"></param>
+            /// <param name="o2"></param>
+            /// <returns></returns>
             public int Compare([AllowNull] TableRectangle o1, [AllowNull] TableRectangle o2)
             {
                 if (o1.Equals(o2)) return 0;

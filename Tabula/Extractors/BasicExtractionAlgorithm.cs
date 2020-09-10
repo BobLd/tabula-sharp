@@ -60,6 +60,8 @@ namespace Tabula.Extractors
             if (this.verticalRulings != null)
             {
                 this.verticalRulings.Sort(new VerticalRulingComparer());
+                // need to filter/clip only for area
+
                 columns = new List<double>(this.verticalRulings.Count);
                 foreach (Ruling vr in this.verticalRulings)
                 {
@@ -70,6 +72,7 @@ namespace Tabula.Extractors
             {
                 columns = columnPositions(lines);
             }
+            columns = columns.Distinct().ToList(); // added by bobld: remove duplicates
 
             Table table = new Table(this);
             table.setRect(page.BoundingBox);

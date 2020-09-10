@@ -190,14 +190,28 @@ namespace Tabula.Tests
             Assert.True(sixthRow[1].getText().Equals("OFERNANDO JORGE"));
         }
 
-        //@Test
         [Fact]
         public void testExtractColumnsCorrectly()
         {
-            PageArea page = UtilsForTesting.getAreaFromPage(EU_002_PDF, 1, new PdfRectangle(70.0, double.NaN, 510.0, double.NaN)); // 115.0f, 70.0f, 233.0f, 510.0f);
+            PageArea page = UtilsForTesting.getAreaFromPage(EU_002_PDF, 1, new PdfRectangle(70.0, 725 - (233 - 115), 510.0, 725)); // 115.0f, 70.0f, 233.0f, 510.0f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.extract(page)[0];
-            Assert.Equal(EU_002_EXPECTED, UtilsForTesting.tableToArrayOfRows(table));
+
+            var actualArray = UtilsForTesting.tableToArrayOfRows(table);
+            Assert.Equal(EU_002_EXPECTED.Length, actualArray.Length);
+
+            for (int i = 0; i < EU_002_EXPECTED.Length; i++)
+            {
+                var expecteds = EU_002_EXPECTED[i];
+                var actuals = actualArray[i];
+                Assert.Equal(expecteds.Length, actuals.Length);
+                for (int j = 0; j < expecteds.Length; j++)
+                {
+                    var e = expecteds[j];
+                    var a = actuals[j];
+                    Assert.Equal(e, a);
+                }
+            }
         }
 
         [Fact]
@@ -205,9 +219,23 @@ namespace Tabula.Tests
         {
             PageArea page = UtilsForTesting.getPage(EU_017_PDF, 3);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.getVerticalRulings());
-            Table table = bea.extract(page.getArea(148, 105, 452, 543))[0]; //299.625f, 148.44f, 711.875f, 452.32f))[0];
+            Table table = bea.extract(page.getArea(new PdfRectangle(148.44, 543 - (711.875 - 299.625), 452.32, 543)))[0]; //299.625f, 148.44f, 711.875f, 452.32f))[0];
             var result = UtilsForTesting.tableToArrayOfRows(table);
-            Assert.Equal(EU_017_EXPECTED, result);
+            //Assert.Equal(EU_017_EXPECTED, result);
+
+            Assert.Equal(EU_017_EXPECTED.Length, result.Length);
+            for (int i = 0; i < EU_017_EXPECTED.Length; i++)
+            {
+                var expecteds = EU_017_EXPECTED[i];
+                var actuals = result[i];
+                Assert.Equal(expecteds.Length, actuals.Length);
+                for (int j = 0; j < expecteds.Length; j++)
+                {
+                    var e = expecteds[j];
+                    var a = actuals[j];
+                    Assert.Equal(e, a);
+                }
+            }
         }
 
         [Fact]
@@ -217,7 +245,20 @@ namespace Tabula.Tests
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.extract(page)[0];
             var result = UtilsForTesting.tableToArrayOfRows(table);
-            Assert.Equal(FRX_2012_DISCLOSURE_EXPECTED, result);
+
+            Assert.Equal(FRX_2012_DISCLOSURE_EXPECTED.Length, result.Length);
+            for (int i = 0; i < FRX_2012_DISCLOSURE_EXPECTED.Length; i++)
+            {
+                var expecteds = FRX_2012_DISCLOSURE_EXPECTED[i];
+                var actuals = result[i];
+                Assert.Equal(expecteds.Length, actuals.Length);
+                for (int j = 0; j < expecteds.Length; j++)
+                {
+                    var e = expecteds[j];
+                    var a = actuals[j];
+                    Assert.Equal(e, a);
+                }
+            }
         }
 
         [Fact]
@@ -232,11 +273,11 @@ namespace Tabula.Tests
             var lastRow = rows[rows.Count - 1];
             var lastRowLastCell = lastRow[lastRow.Count - 1].getText();
 
-            Assert.Equal("Violent crime  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .", firstRowFirstCell); // original="Violent crime  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ."
+            Assert.Equal("Violent crime  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .", firstRowFirstCell);
             Assert.Equal("(X)", lastRowLastCell);
         }
 
-        [Fact]
+        [Fact()]
         public void testNaturalOrderOfRectangles()
         {
             PageArea page = UtilsForTesting.getPage("Resources/us-017.pdf", 2).getArea(new PdfRectangle(90, 97, 532, 352)); //446.0f, 97.0f, 685.0f, 520.0f);
@@ -246,7 +287,6 @@ namespace Tabula.Tests
             List<RectangularTextContainer> cells = new List<RectangularTextContainer>(table.cells.Values);
             foreach (RectangularTextContainer rectangularTextContainer in cells)
             {
-                //Console.WriteLine(rectangularTextContainer.getText());
                 Debug.Print(rectangularTextContainer.getText());
             }
 
@@ -311,11 +351,11 @@ namespace Tabula.Tests
             Assert.Equal("and networks", cells[39].getText());
         }
 
-        /*
-        [Fact]
-        public void testNaturalOrderOfRectanglesOneMoreTime()// throws IOException
+        [Fact(Skip = "TODO csv")]
+        public void testNaturalOrderOfRectanglesOneMoreTime()
         {
-            CSVParser parse = org.apache.commons.csv.CSVParser.parse(new File("src/test/resources/technology/tabula/csv/TestBasicExtractor-RECTANGLE_TEST_NATURAL_ORDER.csv"),
+            /*
+            CSVParser parse = org.apache.commons.csv.CSVParser.parse(new File("Resources/csv/TestBasicExtractor-RECTANGLE_TEST_NATURAL_ORDER.csv"),
                         Charset.forName("utf-8"),
                         CSVFormat.DEFAULT);
 
@@ -329,7 +369,6 @@ namespace Tabula.Tests
                         double.Parse(record.get(3))));
             }
 
-
             //List<Rectangle> rectangles = Arrays.asList(RECTANGLES_TEST_NATURAL_ORDER);
             Utils.sort(rectangles, new TableRectangle.ILL_DEFINED_ORDER());
 
@@ -340,8 +379,8 @@ namespace Tabula.Tests
 
                 Assert.True(rectangle.CompareTo(nextRectangle) < 0);
             }
+            */
         }
-        */
 
         [Fact(Skip ="TODO csv")]
         public void testRealLifeRTL2()
