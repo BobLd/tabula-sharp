@@ -4,9 +4,9 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # Project specific
-Tabula.Console/
-UnicodeData_13.0._csharp.txt
-UnicodeData_13.0.txt
+/Tabula.Console/
+/UnicodeData_13.0._csharp.txt
+/UnicodeData_13.0.txt
 
 # User-specific files
 *.rsuser
