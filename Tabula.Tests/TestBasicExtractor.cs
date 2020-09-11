@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
+using System.IO;
+using Tabula.Csv;
 using Tabula.Extractors;
 using UglyToad.PdfPig.Core;
 using Xunit;
@@ -341,51 +342,58 @@ namespace Tabula.Tests
             Assert.Equal("and networks", cells[39].getText());
         }
 
-        [Fact(Skip = "TODO csv")]
+        [Fact]
         public void testNaturalOrderOfRectanglesOneMoreTime()
         {
-            /*
-            CSVParser parse = org.apache.commons.csv.CSVParser.parse(new File("Resources/csv/TestBasicExtractor-RECTANGLE_TEST_NATURAL_ORDER.csv"),
-                        Charset.forName("utf-8"),
-                        CSVFormat.DEFAULT);
+            //CSVParser parse = org.apache.commons.csv.CSVParser.parse(new File("Resources/csv/TestBasicExtractor-RECTANGLE_TEST_NATURAL_ORDER.csv"), Charset.forName("utf-8"), CSVFormat.DEFAULT);
+            var parse = UtilsForTesting.loadCsvLines("Resources/csv/TestBasicExtractor-RECTANGLE_TEST_NATURAL_ORDER.csv");
+            List<TableRectangle> rectangles = new List<TableRectangle>();
 
-            List<TableRectangle> rectangles = new List<TableRectangle>()
+            //foreach (CSVRecord record in parse)
+            foreach (var record in parse)
+            {
+                // top, left, w, h
+                var top = double.Parse(record[0]);
+                var left = double.Parse(record[1]);
+                double w = double.Parse(record[2]);
+                double h = double.Parse(record[3]);
 
-            foreach (CSVRecord record in parse) {
-                rectangles.add(new Rectangle(
-                        double.Parse(record.get(0)),
-                        double.Parse(record.get(1)),
-                        double.Parse(record.get(2)),
-                        double.Parse(record.get(3))));
+                rectangles.Add(new TableRectangle(new PdfRectangle(left, top, left + w, top + h)));
             }
 
-            //List<Rectangle> rectangles = Arrays.asList(RECTANGLES_TEST_NATURAL_ORDER);
             Utils.sort(rectangles, new TableRectangle.ILL_DEFINED_ORDER());
+            //rectangles = rectangles.OrderBy(x => x, new TableRectangle.ILL_DEFINED_ORDER()).ToList();
 
-            for (int i = 0; i < (rectangles.Count - 1); i++) 
+            for (int i = 0; i < rectangles.Count - 1; i++)
             {
                 TableRectangle rectangle = rectangles[i];
                 TableRectangle nextRectangle = rectangles[i + 1];
-
                 Assert.True(rectangle.CompareTo(nextRectangle) < 0);
             }
-            */
         }
 
-        [Fact(Skip ="TODO csv")]
+        [Fact] //(Skip ="TODO csv")]
         public void testRealLifeRTL2()
         {
-            /*
-            String expectedCsv = UtilsForTesting.loadCsv(@"Resources/indictb1h_14.csv");
-            PageArea page = UtilsForTesting.getAreaFromPage(@"Resources/indictb1h_14.pdf", 1,
-                        205.0f, 120.0f, 622.82f, 459.9f);
+            // hebrew text
+            String expectedCsv = UtilsForTesting.loadCsv(@"Resources/csv/indictb1h_14.csv");
+            PageArea page = UtilsForTesting.getAreaFromPage(@"Resources/indictb1h_14.pdf", 1, new PdfRectangle(120.0, 168, 459.9, 636)); // need to check area // 205.0f, 120.0f, 622.82f, 459.9f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.extract(page)[0];
 
-            StringBuilder sb = new StringBuilder();
-            (new CSVWriter()).write(sb, table);
-            Assert.Equal(expectedCsv, sb.ToString());
-            */
+            //StringBuilder sb = new StringBuilder();
+            //var sb = new MemoryStream();
+            using (var stream = new MemoryStream())
+            using (var sb = new StreamWriter(stream) { AutoFlush = true })
+            {
+                (new CSVWriter()).write(sb, table);
+
+                var reader = new StreamReader(stream);
+                stream.Position = 0;
+                var data = reader.ReadToEnd().Trim(); // trim to remove last new line
+
+                Assert.Equal(expectedCsv, data);
+            }
         }
 
         [Fact]
@@ -397,19 +405,30 @@ namespace Tabula.Tests
             Assert.Equal(EXPECTED_EMPTY_TABLE, UtilsForTesting.tableToArrayOfRows(table));
         }
 
-        [Fact(Skip = "TODO csv")]
+        [Fact] //(Skip = "TODO csv")]
         public void testTableWithMultilineHeader()
         {
-            /*
-            String expectedCsv = UtilsForTesting.loadCsv(@"Resources/us-020.csv");
-            PageArea page = UtilsForTesting.getAreaFromPage(@"Resources/us-020.pdf", 2, 103.0f, 35.0f, 641.0f, 560.0f);
+            String expectedCsv = UtilsForTesting.loadCsv(@"Resources/csv/us-020.csv");
+            PageArea page = UtilsForTesting.getAreaFromPage(@"Resources/us-020.pdf", 2, new PdfRectangle(35.0, 151, 560, 688.5)); //103.0f, 35.0f, 641.0f, 560.0f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.extract(page)[0];
 
-            StringBuilder sb = new StringBuilder();
-            (new CSVWriter()).write(sb, table);
-            Assert.Equal(expectedCsv, sb.ToString());
-            */
+            using (var stream = new MemoryStream())
+            using (var sb = new StreamWriter(stream) { AutoFlush = true })
+            {
+                (new CSVWriter()).write(sb, table);
+
+                var reader = new StreamReader(stream);
+                stream.Position = 0;
+                var data = reader.ReadToEnd().Trim(); // trim to remove last new line
+                //File.WriteAllText("test.csv", data);
+
+                Assert.Equal(expectedCsv, data);
+            }
+
+            //StringBuilder sb = new StringBuilder();
+            //(new CSVWriter()).write(sb, table);
+            //Assert.Equal(expectedCsv, sb.ToString());
         }
     }
 }

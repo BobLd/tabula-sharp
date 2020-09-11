@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
 using System.Text;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Core;
@@ -110,6 +110,11 @@ namespace Tabula.Tests
             String csv = outp.ToString().replaceAll("(?<!\r)\n", "\r");
             return csv;
             */
+        }
+
+        public static string[][] loadCsvLines(string path)
+        {
+            return File.ReadAllLines(path, Encoding.UTF8).Select(x => x.Split(',')).ToArray();
         }
     }
 }
