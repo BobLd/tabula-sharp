@@ -380,7 +380,7 @@ namespace Tabula.Tests
 
                 var reader = new StreamReader(stream);
                 stream.Position = 0;
-                var data = reader.ReadToEnd().Trim(); // trim to remove last new line
+                var data = reader.ReadToEnd().Replace("\r\n", "\n").Trim(); // trim to remove last new line
 
                 Assert.Equal(expectedCsv, data);
             }
@@ -410,7 +410,7 @@ namespace Tabula.Tests
 
                 var reader = new StreamReader(stream);
                 stream.Position = 0;
-                var data = reader.ReadToEnd().Trim(); // trim to remove last new line
+                var data = reader.ReadToEnd().Replace("\r\n", "\n").Trim(); // trim to remove last new line
 
                 Assert.Equal(expectedCsv, data);
             }

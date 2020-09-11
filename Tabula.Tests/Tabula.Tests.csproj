@@ -1014,7 +1014,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\UnicodeData_13.0.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\us-007.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
