@@ -6,7 +6,6 @@ using Tabula.Csv;
 using Tabula.Extractors;
 using UglyToad.PdfPig.Core;
 using Xunit;
-[assembly: CollectionBehavior(DisableTestParallelization = true)] // disable parallelization because of testTableWithMultilineHeader()
 
 namespace Tabula.Tests
 {
