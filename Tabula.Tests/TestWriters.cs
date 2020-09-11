@@ -51,9 +51,9 @@ namespace Tabula.Tests
                 var reader = new StreamReader(stream);
                 stream.Position = 0;
                 var s = reader.ReadToEnd().Trim(); // trim to remove last new line
-                String[] lines = s.Split("\n"); // "\\r?\\n"
+                String[] lines = s.Split("\r\n"); // "\\r?\\n"
                 Assert.Equal(EXPECTED_CSV_WRITER_OUTPUT, lines[0]);
-                Assert.Equal(expectedCsv, s);
+                Assert.Equal(expectedCsv, s.Replace("\r\n", "\n"));
             }
         }
 

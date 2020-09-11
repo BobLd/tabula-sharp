@@ -19,7 +19,7 @@ namespace Tabula.Csv
             var csv = new CsvWriter(sb, CultureInfo.InvariantCulture);
 
             csv.Configuration.Delimiter = ",";
-            csv.Configuration.NewLine = CsvHelper.Configuration.NewLine.LF;
+            csv.Configuration.NewLine = CsvHelper.Configuration.NewLine.CRLF;
 
             foreach (Table table in tables)
             {

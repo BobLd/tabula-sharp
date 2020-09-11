@@ -97,7 +97,7 @@ namespace Tabula.Tests
 
         public static string loadCsv(string path)
         {
-            return File.ReadAllText(path, Encoding.UTF8).Replace("(?<!\r)\n", "\r");
+            return File.ReadAllText(path, Encoding.UTF8); //.Replace("\r\n", "\n"); // "(?<!\r)\n"
 
             /*
             StringBuilder outp = new StringBuilder();
