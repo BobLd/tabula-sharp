@@ -44,7 +44,7 @@ namespace Tabula
 
         protected static float VERTICAL_COMPARISON_THRESHOLD = 0.4f;
 
-        public PdfRectangle BoundingBox { get; internal set; }
+        public PdfRectangle BoundingBox { get; private set; }
 
         public TableRectangle() : base()
         {
@@ -68,13 +68,10 @@ namespace Tabula
         }
 
         /// <summary>
-        /// 
+        /// Need this for fancy sorting in Tabula.TextChunk
         /// </summary>
-        /// <returns></returns>
         public virtual int isLtrDominant()
         {
-            // I'm bad at Java and need this for fancy sorting in
-            // technology.tabula.TextChunk.
             return 0;
         }
 
@@ -108,8 +105,7 @@ namespace Tabula
         public double verticalOverlapRatio(TableRectangle other)
         {
             double delta = Math.Min(this.BoundingBox.Top - this.BoundingBox.Bottom,
-                                                other.BoundingBox.Top - other.BoundingBox.Bottom);
-            //if (delta == 0) delta = 1; // set min delta to 1
+                                    other.BoundingBox.Top - other.BoundingBox.Bottom);
             var overl = verticalOverlap(other);
             return overl / delta;
         }
@@ -265,17 +261,12 @@ namespace Tabula
 
         internal void setRect(TableRectangle rectangle)
         {
-            this.BoundingBox = rectangle.BoundingBox;
+            setRect(rectangle.BoundingBox);
         }
 
         private PdfRectangle createUnion(PdfRectangle rectangle, PdfRectangle other)
         {
             return Utils.bounds(new[] { rectangle, other });
-            //double left = Math.Min(rectangle.Left, other.Left);
-            //double right = Math.Max(rectangle.Right, other.Right);
-            //double bottom = Math.Min(rectangle.Bottom, other.Bottom);
-            //double top = Math.Max(rectangle.Top, other.Top);
-            //return new PdfRectangle(left, bottom, right, top);
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion

@@ -197,8 +197,8 @@ namespace Tabula
         public void add(TextElement textElement)
         {
             this.textElements.Add(textElement);
-            this.BoundingBox = Utils.bounds(new[] { this.BoundingBox, textElement.BoundingBox });
-            //this.merge(textElement);
+            //this.BoundingBox = Utils.bounds(new[] { this.BoundingBox, textElement.BoundingBox });
+            this.merge(textElement);
         }
 
         public void add(List<TextElement> elements)
@@ -273,8 +273,8 @@ namespace Tabula
 
             TextChunk[] rv = new TextChunk[]
             {
-                new TextChunk(this.getTextElements().subList(0, i)), //.subList(0, i)),
-                new TextChunk(this.getTextElements().subList(i, this.getTextElements().Count)) //.subList(i, this.getTextElements().size()))
+                new TextChunk(this.getTextElements().subList(0, i)),
+                new TextChunk(this.getTextElements().subList(i, this.getTextElements().Count))
             };
 
             // TODO: remove below
@@ -314,7 +314,6 @@ namespace Tabula
                 {
                     currentChar = text[0];
                 }
-
 
                 if (lastChar != null && currentChar.Equals(c) && lastChar.Equals(currentChar))
                 {
@@ -365,8 +364,7 @@ namespace Tabula
         {
             int prime = 31;
             int result = base.GetHashCode();
-            result = prime * result
-                    + ((textElements == null) ? 0 : textElements.GetHashCode());
+            result = prime * result + ((textElements?.GetHashCode()) ?? 0);
             return result;
         }
 

@@ -34,7 +34,6 @@ namespace Tabula
             this.pdDoc = doc;
         }
 
-
         public PageArea(double top, double left, double width, double height, int rotation, int page_number, Page pdPage, PdfDocument doc,
                     List<TextElement> characters, List<Ruling> rulings)
             : this(top, left, width, height, rotation, page_number, pdPage, doc)
@@ -169,7 +168,7 @@ namespace Tabula
         public TableRectangle getTextBounds()
         {
             List<TextElement> texts = this.getText();
-            if (texts.Count > 0) // !texts.isEmpty()
+            if (texts.Count > 0)
             {
                 return Utils.bounds(texts);
             }
@@ -186,16 +185,16 @@ namespace Tabula
                 return this.cleanRulings;
             }
 
-            if (this.rulings == null || this.rulings.Count == 0) //.isEmpty())
+            if (this.rulings == null || this.rulings.Count == 0)
             {
-                this.verticalRulingLines = new List<Ruling>(); //ArrayList<>();
-                this.horizontalRulingLines = new List<Ruling>(); // ArrayList<>();
-                return new List<Ruling>(); // ArrayList<>();
+                this.verticalRulingLines = new List<Ruling>();
+                this.horizontalRulingLines = new List<Ruling>();
+                return new List<Ruling>();
             }
 
             Utils.snapPoints(this.rulings, this.minCharWidth, this.minCharHeight);
 
-            List<Ruling> vrs = new List<Ruling>(); // ArrayList<>();
+            List<Ruling> vrs = new List<Ruling>();
             foreach (Ruling vr in this.rulings)
             {
                 if (vr.vertical())
@@ -205,7 +204,7 @@ namespace Tabula
             }
             this.verticalRulingLines = Ruling.collapseOrientedRulings(vrs);
 
-            List<Ruling> hrs = new List<Ruling>(); // ArrayList<>();
+            List<Ruling> hrs = new List<Ruling>();
             foreach (Ruling hr in this.rulings)
             {
                 if (hr.horizontal())

@@ -401,7 +401,7 @@ namespace Tabula
             List<List<PdfPoint>> groupedPoints = new List<List<PdfPoint>>();
             groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { points[0] }));
 
-            foreach (PdfPoint p in points.subList(1, points.Count)) // - 1)) error in the java version: the second bound is exclusive. fails 'testColumnRecognition' test
+            foreach (PdfPoint p in points.subList(1, points.Count)) // - 1)) error in the java version: the second bound is exclusive. fails 'testColumnRecognition' test + https://github.com/tabulapdf/tabula-java/pull/311
             {
                 List<PdfPoint> last = groupedPoints[groupedPoints.Count - 1];
                 if (Math.Abs(p.X - last[0].X) < xThreshold)
@@ -436,7 +436,7 @@ namespace Tabula
             groupedPoints = new List<List<PdfPoint>>();
             groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { points[0] }));
 
-            foreach (PdfPoint p in points.subList(1, points.Count - 1))
+            foreach (PdfPoint p in points.subList(1, points.Count)) // - 1)) error in the java version: the second bound is exclusive + https://github.com/tabulapdf/tabula-java/pull/311
             {
                 List<PdfPoint> last = groupedPoints[groupedPoints.Count - 1];
                 if (Math.Abs(p.Y - last[0].Y) < yThreshold)

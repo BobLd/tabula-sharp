@@ -37,8 +37,7 @@ namespace Tabula
                 {
                     this.textChunks.Add(null);
                 }
-                //this.textChunks.set(i, textChunk);
-                this.textChunks[i] = textChunk;
+                this.textChunks[i] = textChunk;//this.textChunks.set(i, textChunk);
             }
             else
             {
@@ -49,15 +48,13 @@ namespace Tabula
 
         public void addTextChunk(TextChunk textChunk)
         {
-            if (this.textChunks.Count == 0) //if (this.textChunks.isEmpty())
+            if (this.textChunks.Count == 0)
             {
-                this.BoundingBox = textChunk.BoundingBox;
-                //this.setRect(textChunk.BoundingBox);
+                this.setRect(textChunk.BoundingBox);
             }
             else
             {
-                this.BoundingBox = Utils.bounds(new[] { this.BoundingBox, textChunk.BoundingBox });
-                //this.merge(textChunk);
+                this.merge(textChunk);
             }
             this.textChunks.Add(textChunk);
         }
@@ -78,7 +75,6 @@ namespace Tabula
 
         internal static TableLine removeRepeatedCharacters(TableLine line, char c, int minRunLength)
         {
-
             TableLine rv = new TableLine();
 
             foreach (TextChunk t in line.getTextElements())

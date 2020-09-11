@@ -15,15 +15,16 @@ namespace Tabula.Json
         {
             if (src == null) return;
 
-            JObject result = new JObject();
-
-            result.Add("extraction_method", src.getExtractionMethod());
-            result.Add("top", src.getTop());
-            result.Add("left", src.getLeft());
-            result.Add("width", src.getWidth());
-            result.Add("height", src.getHeight());
-            result.Add("right", src.getRight());
-            result.Add("bottom", src.getBottom());
+            JObject result = new JObject
+            {
+                { "extraction_method", src.getExtractionMethod() },
+                { "top", src.getTop() },
+                { "left", src.getLeft() },
+                { "width", src.getWidth() },
+                { "height", src.getHeight() },
+                { "right", src.getRight() },
+                { "bottom", src.getBottom() }
+            };
 
             var data = JArray.FromObject(src.getRows(), serializer);
             //JArray data = new JArray();

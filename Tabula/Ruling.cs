@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClipperLib;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -16,11 +17,18 @@ namespace Tabula
 
         public void setLine(double x1, double y1, double x2, double y2)
         {
-            line = new PdfLine(x1, y1, x2, y2);
+            setLine(new PdfPoint(x1, y1), new PdfPoint(x2, y2));
         }
 
         public void setLine(PdfPoint p1, PdfPoint p2)
         {
+            if (p1.Y > p2.Y)
+            {
+                throw new ArgumentException("Points order is wrong. p1 needs to be below p2 (p1.Y <= p2.Y)");
+            }
+
+            // test X?
+
             line = new PdfLine(p1, p2);
         }
 
@@ -41,11 +49,7 @@ namespace Tabula
         /// <param name="p2">top point</param>
         public Ruling(PdfPoint p1, PdfPoint p2)
         {
-            if (p1.Y > p2.Y)
-            {
-                throw new ArgumentException("Points order is wrong. p1 needs to be below p2 (p1.Y <= p2.Y)");
-            }
-            line = new PdfLine(p1, p2);
+            setLine(p1, p2);
             this.normalize();
         }
 
@@ -65,9 +69,10 @@ namespace Tabula
                 // almost vertical
                 this.setLine(this.x1, this.y1, this.x1, this.y2);
             }
-            //        else {
-            //            System.out.println("oblique: " + this + " ("+ this.getAngle() + ")");
-            //        }
+            //else 
+            //{
+            //    System.out.println("oblique: " + this + " ("+ this.getAngle() + ")");
+            //}
         }
 
         public bool vertical()
@@ -127,7 +132,7 @@ namespace Tabula
                 throw new InvalidOperationException(); // UnsupportedOperationException();
             }
 
-            return this.vertical() ? this.getTop() : this.getLeft();
+            return this.vertical() ? this.getTop() : this.getRight(); //this.getLeft();
         }
 
         public void setStart(double v)
@@ -143,7 +148,7 @@ namespace Tabula
             }
             else
             {
-                this.setLeft(v);
+                this.setRight(v); //this.setLeft(v);
             }
         }
 
@@ -154,7 +159,7 @@ namespace Tabula
                 throw new InvalidOperationException(); // UnsupportedOperationException();
             }
 
-            return this.vertical() ? this.getBottom() : this.getRight();
+            return this.vertical() ? this.getBottom() : this.getLeft(); //this.getRight();
         }
 
         public void setEnd(double v)
@@ -170,7 +175,7 @@ namespace Tabula
             }
             else
             {
-                this.setRight(v);
+                this.setLeft(v); //this.setRight(v);
             }
         }
 
@@ -188,8 +193,8 @@ namespace Tabula
             }
             else
             {
-                this.setLeft(start);
-                this.setRight(end);
+                this.setRight(start);//this.setLeft(start);
+                this.setLeft(end);//this.setRight(end);
             }
         }
 
@@ -198,13 +203,12 @@ namespace Tabula
             return this.vertical() == other.horizontal();
         }
 
-
         public bool colinear(PdfPoint point)
         {
-            return point.X >= this.x1
-                    && point.X <= this.x2
-                    && point.Y >= this.y1
-                    && point.Y <= this.y2;
+            return point.X >= this.x1 &&
+                   point.X <= this.x2 &&
+                   point.Y >= this.y1 &&
+                   point.Y <= this.y2;
         }
 
         /// <summary>
@@ -230,8 +234,7 @@ namespace Tabula
                 return true;
             }
 
-            bool rv = false;
-
+            bool rv;
             if (this.perpendicularTo(another))
             {
                 rv = this.expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT).intersectsLine(another);
@@ -268,8 +271,8 @@ namespace Tabula
         public Ruling expand(double amount)
         {
             Ruling r = (Ruling)this.MemberwiseClone(); //?????? .clone();
-            r.setStart(this.getStart() - amount);
-            r.setEnd(this.getEnd() + amount);
+            r.setStart(this.getStart() + amount); //- amount);
+            r.setEnd(this.getEnd() - amount); //+ amount);
             return r;
         }
 
@@ -317,17 +320,18 @@ namespace Tabula
 
         public double getTop()
         {
-            return this.y1;
+            return this.y2; //.y1;
         }
 
         public void setTop(double v)
         {
-            setLine(this.getLeft(), v, this.getRight(), this.getBottom());
+            //setLine(this.getLeft(), v, this.getRight(), this.getBottom());
+            setLine(this.getLeft(), this.getBottom(), this.getRight(), v);
         }
 
         public double getLeft()
         {
-            return this.x1;
+            return this.x1; // not sure here!!
         }
 
         public void setLeft(double v)
@@ -337,17 +341,18 @@ namespace Tabula
 
         public double getBottom()
         {
-            return this.y2;
+            return this.y1; //.y2;
         }
 
         public void setBottom(double v)
         {
-            setLine(this.getLeft(), this.getTop(), this.getRight(), v);
+            //setLine(this.getLeft(), this.getTop(), this.getRight(), v);
+            setLine(this.getLeft(), v, this.getRight(), this.getTop());
         }
 
         public double getRight()
         {
-            return this.x2;
+            return this.x2;  // not sure here!!
         }
 
         public void setRight(double v)
@@ -362,7 +367,8 @@ namespace Tabula
 
         public double getHeight()
         {
-            return this.getBottom() - this.getTop();
+            //return this.getBottom() - this.getTop();
+            return this.getTop() - this.getBottom();
         }
 
         public double getAngle()
@@ -390,25 +396,66 @@ namespace Tabula
             return $"{this.GetType()}[x1={this.x1} y1={this.y1} x2={this.x2} y2={this.y2}]";
         }
 
+        #region clipper temporary
+        private static IntPoint ToClipperIntPoint(PdfPoint point)
+        {
+            return new IntPoint(point.X * 10_000.0, point.Y * 10_000.0);
+        }
+
+        private static List<IntPoint> ToClipperIntPoints(PdfRectangle rect)
+        {
+            return new List<IntPoint>()
+            {
+                ToClipperIntPoint(rect.BottomLeft),
+                ToClipperIntPoint(rect.TopLeft),
+                ToClipperIntPoint(rect.TopRight),
+                ToClipperIntPoint(rect.BottomRight),
+                ToClipperIntPoint(rect.BottomLeft),
+            };
+        }
+        private static List<IntPoint> ToClipperIntPoints(Ruling rect)
+        {
+            return new List<IntPoint>() { ToClipperIntPoint(rect.line.Point1), ToClipperIntPoint(rect.line.Point2) };
+        }
+        #endregion
+
         public static List<Ruling> cropRulingsToArea(List<Ruling> rulings, PdfRectangle area)
         {
-            return rulings; // should already be croped
-
-
-
             // use clipper
+            var clipper = new Clipper();
+            clipper.AddPath(ToClipperIntPoints(area), PolyType.ptClip, true);
 
-            /*
-            List<Ruling> rv = new List<Ruling>();
             foreach (Ruling r in rulings)
             {
-                if (r.intersects(area))
-                {
-                    rv.Add(r.intersect(area));
-                }
+                clipper.AddPath(ToClipperIntPoints(r), PolyType.ptSubject, false);
             }
-            return rv;
-            */
+
+            var solutions = new PolyTree();
+            if (clipper.Execute(ClipType.ctIntersection, solutions))
+            {
+                List<Ruling> rv = new List<Ruling>();
+                foreach (var solution in solutions.Childs)
+                {
+                    rv.Add(new Ruling(new PdfPoint(solution.Contour[0].X / 10_000.0, solution.Contour[0].Y / 10_000.0),
+                                      new PdfPoint(solution.Contour[1].X / 10_000.0, solution.Contour[1].Y / 10_000.0)));
+
+                }
+                return rv;
+            }
+            else
+            {
+                return new List<Ruling>();
+            }
+
+            //List<Ruling> rv = new List<Ruling>();
+            //foreach (Ruling r in rulings)
+            //{
+            //    if (r.intersects(area))
+            //    {
+            //        rv.Add(r.intersect(area));
+            //    }
+            //}
+            //return rv;
         }
 
         /// <summary>
@@ -463,7 +510,7 @@ namespace Tabula
                     double newEnd = lastFlipped ? Math.Min(nextE, lastEnd) : Math.Max(nextE, lastEnd);
                     last.setStartEnd(newStart, newEnd);
 
-                    Debug.Assert(!last.oblique()); //assert !last.oblique();
+                    Debug.Assert(!last.oblique());
                 }
                 else if (next_line.length() == 0)
                 {

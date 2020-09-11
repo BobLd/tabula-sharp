@@ -24,7 +24,6 @@ namespace Tabula
 
         public Cell(double top, double left, double width, double height) : base(top, left, width, height)
         {
-            //super(top, left, width, height);
             this.setPlaceholder(false);
             this.setSpanning(false);
             this.setTextElements(new List<TextChunk>());
@@ -53,22 +52,16 @@ namespace Tabula
             }
 
             StringBuilder sb = new StringBuilder();
-            Utils.sort(this.textElements, new ILL_DEFINED_ORDER()); // this.textElements.Sort(new ILL_DEFINED_ORDER()); //Collections.sort(this.textElements, Rectangle.ILL_DEFINED_ORDER);
-            double curTop = this.textElements[0].getBottom(); //.word.BoundingBox.Bottom; //.getTop();
+            Utils.sort(this.textElements, new ILL_DEFINED_ORDER());
+            double curTop = this.textElements[0].getBottom();
             foreach (TextChunk tc in this.textElements)
             {
-                if (useLineReturns && tc.getBottom()< curTop) //.getTop() < curTop)
+                if (useLineReturns && tc.getBottom() < curTop) //.getTop() < curTop)
                 {
                     sb.Append('\r');
                 }
-                /*
-                else
-                {
-                    sb.Append(' ');
-                }
-                */
                 sb.Append(tc.getText());
-                curTop = tc.getBottom(); //.word.BoundingBox.Bottom; //.getTop();
+                curTop = tc.getBottom();
             }
             return sb.ToString().Trim();
         }

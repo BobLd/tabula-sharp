@@ -36,9 +36,6 @@ namespace Tabula
         {
             if (chunk is Cell cell)
             {
-
-
-
                 this.merge(cell);
 
                 rowCount = Math.Max(rowCount, row + 1);
