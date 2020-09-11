@@ -116,7 +116,6 @@ namespace Tabula.Extractors
                 {
                     if (c.intersects(area))
                     {
-
                         c.setTextElements(TextElement.mergeWords(page.getText(c.BoundingBox)));
                         overlappingCells.Add(c);
                     }

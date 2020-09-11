@@ -34,11 +34,10 @@ namespace Tabula
                         return -o1.getX().CompareTo(o2.getX());
                     }
                     return o1.getX().CompareTo(o2.getX());
-                    //return (o1.isLtrDominant() == -1 && o2.isLtrDominant() == -1) ? -o1.getX().CompareTo(o2.getX()) : o1.getX().CompareTo(o2.getX());
                 }
                 else
                 {
-                    return -o1.getBottom().CompareTo(o2.getBottom()); //bobld multiply by -1
+                    return -o1.getBottom().CompareTo(o2.getBottom()); //bobld multiply by -1 to sort from top to bottom (reading order)
                 }
             }
         }
@@ -118,10 +117,9 @@ namespace Tabula
         public double overlapRatio(TableRectangle other)
         {
             double intersectionWidth = Math.Max(0, Math.Min(this.getRight(), other.getRight()) - Math.Max(this.getLeft(), other.getLeft()));
-            double intersectionHeight = Math.Max(0, Math.Min(this.getBottom(), other.getBottom()) - Math.Max(this.getTop(), other.getTop()));
+            double intersectionHeight = Math.Max(0, Math.Min(this.getTop(), other.getTop()) - Math.Max(this.getBottom(), other.getBottom()));
             double intersectionArea = Math.Max(0, intersectionWidth * intersectionHeight);
             double unionArea = this.getArea() + other.getArea() - intersectionArea;
-
             return intersectionArea / unionArea;
         }
 
@@ -164,7 +162,6 @@ namespace Tabula
         /// <summary>
         /// Counter-clockwise, starting from bottom left point.
         /// </summary>
-        /// <returns></returns>
         public PdfPoint[] getPoints()
         {
             return new PdfPoint[]
@@ -197,7 +194,6 @@ namespace Tabula
                 if (!this.BoundingBox.TopLeft.Equals(other.BoundingBox.TopLeft)) return false;
                 if (!this.BoundingBox.TopRight.Equals(other.BoundingBox.TopRight)) return false;
                 if (!this.BoundingBox.BottomRight.Equals(other.BoundingBox.BottomRight)) return false;
-                //other ???
                 return true;
             }
             return false;
@@ -216,22 +212,6 @@ namespace Tabula
         public static TableRectangle boundingBoxOf(IEnumerable<TableRectangle> rectangles)
         {
             return Utils.bounds(rectangles);
-
-            /*
-            double minx = double.MaxValue;
-            double miny = double.MaxValue;
-            double maxx = double.MinValue;
-            double maxy = double.MinValue;
-
-            foreach (TableRectangle r in rectangles)
-            {
-                minx = Math.Min(r.getMinX(), minx);
-                miny = Math.Min(r.getMinY(), miny);
-                maxx = Math.Max(r.getMaxX(), maxx);
-                maxy = Math.Max(r.getMaxY(), maxy);
-            }
-            return new TableRectangle(miny, minx, maxx - minx, maxy - miny);
-            */
         }
 
         public bool intersects(TableRectangle tableRectangle)

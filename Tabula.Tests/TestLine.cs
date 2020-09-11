@@ -59,7 +59,7 @@ namespace Tabula.Tests
 			Assert.Throws<ArgumentException>(() => line.addTextChunk(-1, tChunk));
 		}
 
-		[Fact(Skip = "fail because of the TableRectangle(PdfRectangle rectangle) hack for min height=1")]
+		[Fact]
 		public void testToString()
 		{
 			TableLine line = new TableLine();

@@ -22,7 +22,7 @@ namespace Tabula.Extractors
             List<Ruling> verticalRulings = new List<Ruling>(verticalRulingPositions.Count);
             foreach (float p in verticalRulingPositions)
             {
-                verticalRulings.Add(new Ruling(page.getHeight(), p, 0.0f, page.getHeight()));
+                verticalRulings.Add(new Ruling(page.getHeight(), p, 0.0f, page.getHeight())); // wrong here???
             }
             this.verticalRulings = verticalRulings;
             return this.extract(page);
