@@ -947,6 +947,9 @@
     <None Update="Resources\json\argentina_diputados_voting_record.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\json\argentina_diputados_voting_record_new.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\json\schools.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

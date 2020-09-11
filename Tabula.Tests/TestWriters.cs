@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Tabula.Csv;
 using Tabula.Extractors;
+using Tabula.Json;
 using UglyToad.PdfPig.Core;
 using Xunit;
 
@@ -72,21 +73,26 @@ namespace Tabula.Tests
         }
 
 
-        [Fact(Skip = "Need to implement JSONWriter")]
+        [Fact]
         public void testJSONWriter()
         {
-            /*
-            String expectedJson = UtilsForTesting.loadJson("Resources/json/argentina_diputados_voting_record.json");
+            string expectedJson = UtilsForTesting.loadJson("Resources/json/argentina_diputados_voting_record_new.json"); // argentina_diputados_voting_record.json
             Table table = this.getTable();
-            StringBuilder sb = new StringBuilder();
-            (new JSONWriter()).write(sb, table);
-            String s = sb.toString();
-            assertEquals(expectedJson, s);
-            */
+
+            using (var stream = new MemoryStream())
+            using (var sb = new StreamWriter(stream) { AutoFlush = true })
+            {
+                (new JSONWriter()).write(sb, table);
+
+                var reader = new StreamReader(stream);
+                stream.Position = 0;
+                var s = reader.ReadToEnd();
+
+                Assert.Equal(expectedJson, s);
+            }
         }
 
-
-        [Fact(Skip = "Need to implement JSONWriter")]
+        [Fact(Skip = "SpreadsheetExtractionAlgorithm not implemented")]
         public void testJSONSerializeInfinity()
         {
             /*
@@ -129,24 +135,34 @@ namespace Tabula.Tests
             }
         }
 
-
-
-        [Fact(Skip = "Need to implement JSONWriter")]
+        [Fact(Skip = "SpreadsheetExtractionAlgorithm not implemented")]
         public void testJSONSerializeTwoTables()
         {
-            /*
-            String expectedJson = UtilsForTesting.loadJson("Resources/json/twotables.json");
+            string expectedJson = UtilsForTesting.loadJson("Resources/json/twotables.json");
             List<Table> tables = this.getTables();
-            StringBuilder sb = new StringBuilder();
-            (new JSONWriter()).write(sb, tables);
+            //StringBuilder sb = new StringBuilder();
+            //(new JSONWriter()).write(sb, tables);
+            //String s = sb.toString();
 
-            String s = sb.toString();
-            assertEquals(expectedJson, s);
+            using (var stream = new MemoryStream())
+            using (var sb = new StreamWriter(stream) { AutoFlush = true })
+            {
+                (new JSONWriter()).write(sb, tables);
 
-            Gson gson = new Gson();
-            JsonArray json = gson.fromJson(s, JsonArray.class);
-            assertEquals(2, json.size());
-            */
+                var reader = new StreamReader(stream);
+                stream.Position = 0;
+                var s = reader.ReadToEnd();
+
+                //File.WriteAllText("twotables_new.json", s);
+
+                Assert.Equal(expectedJson, s);
+
+                // Gson gson = new Gson();
+                //JsonArray json = gson.fromJson(s, JsonArray.class);
+                //assertEquals(2, json.size());
+                var json = JsonConvert.DeserializeObject<List<Table>>(s);
+                Assert.Equal(2, json.Count);
+            }
         }
 
 
@@ -155,7 +171,7 @@ namespace Tabula.Tests
         {
             String expectedCsv = UtilsForTesting.loadCsv("Resources/csv/twotables.csv");
             List<Table> tables = this.getTables();
-            
+
             /*
             StringBuilder sb = new StringBuilder();
             (new CSVWriter()).write(sb, tables);
