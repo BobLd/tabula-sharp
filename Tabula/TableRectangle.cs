@@ -34,11 +34,10 @@ namespace Tabula
                         return -o1.getX().CompareTo(o2.getX());
                     }
                     return o1.getX().CompareTo(o2.getX());
-                    //return (o1.isLtrDominant() == -1 && o2.isLtrDominant() == -1) ? -o1.getX().CompareTo(o2.getX()) : o1.getX().CompareTo(o2.getX());
                 }
                 else
                 {
-                    return -o1.getBottom().CompareTo(o2.getBottom()); //bobld multiply by -1
+                    return -o1.getBottom().CompareTo(o2.getBottom()); //bobld multiply by -1 to sort from top to bottom (reading order)
                 }
             }
         }

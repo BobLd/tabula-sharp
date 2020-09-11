@@ -66,7 +66,7 @@ namespace Tabula.Tests
 			Assert.True(lower.CompareTo(upper) < 0); // > 0
 		}
 
-		[Fact(Skip = "need to fix the reading order?")]
+		[Fact]
 		public void testQuickSortRectangleList()
 		{
 			// Testing wrong sorting
@@ -76,19 +76,19 @@ namespace Tabula.Tests
 			Assert.Equal(4, first.width);
 			Assert.Equal(4.309999942779541, first.height);
 
-			TableRectangle second = new TableRectangle(new PdfRectangle(72.72000122070312, 175.72000122070312, 72.72000122070312 + 1.6699999570846558, 175.72000122070312 + 1.5199999809265137)); //  175.72000122070312f, 72.72000122070312f, 1.6699999570846558f, 1.5199999809265137f); //,
+			TableRectangle second = new TableRectangle(new PdfRectangle(72.72000122070312, 175.72000122070312, 72.72000122070312 + 1.6699999570846558, 175.72000122070312 + 1.5199999809265137)); //175.72000122070312f, 72.72000122070312f, 1.6699999570846558f, 1.5199999809265137f); //,
 			Assert.Equal(1.6699999570846558, second.width);
 			Assert.Equal(1.5199999809265137, second.height);
 
-			TableRectangle third = new TableRectangle(new PdfRectangle(96.36000061035156, 172.92999267578125, 96.36000061035156 + 4.0, 172.92999267578125 + 4.309999942779541));//172.92999267578125f, 96.36000061035156f, 4.0f, 4.309999942779541f); //A
+			TableRectangle third = new TableRectangle(new PdfRectangle(96.36000061035156, 172.92999267578125, 96.36000061035156 + 4.0, 172.92999267578125 + 4.309999942779541)); //172.92999267578125f, 96.36000061035156f, 4.0f, 4.309999942779541f); //A
 			Assert.Equal(4.0, third.width);
 			Assert.Equal(4.309999942779541, third.height);
 
-			TableRectangle fourth = new TableRectangle(new PdfRectangle(100.31999969482422, 175.72000122070312, 100.31999969482422 + 1.6699999570846558, 175.72000122070312 + 1.5199999809265137));//175.72000122070312f, 100.31999969482422f, 1.6699999570846558f, 1.5199999809265137f); //,
+			TableRectangle fourth = new TableRectangle(new PdfRectangle(100.31999969482422, 175.72000122070312, 100.31999969482422 + 1.6699999570846558, 175.72000122070312 + 1.5199999809265137)); //175.72000122070312f, 100.31999969482422f, 1.6699999570846558f, 1.5199999809265137f); //,
 			Assert.Equal(1.6699999570846558, fourth.width);
 			Assert.Equal(1.5199999809265137, fourth.height);
 
-			TableRectangle fifth = new TableRectangle(new PdfRectangle(103.68000030517578, 172.92999267578125, 103.68000030517578 + 4.329999923706055, 172.92999267578125 + 4.309999942779541));//172.92999267578125f, 103.68000030517578f, 4.329999923706055f, 4.309999942779541f); //N
+			TableRectangle fifth = new TableRectangle(new PdfRectangle(103.68000030517578, 172.92999267578125, 103.68000030517578 + 4.329999923706055, 172.92999267578125 + 4.309999942779541)); //172.92999267578125f, 103.68000030517578f, 4.329999923706055f, 4.309999942779541f); //N
 			Assert.Equal(4.329999923706055, fifth.width);
 			Assert.Equal(4.309999942779541, fifth.height);
 
@@ -98,13 +98,15 @@ namespace Tabula.Tests
 
 			List<TableRectangle> expectedList = new List<TableRectangle>
 			{
-				first,
-				sixth,
-				second,
-				third,
-				fourth,
-				fifth
+                first,
+                //sixth,
+                second,
+                third,
+                fourth,
+                fifth,
+				sixth, // put here, follows reading order
 			};
+
 			List<TableRectangle> toSortList = new List<TableRectangle>
 			{
 				sixth,
@@ -115,7 +117,7 @@ namespace Tabula.Tests
 				fourth
 			};
 
-			Utils.sort(toSortList, new TableRectangle.ILL_DEFINED_ORDER()); // toSortList.Sort(new TableRectangle.ILL_DEFINED_ORDER()); //Collections.sort(toSortList, TableRectangle.ILL_DEFINED_ORDER);
+			Utils.sort(toSortList, new TableRectangle.ILL_DEFINED_ORDER()); //Collections.sort(toSortList, TableRectangle.ILL_DEFINED_ORDER);
 			Assert.Equal(expectedList, toSortList);
 		}
 
