@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.IO;
 using Xunit;
 
 namespace Tabula.Tests
@@ -10,7 +8,7 @@ namespace Tabula.Tests
         [Fact]
         public void Unicode13IntValues()
         {
-            foreach (var line in System.IO.File.ReadAllLines(@"Resources\UnicodeData_13.0.txt"))
+            foreach (var line in File.ReadAllLines(@"Resources\UnicodeData_13.0.txt"))
             {
                 var properties = line.Split(';');
 
