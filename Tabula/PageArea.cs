@@ -110,8 +110,8 @@ namespace Tabula
                 new PdfPoint(rv.getRight(), rv.getTop())));
 
             rv.addRuling(new Ruling(
-                new PdfPoint(rv.getRight(), rv.getTop()),
-                new PdfPoint(rv.getRight(), rv.getBottom())));
+                new PdfPoint(rv.getRight(), rv.getBottom()),    // getTop
+                new PdfPoint(rv.getRight(), rv.getTop())));     // getBottom
 
             rv.addRuling(new Ruling(
                 new PdfPoint(rv.getRight(), rv.getBottom()),

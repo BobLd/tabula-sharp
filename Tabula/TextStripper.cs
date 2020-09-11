@@ -12,7 +12,7 @@ namespace Tabula
 {
     public class TextStripper
     {
-        private static String NBSP = "\u00A0";
+        private static string NBSP = "\u00A0";
         private static float AVG_HEIGHT_MULT_THRESHOLD = 6.0f;
         public List<TextElement> textElements;
         public double minCharWidth = double.MaxValue;

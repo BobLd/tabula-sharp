@@ -34,10 +34,19 @@ namespace Tabula
         {
         }
 
+        /// <summary>
+        /// Point order matters!
+        /// </summary>
+        /// <param name="p1">bottom point.</param>
+        /// <param name="p2">top point</param>
         public Ruling(PdfPoint p1, PdfPoint p2)
         {
+            if (p1.Y > p2.Y)
+            {
+                throw new ArgumentException("Points order is wrong. p1 needs to be below p2 (p1.Y <= p2.Y)");
+            }
             line = new PdfLine(p1, p2);
-            this.normalize(); // ????
+            this.normalize();
         }
 
         /// <summary>

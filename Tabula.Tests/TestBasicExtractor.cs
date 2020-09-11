@@ -138,8 +138,6 @@ namespace Tabula.Tests
         {
             PageArea page = UtilsForTesting.getAreaFromFirstPage(ARGENTINA_DIPUTADOS_VOTING_RECORD_PDF, new PdfRectangle(12.75, 55, 557, 567)); // 269.875f, 12.75f, 790.5f, 561f);
 
-            //PageArea page = UtilsForTesting.getAreaFromFirstPage(ARGENTINA_DIPUTADOS_VOTING_RECORD_PDF, new PdfRectangle(395, 388, 420, 400));
-
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.extract(page)[0];
             var results = UtilsForTesting.tableToArrayOfRows(table);
@@ -153,11 +151,6 @@ namespace Tabula.Tests
                 Assert.Equal(expected.Length, result.Length);
                 for (int j = 0; j < expected.Length; j++)
                 {
-                    // problems with too much spaces
-                    //if (i == 10 && j == 2) continue;
-                    //if (i == 16 && j == 0) continue;
-                    // end
-
                     var e = expected[j];
                     var r = result[j];
                     if (e != r)
@@ -167,8 +160,6 @@ namespace Tabula.Tests
                     Assert.Equal(e, r);
                 }
             }
-
-            //Assert.Equal(ARGENTINA_DIPUTADOS_VOTING_RECORD_EXPECTED, results);
         }
 
         [Fact]
@@ -178,16 +169,16 @@ namespace Tabula.Tests
             double[] rulingsVerticalPositions = { 147, 256, 310, 375, 431, 504 };
             for (int i = 0; i < 6; i++)
             {
-                rulings.Add(new Ruling(255.57f, rulingsVerticalPositions[i], 0, 398.76f - 255.57f));
+                rulings.Add(new Ruling(new PdfPoint(rulingsVerticalPositions[i], 40.43), new PdfPoint(rulingsVerticalPositions[i], 755)));
             }
 
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/campaign_donors.pdf", new PdfRectangle(40.43, double.NaN, 557.35, double.NaN)); //255.57f, 40.43f, 398.76f, 557.35f);
+            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/campaign_donors.pdf", new PdfRectangle(40.43, 755 - (398.76 - 255.57), 557.35, 755)); //255.57f, 40.43f, 398.76f, 557.35f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(rulings);
             Table table = bea.extract(page)[0];
             var sixthRow = table.getRows()[5];
 
-            Assert.True(sixthRow[0].getText().Equals("VALSANGIACOMO BLANC"));
-            Assert.True(sixthRow[1].getText().Equals("OFERNANDO JORGE"));
+            Assert.Equal("VALSANGIACOMO BLANC", sixthRow[0].getText());
+            Assert.Equal("OFERNANDO JORGE", sixthRow[1].getText());
         }
 
         [Fact]
@@ -221,7 +212,6 @@ namespace Tabula.Tests
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.getVerticalRulings());
             Table table = bea.extract(page.getArea(new PdfRectangle(148.44, 543 - (711.875 - 299.625), 452.32, 543)))[0]; //299.625f, 148.44f, 711.875f, 452.32f))[0];
             var result = UtilsForTesting.tableToArrayOfRows(table);
-            //Assert.Equal(EU_017_EXPECTED, result);
 
             Assert.Equal(EU_017_EXPECTED.Length, result.Length);
             for (int i = 0; i < EU_017_EXPECTED.Length; i++)
@@ -302,22 +292,22 @@ namespace Tabula.Tests
 
             //Second row
             Assert.Equal("Public information and deliberation in nanoscience and", cells[6].getText());
-            //Assert.Equal("North Carolina State", cells[7].getText());
+            Assert.Equal("North Carolina State", cells[7].getText());
             Assert.Equal("Interagency", cells[8].getText());
-            //Assert.Equal("nanotechnology policy (SGER)", cells[9].getText());
+            Assert.Equal("nanotechnology policy (SGER)", cells[9].getText());
             Assert.Equal("University", cells[10].getText());
 
             //Third row
             Assert.Equal("Social and ethical research and education in agrifood", cells[11].getText());
-            //Assert.Equal("NSF", cells[12].getText());
-            //Assert.Equal("Michigan State University", cells[13].getText());
-            //Assert.Equal("nanotechnology (NIRT)", cells[14].getText());
+            Assert.Equal("NSF", cells[12].getText());
+            Assert.Equal("Michigan State University", cells[13].getText());
+            Assert.Equal("nanotechnology (NIRT)", cells[14].getText());
 
             //Fourth row
             Assert.Equal("From laboratory to society: developing an informed", cells[15].getText());
-            //Assert.Equal("NSF", cells[16].getText());
-            //Assert.Equal("University of South Carolina", cells[17].getText());
-            //Assert.Equal("approach to nanoscale science and engineering (NIRT)", cells[18].getText());
+            Assert.Equal("NSF", cells[16].getText());
+            Assert.Equal("University of South Carolina", cells[17].getText());
+            Assert.Equal("approach to nanoscale science and engineering (NIRT)", cells[18].getText());
 
             //Fifth row
             Assert.Equal("Database and innovation timeline for nanotechnology", cells[19].getText());
@@ -331,23 +321,23 @@ namespace Tabula.Tests
 
             //Seventh row
             Assert.Equal("Undergraduate exploration of nanoscience,", cells[25].getText());
-            //Assert.Equal("Michigan Technological", cells[26].getText());
+            Assert.Equal("Michigan Technological", cells[26].getText());
             Assert.Equal("NSF", cells[27].getText());
-            //Assert.Equal("applications and societal implications (NUE)", cells[28].getText());
+            Assert.Equal("applications and societal implications (NUE)", cells[28].getText());
             Assert.Equal("University", cells[29].getText());
 
             //Eighth row
             Assert.Equal("Ethics and belief inside the development of", cells[30].getText());
-            //Assert.Equal("NSF", cells[31].getText());
-            //Assert.Equal("University of Virginia", cells[32].getText());
-            //Assert.Equal("nanotechnology (CAREER)", cells[33].getText());
+            Assert.Equal("NSF", cells[31].getText());
+            Assert.Equal("University of Virginia", cells[32].getText());
+            Assert.Equal("nanotechnology (CAREER)", cells[33].getText());
 
             //Ninth row
             Assert.Equal("All centers, NNIN and NCN have a societal", cells[34].getText());
-            //Assert.Equal("NSF, DOE,", cells[35].getText());
-            //Assert.Equal("All nanotechnology centers", cells[36].getText());
-            //Assert.Equal("implications components", cells[37].getText());
-            //Assert.Equal("DOD, and NIH", cells[38].getText());
+            Assert.Equal("NSF, DOE,", cells[35].getText());
+            Assert.Equal("All nanotechnology centers", cells[36].getText());
+            Assert.Equal("implications components", cells[37].getText());
+            Assert.Equal("DOD, and NIH", cells[38].getText());
             Assert.Equal("and networks", cells[39].getText());
         }
 
