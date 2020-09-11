@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tabula.Csv\Tabula.Csv.csproj" />
+    <ProjectReference Include="..\Tabula.Json\Tabula.Json.csproj" />
     <ProjectReference Include="..\Tabula\Tabula.csproj" />
   </ItemGroup>
 
