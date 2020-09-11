@@ -59,14 +59,23 @@ namespace Tabula.Extractors
             List<double> columns;
             if (this.verticalRulings != null)
             {
-                this.verticalRulings.Sort(new VerticalRulingComparer());
-                // need to filter/clip only for area
+                // added by bobld: clipping verticalRulings because testExtractColumnsCorrectly2() fails
+                var clippedVerticalRulings = Ruling.cropRulingsToArea(this.verticalRulings, page.BoundingBox);
+                clippedVerticalRulings.Sort(new VerticalRulingComparer());
+                columns = new List<double>(clippedVerticalRulings.Count);
+                foreach (Ruling vr in clippedVerticalRulings)
+                {
+                    columns.Add(vr.getLeft());
+                }
 
+                /*
+                this.verticalRulings.Sort(new VerticalRulingComparer());
                 columns = new List<double>(this.verticalRulings.Count);
                 foreach (Ruling vr in this.verticalRulings)
                 {
                     columns.Add(vr.getLeft());
                 }
+                */
             }
             else
             {
@@ -162,12 +171,43 @@ namespace Tabula.Extractors
                     }
                 }
 
+                /*
                 foreach (TextChunk te in lineTextElements)
                 {
                     TableRectangle r = new TableRectangle();
                     r.setRect(te);
                     regions.Add(r);
                 }
+                */
+
+                // added by bobld
+                // We need more checks here
+                if (lineTextElements.Count > 0)
+                {
+                    // because testExtractColumnsCorrectly3() fails
+                    // need to check here if the remaining te in lineTextElements do overlap among themselves
+                    // might happen with multiline cell
+                    TableRectangle r = new TableRectangle();
+                    r.setRect(lineTextElements[0]);
+                    foreach (var rem in lineTextElements.subList(1, lineTextElements.Count))
+                    {
+                        if (r.horizontallyOverlaps(rem))
+                        {
+                            // they overlap!
+                            // so this is multiline cell
+                            r.merge(rem);
+                        }
+                        else
+                        {
+                            regions.Add(r); // do not overlap (anymore), so add it 
+                            r = new TableRectangle();
+                            r.setRect(rem);
+                            //regions.Add(r);
+                        }
+                    }
+                    regions.Add(r);
+                }
+                // end added
             }
 
             List<double> rv = new List<double>();

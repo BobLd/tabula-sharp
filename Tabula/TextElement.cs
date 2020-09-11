@@ -21,14 +21,6 @@ namespace Tabula
         private double widthOfSpace, dir;
         private static double AVERAGE_CHAR_TOLERANCE = 0.3;
 
-        /*
-        public TextElement(Letter letter)
-            : this(GetBbox(letter), letter.Font, letter.FontSize, letter.Value, GetExpectedWhitespaceSize(letter), 0) // hackish... WhitespaceSizeStatistics
-        {
-            this.letter = letter;
-        }
-        */
-
         public TextElement(PdfRectangle pdfRectangle, FontDetails font, double fontSize, string c, double widthOfSpace, double dir)
             : base(pdfRectangle)
         {
@@ -87,7 +79,7 @@ namespace Tabula
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            String s = base.ToString();
+            string s = base.ToString();
             sb.Append(s.Substring(0, s.Length - 1));
             sb.Append($",text={this.getText()}]");
             return sb.ToString();
@@ -95,7 +87,7 @@ namespace Tabula
 
         public override int GetHashCode()
         {
-            int prime = 31;
+            const int prime = 31;
             int result = base.GetHashCode();
 
             result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(dir), 0); //java.lang.Float.floatToIntBits(dir);
@@ -123,7 +115,10 @@ namespace Tabula
                     return false;
             }
             else if (!font.Equals(other.font))
+            {
                 return false;
+            }
+
             if (BitConverter.ToInt32(BitConverter.GetBytes(fontSize), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.fontSize), 0)) //if (java.lang.Float.floatToIntBits(fontSize) != java.lang.Float.floatToIntBits(other.fontSize))
                 return false;
             if (text == null)
@@ -132,8 +127,11 @@ namespace Tabula
                     return false;
             }
             else if (!text.Equals(other.text))
+            {
                 return false;
-            return (BitConverter.ToInt32(BitConverter.GetBytes(widthOfSpace), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.widthOfSpace), 0));  //return java.lang.Float.floatToIntBits(widthOfSpace) == java.lang.Float.floatToIntBits(other.widthOfSpace);
+            }
+
+            return BitConverter.ToInt32(BitConverter.GetBytes(widthOfSpace), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.widthOfSpace), 0);  //return java.lang.Float.floatToIntBits(widthOfSpace) == java.lang.Float.floatToIntBits(other.widthOfSpace);
         }
 
         public static List<TextChunk> mergeWords(List<TextElement> textElements)
@@ -291,12 +289,9 @@ namespace Tabula
                     sp = null;
                 }
 
-                //if (chr.getText() != " ") // added by BobLd
-                //{
                 maxYForLine = Math.Max(chr.getTop(), maxYForLine); // getBottom()
                 maxHeightForLine = Math.Max(maxHeightForLine, chr.height);
                 minYTopForLine = Math.Min(minYTopForLine, chr.getBottom()); // .getTop()
-                //}
 
                 dist = chr.getLeft() - (sp != null ? sp.getRight() : prevChar.getRight());
 
@@ -304,7 +299,7 @@ namespace Tabula
                 // handle cases where order of character is not good, implement quicksort???
                 if (dist < -wordSpacing)
                 {
-                    dist = double.MaxValue; // force create new word
+                    dist = double.MaxValue; // force create new word because testColumnRecognition() fails
                 }
                 // end added
 
