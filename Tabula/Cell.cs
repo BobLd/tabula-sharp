@@ -8,7 +8,7 @@ namespace Tabula
     // https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Cell.java
     public class Cell : RectangularTextContainer<TextChunk>
     {
-        public static Cell EMPTY = new Cell(new PdfRectangle());
+        public static Cell EMPTY => new Cell(new PdfRectangle());
 
         public Cell(TextChunk chunk) : this(chunk.BoundingBox)
         {

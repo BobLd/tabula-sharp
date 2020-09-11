@@ -12,7 +12,7 @@ namespace Tabula.Tests
 		{
 			TableLine line = new TableLine();
 
-			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "test", 5, 0);
+			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "testTabula1", 5, 0);
 			TextChunk tChunk = new TextChunk(tElement);
             List<TextChunk> tList = new List<TextChunk>
             {
@@ -20,7 +20,7 @@ namespace Tabula.Tests
             };
             line.setTextElements(tList);
 
-			Assert.Equal("test", line.getTextElements()[0].getText());
+			Assert.Equal("testTabula1", line.getTextElements()[0].getText());
 		}
 
 		[Fact]
@@ -28,11 +28,10 @@ namespace Tabula.Tests
 		{
 			TableLine line = new TableLine();
 
-			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "test", 5, 0);
+			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "testTabula2", 5, 0);
 			TextChunk tChunk = new TextChunk(tElement);
 			line.addTextChunk(3, tChunk);
-
-			Assert.Equal("test", line.getTextElements()[3].getText());
+			Assert.Equal("testTabula2", line.getTextElements()[3].getText());
 		}
 
 		[Fact]
@@ -48,16 +47,14 @@ namespace Tabula.Tests
 			Assert.Equal("testtest", line.getTextElements()[0].getText());
 		}
 
-		//@Test(expected = IllegalArgumentException.class)
 		[Fact]
 		public void testErrorAddTextChunkIntTextChunk()
 		{
-			TableLine line = new TableLine();
-
-			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "test", 5, 0);
-			TextChunk tChunk = new TextChunk(tElement);
-			Assert.Throws<ArgumentException>(() => line.addTextChunk(-1, tChunk));
-		}
+            TableLine line = new TableLine();
+            TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "testTabula3", 5, 0);
+            TextChunk tChunk = new TextChunk(tElement);
+            Assert.Throws<ArgumentException>(() => line.addTextChunk(-1, tChunk));
+        }
 
 		[Fact]
 		public void testToString()

@@ -19,9 +19,7 @@ namespace Tabula.Tests
 
         public static PageArea getAreaFromPage(string path, int page, PdfRectangle pdfRectangle)
         {
-            var area = getPage(path, page);
-
-            return area.getArea(pdfRectangle);
+            return getPage(path, page).getArea(pdfRectangle);
         }
 
         public static PageArea getPage(string path, int pageNumber)

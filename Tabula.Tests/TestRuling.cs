@@ -37,7 +37,7 @@ namespace Tabula.Tests
 		[Fact]
 		public void testEqualsDifferentInstance()
 		{
-			Assert.False(ruling.Equals("test"));
+			Assert.False(ruling.Equals("testTabula5"));
 		}
 
 		[Fact]

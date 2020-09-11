@@ -142,7 +142,7 @@ namespace Tabula
             return true;
         }
 
-        public static String join(String glue, params string[] s)
+        public static string join(string glue, params string[] s)
         {
             int k = s.Length;
             if (k == 0)

@@ -12,7 +12,7 @@ namespace Tabula
     {
         public Word word;
 
-        public static TextChunk EMPTY = new TextChunk();
+        public static TextChunk EMPTY => new TextChunk();
 
         public List<TextElement> textElements = new List<TextElement>();
 
@@ -42,7 +42,7 @@ namespace Tabula
             LTR, NONE, RTL
         }
 
-        private static Dictionary<string, DirectionalityOptions> directionalities = new Dictionary<string, DirectionalityOptions>()
+        private static readonly Dictionary<string, DirectionalityOptions> directionalities = new Dictionary<string, DirectionalityOptions>()
         {
             { "AN", DirectionalityOptions.LTR },    // DIRECTIONALITY_ARABIC_NUMBER, Weak BCT
             { "BN", DirectionalityOptions.NONE },   // DIRECTIONALITY_BOUNDARY_NEUTRAL, Weak BCT
