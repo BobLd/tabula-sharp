@@ -16,11 +16,11 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
+    - name: Install mscorefonts
+      run: sudo apt-get install ttf-mscorefonts-installer
     - name: Install dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
-    - name: Install mscorefonts
-      run: sudo apt-get install ttf-mscorefonts-installer
     - name: Test
       run: dotnet test --no-restore --verbosity normal
