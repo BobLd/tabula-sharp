@@ -181,6 +181,7 @@ namespace Tabula.Tests
         [Fact]
         public void testExtractColumnsCorrectly()
         {
+            // fails on linux, seems to be linked to PdfPig. Letters bounding boxes are different??
             PageArea page = UtilsForTesting.getAreaFromPage(EU_002_PDF, 1, new PdfRectangle(70.0, 725 - (233 - 115), 510.0, 725)); // 115.0f, 70.0f, 233.0f, 510.0f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.extract(page)[0];
@@ -205,6 +206,7 @@ namespace Tabula.Tests
         [Fact]
         public void testExtractColumnsCorrectly2()
         {
+            // fails on linux, seems to be linked to PdfPig. Letters bounding boxes are different??
             PageArea page = UtilsForTesting.getPage(EU_017_PDF, 3);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.getVerticalRulings());
             Table table = bea.extract(page.getArea(new PdfRectangle(148.44, 543 - (711.875 - 299.625), 452.32, 543)))[0]; //299.625f, 148.44f, 711.875f, 452.32f))[0];

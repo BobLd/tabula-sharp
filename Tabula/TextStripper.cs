@@ -12,7 +12,7 @@ namespace Tabula
 {
     public class TextStripper
     {
-        private static string NBSP = "\u00A0";
+        private static readonly string NBSP = "\u00A0";
         private static float AVG_HEIGHT_MULT_THRESHOLD = 6.0f;
         public List<TextElement> textElements;
         public double minCharWidth = double.MaxValue;
@@ -52,8 +52,8 @@ namespace Tabula
                 TextElement te = new TextElement(GetBbox(letter), letter.Font, letter.PointSize, c, wos, letter.GlyphRectangle.Rotation); // Rotation->The direction of the text(0, 90, 180, or 270)
                 te.letter = letter;
 
-                this.minCharWidth = (float)Math.Min(this.minCharWidth, te.width);
-                this.minCharHeight = (float)Math.Min(this.minCharHeight, te.height);
+                this.minCharWidth = Math.Min(this.minCharWidth, te.width);
+                this.minCharHeight = Math.Min(this.minCharHeight, te.height);
 
                 countHeight++;
                 totalHeight += te.height;
