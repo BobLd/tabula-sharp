@@ -9,7 +9,7 @@ namespace Tabula.Extractors
     //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/extractors/SpreadsheetExtractionAlgorithm.java
     public class SpreadsheetExtractionAlgorithm : ExtractionAlgorithm
     {
-        private static float MAGIC_HEURISTIC_NUMBER = 0.65f;
+        private static double MAGIC_HEURISTIC_NUMBER = 0.65;
 
         public class POINT_COMPARATOR : IComparer<PdfPoint>
         {

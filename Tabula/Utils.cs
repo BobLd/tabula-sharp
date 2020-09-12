@@ -425,7 +425,7 @@ namespace Tabula
                 avgLoc /= group.Count;
                 for (int p = 0; p < group.Count; p++)
                 {
-                    newXCoordinates[group[p].X] = Utils.round(avgLoc, 2); // round?
+                    newXCoordinates[group[p].X] = Utils.round(avgLoc, 6); // round?
                 }
             }
             // ---
@@ -460,7 +460,7 @@ namespace Tabula
                 avgLoc /= group.Count;
                 for (int p = 0; p < group.Count; p++)
                 {
-                    newYCoordinates[group[p].Y] = Utils.round(avgLoc, 2); // round?
+                    newYCoordinates[group[p].Y] = Utils.round(avgLoc, 6); // round?
                 }
             }
             // ---

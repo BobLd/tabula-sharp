@@ -81,7 +81,7 @@ namespace Tabula.Extractors
             {
                 columns = columnPositions(lines);
             }
-            columns = columns.Distinct().ToList(); // added by bobld: remove duplicates
+            //columns = columns.Distinct().ToList(); // added by bobld: remove duplicates
 
             Table table = new Table(this);
             table.setRect(page.BoundingBox);

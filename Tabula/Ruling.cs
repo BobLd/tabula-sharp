@@ -24,7 +24,7 @@ namespace Tabula
 
         public void setLine(PdfPoint p1, PdfPoint p2)
         {
-            if (p1.Y > p2.Y)
+            if (Math.Round(p1.Y, 2) > Math.Round(p2.Y, 2)) // using round here to account for almost vert. or horiz. line before normalize
             {
                 throw new ArgumentException("Points order is wrong. p1 needs to be below p2 (p1.Y <= p2.Y)");
             }
@@ -291,11 +291,13 @@ namespace Tabula
 
             if (this_l.horizontal() && other_l.vertical())
             {
-                horizontal = this_l; vertical = other_l;
+                horizontal = this_l;
+                vertical = other_l;
             }
             else if (this_l.vertical() && other_l.horizontal())
             {
-                vertical = this_l; horizontal = other_l;
+                vertical = this_l;
+                horizontal = other_l;
             }
             else
             {
@@ -471,10 +473,10 @@ namespace Tabula
         {
             public int Compare([AllowNull] PdfPoint o1, [AllowNull] PdfPoint o2)
             {
-                if (o1.Y> o2.Y) return 1; //if (o1.getY() > o2.getY()) return 1;
-                if (o1.Y < o2.Y) return -1;
+                if (o1.Y < o2.Y) return 1;  // (o1.Y> o2.Y)
+                if (o1.Y > o2.Y) return -1; // (o1.Y < o2.Y)
                 if (o1.X > o2.X) return 1;
-                if (o1.X< o2.X) return -1;
+                if (o1.X < o2.X) return -1;
                 return 0;
             }
         }
@@ -504,12 +506,12 @@ namespace Tabula
                     }
                     else
                     {
-                        rv = a.position.CompareTo(b.position); //java.lang.Double.compare(a.position, b.position);
+                        rv = a.position.CompareTo(b.position);
                     }
                 }
                 else
                 {
-                    return a.position.CompareTo(b.position); //java.lang.Double.compare(a.position, b.position);
+                    return a.position.CompareTo(b.position);
                 }
                 return rv;
             }
@@ -628,7 +630,7 @@ namespace Tabula
             public int Compare([AllowNull] Ruling a, [AllowNull] Ruling b)
             {
                 double diff = a.getPosition() - b.getPosition();
-                return (diff == 0 ? a.getStart() - b.getStart() : diff).CompareTo(0f);
+                return (diff == 0 ? a.getStart() - b.getStart() : diff).CompareTo(0);
             }
         }
 
@@ -668,6 +670,7 @@ namespace Tabula
                     rv.Add(next_line);
                 }
             }
+
             return rv;
         }
 
@@ -683,6 +686,13 @@ namespace Tabula
         public PdfPoint getP1() => line.Point1;
         public PdfPoint getP2() => line.Point2;
 
+        /// <summary>
+        /// True if both horizontal and overlap (i.e. infinite intersection points).
+        /// True if both vertical and overlap (i.e. infinite intersection points).
+        /// True if not parallel and intersect (i.e. in intersection point).
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool intersectsLine(Ruling other)
         {
             // include case point are the same
@@ -691,7 +701,19 @@ namespace Tabula
                 this.line.Point2.Equals(other.line.Point1) ||
                 this.line.Point2.Equals(other.line.Point2)) return true;
 
-                return this.line.IntersectsWith(other.line);
+            // include case where both are horizontal and overlap
+            if (this.horizontal() && other.horizontal())
+            {
+                if (this.y1.Equals(other.y1)) return true;
+            }
+            // include case where both are vertical and overlap
+            else if (this.vertical() && other.vertical())
+            {
+                if (this.x1.Equals(other.x1)) return true;
+            }
+            // else check if parallel and overlap
+
+            return this.line.IntersectsWith(other.line);
         }
         #endregion
     }
