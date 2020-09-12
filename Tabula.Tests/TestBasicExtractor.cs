@@ -178,7 +178,7 @@ namespace Tabula.Tests
             Assert.Equal("OFERNANDO JORGE", sixthRow[1].getText());
         }
 
-        [Fact(Skip = "skip for the moment because of a problem with pdfpig")]
+        [Fact]
         public void testExtractColumnsCorrectly()
         {
             // fails on linux, seems to be linked to PdfPig. Letters bounding boxes are different??
@@ -203,7 +203,7 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact(Skip = "skip for the moment because of a problem with pdfpig")]
+        [Fact]
         public void testExtractColumnsCorrectly2()
         {
             // fails on linux, seems to be linked to PdfPig. Letters bounding boxes are different??
