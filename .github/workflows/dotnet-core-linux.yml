@@ -20,5 +20,7 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
+    - name: Install mscorefonts
+      run: sudo apt-get install ttf-mscorefonts-installer
     - name: Test
       run: dotnet test --no-restore --verbosity normal
