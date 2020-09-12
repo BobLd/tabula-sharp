@@ -21,12 +21,11 @@ namespace Tabula.Extractors
                 double arg1X = Utils.round(arg1.X, 2);
                 double arg1Y = Utils.round(arg1.Y, 2);
 
-
-                if (arg0Y > arg1Y)
+                if (arg0Y < arg1Y) //(arg0Y > arg1Y)
                 {
                     rv = 1;
                 }
-                else if (arg0Y < arg1Y)
+                else if (arg0Y > arg1Y) // (arg0Y < arg1Y)
                 {
                     rv = -1;
                 }
@@ -61,11 +60,11 @@ namespace Tabula.Extractors
                 {
                     rv = -1;
                 }
-                else if (arg0Y > arg1Y)
+                else if (arg0Y < arg1Y) //(arg0Y > arg1Y)
                 {
                     rv = 1;
                 }
-                else if (arg0Y < arg1Y)
+                else if (arg0Y > arg1Y) //(arg0Y < arg1Y)
                 {
                     rv = -1;
                 }
@@ -149,7 +148,6 @@ namespace Tabula.Extractors
 
         public bool isTabular(PageArea page)
         {
-
             // if there's no text at all on the page, it's not a table 
             // (we won't be able to do anything with it though)
             if (page.getText().Count == 0)
@@ -187,7 +185,7 @@ namespace Tabula.Extractors
         public static List<Cell> findCells(List<Ruling> horizontalRulingLines, List<Ruling> verticalRulingLines)
         {
             List<Cell> cellsFound = new List<Cell>();
-            Dictionary<PdfPoint, Ruling[]> intersectionPoints = Ruling.findIntersections(horizontalRulingLines, verticalRulingLines);
+            SortedDictionary<PdfPoint, Ruling[]> intersectionPoints = Ruling.findIntersections(horizontalRulingLines, verticalRulingLines);
             List<PdfPoint> intersectionPointsList = new List<PdfPoint>(intersectionPoints.Keys);
             intersectionPointsList.Sort(new POINT_COMPARATOR());
             bool doBreak = false;
@@ -273,8 +271,8 @@ namespace Tabula.Extractors
                 foreach (PdfPoint pt in cell.getPoints())
                 {
                     if (pointSet.Contains(pt))
-                    { // shared vertex, remove it
-                        pointSet.Remove(pt);
+                    {
+                        pointSet.Remove(pt); // shared vertex, remove it
                     }
                     else
                     {

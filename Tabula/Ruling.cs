@@ -1,6 +1,8 @@
 ﻿using ClipperLib;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -458,6 +460,75 @@ namespace Tabula
             //return rv;
         }
 
+        public class TreeMapRulingComparator : IComparer<Ruling>
+        {
+            public int Compare([AllowNull] Ruling o1, [AllowNull] Ruling o2)
+            {
+                return o1.getTop().CompareTo(o2.getTop());//return java.lang.Double.compare(o1.getTop(), o2.getTop());
+            }
+        }
+        public class TreeMapPdfPointComparator : IComparer<PdfPoint>
+        {
+            public int Compare([AllowNull] PdfPoint o1, [AllowNull] PdfPoint o2)
+            {
+                if (o1.Y> o2.Y) return 1; //if (o1.getY() > o2.getY()) return 1;
+                if (o1.Y < o2.Y) return -1;
+                if (o1.X > o2.X) return 1;
+                if (o1.X< o2.X) return -1;
+                return 0;
+            }
+        }
+
+        class SortObjectComparer : IComparer<SortObject>
+        {
+            public int Compare([AllowNull] SortObject a, [AllowNull] SortObject b)
+            {
+                int rv;
+                if (Utils.feq(a.position, b.position))
+                {
+                    if (a.type == SOType.VERTICAL && b.type == SOType.HLEFT)
+                    {
+                        rv = 1;
+                    }
+                    else if (a.type == SOType.VERTICAL && b.type == SOType.HRIGHT)
+                    {
+                        rv = -1;
+                    }
+                    else if (a.type == SOType.HLEFT && b.type == SOType.VERTICAL)
+                    {
+                        rv = -1;
+                    }
+                    else if (a.type == SOType.HRIGHT && b.type == SOType.VERTICAL)
+                    {
+                        rv = 1;
+                    }
+                    else
+                    {
+                        rv = a.position.CompareTo(b.position); //java.lang.Double.compare(a.position, b.position);
+                    }
+                }
+                else
+                {
+                    return a.position.CompareTo(b.position); //java.lang.Double.compare(a.position, b.position);
+                }
+                return rv;
+            }
+        }
+
+        class SortObject
+        {
+            internal SOType type;      //protected
+            internal double position;  //protected
+            internal Ruling ruling;    //protected
+
+            public SortObject(SOType type, double position, Ruling ruling)
+            {
+                this.type = type;
+                this.position = position;
+                this.ruling = ruling;
+            }
+        }
+
         /// <summary>
         /// log(n) implementation of find_intersections
         /// based on http://people.csail.mit.edu/indyk/6.838-old/handouts/lec2.pdf
@@ -465,10 +536,86 @@ namespace Tabula
         /// <param name="horizontals"></param>
         /// <param name="verticals"></param>
         /// <returns></returns>
-        public static Dictionary<PdfPoint, Ruling[]> findIntersections(List<Ruling> horizontals, List<Ruling> verticals)
+        public static SortedDictionary<PdfPoint, Ruling[]> findIntersections(List<Ruling> horizontals, List<Ruling> verticals)
         {
             //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java#L312
-            throw new NotImplementedException();
+
+            List<SortObject> sos = new List<SortObject>(); //ArrayList<>();
+            SortedDictionary<Ruling, bool> tree = new SortedDictionary<Ruling, bool>(new TreeMapRulingComparator());
+            // The SortedDictionary will not work because it throws ArgumentException on duplicate keys. As the OP said, 
+            // duplicate keys will be present. – eugen_nw Mar 24 '16 at 16:04
+
+            //TreeMap<Ruling, Boolean> tree = new TreeMap<>(new Comparator<Ruling>() 
+            //{
+            //        @Override
+            //        public int compare(Ruling o1, Ruling o2)
+            //    {
+            //        return java.lang.Double.compare(o1.getTop(), o2.getTo());
+            //    }
+            //});
+
+            SortedDictionary<PdfPoint, Ruling[]> rv = new SortedDictionary<PdfPoint, Ruling[]>(new TreeMapPdfPointComparator());
+            // The SortedDictionary will not work because it throws ArgumentException on duplicate keys. As the OP said, 
+            // duplicate keys will be present. – eugen_nw Mar 24 '16 at 16:04
+
+            //TreeMap<Point2D, Ruling[]> rv = new TreeMap<>(new Comparator<Point2D>() 
+            //{
+            //        @Override
+            //        public int compare(Point2D o1, Point2D o2)
+            //    {
+            //        if (o1.getY() > o2.getY()) return 1;
+            //        if (o1.getY() < o2.getY()) return -1;
+            //        if (o1.getX() > o2.getX()) return 1;
+            //        if (o1.getX() < o2.getX()) return -1;
+            //        return 0;
+            //    }
+            //});
+
+            foreach (Ruling h in horizontals)
+            {
+                sos.Add(new SortObject(SOType.HLEFT, h.getLeft() - PERPENDICULAR_PIXEL_EXPAND_AMOUNT, h));
+                sos.Add(new SortObject(SOType.HRIGHT, h.getRight() + PERPENDICULAR_PIXEL_EXPAND_AMOUNT, h));
+            }
+
+            foreach (Ruling v in verticals)
+            {
+                sos.Add(new SortObject(SOType.VERTICAL, v.getLeft(), v));
+            }
+
+            sos.Sort(new SortObjectComparer());  //Collections.sort(sos, new Comparator<SortObject>() ...
+
+            foreach (SortObject so in sos)
+            {
+                switch (so.type)
+                {
+                    case SOType.VERTICAL:
+                        foreach (var h in tree)//.entrySet()) 
+                        {
+                            PdfPoint? i = h.Key.intersectionPoint(so.ruling);
+                            if (!i.HasValue)//== null)
+                            {
+                                continue;
+                            }
+                            //rv.put(i,
+                            //       new Ruling[] { h.getKey().expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT),
+                            //              so.ruling.expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT) });
+                            rv[i.Value] = new Ruling[]
+                            {
+                                h.Key.expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT),
+                                so.ruling.expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT)
+                            };
+                        }
+                        break;
+                    case SOType.HRIGHT:
+                        tree.Remove(so.ruling);
+                        break;
+                    case SOType.HLEFT:
+                        tree[so.ruling] = true; //.put(so.ruling, true);
+                        break;
+                }
+            }
+
+            return rv;
         }
 
         public static List<Ruling> collapseOrientedRulings(List<Ruling> lines)

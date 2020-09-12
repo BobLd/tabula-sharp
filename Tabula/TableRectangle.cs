@@ -58,7 +58,7 @@ namespace Tabula
 
         public TableRectangle(double top, double left, double width, double height) : this()
         {
-            this.setRect(left, top, width, height);
+            //this.setRect(left, top, width, height);
             throw new ArgumentException();
         }
 
@@ -129,23 +129,30 @@ namespace Tabula
 
         public void setTop(double top)
         {
-            double deltaHeight = top - this.y;
-            this.setRect(this.x, top, this.width, this.height - deltaHeight);
+            //double deltaHeight = top - this.y;
+            //this.setRect(this.x, top, this.width, this.height - deltaHeight);
+
+            // BobLD: Not sure between top and bottom!
+            this.setRect(new PdfRectangle(this.getLeft(), this.getBottom(), this.getRight(), top));
         }
 
         public double getRight() => BoundingBox.Right;
 
         public void setRight(float right)
         {
-            this.setRect(this.x, this.y, right - this.x, this.height);
+            //this.setRect(this.x, this.y, right - this.x, this.height);
+
+            this.setRect(new PdfRectangle(this.getLeft(), this.getBottom(), right, this.getTop()));
         }
 
         public double getLeft() => BoundingBox.Left;
 
         public void setLeft(float left)
         {
-            double deltaWidth = left - this.x;
-            this.setRect(left, this.y, this.width - deltaWidth, this.height);
+            //double deltaWidth = left - this.x;
+            //this.setRect(left, this.y, this.width - deltaWidth, this.height);
+
+            this.setRect(new PdfRectangle(left, this.getBottom(), this.getRight(), this.getTop()));
         }
 
         public double getBottom() => BoundingBox.Bottom;
@@ -153,6 +160,9 @@ namespace Tabula
         public void setBottom(float bottom)
         {
             this.setRect(this.x, this.y, this.width, bottom - this.y);
+
+            // BobLD: Not sure between top and bottom!
+            this.setRect(new PdfRectangle(this.getLeft(), bottom, this.getRight(), this.getTop()));
         }
 
         /// <summary>
