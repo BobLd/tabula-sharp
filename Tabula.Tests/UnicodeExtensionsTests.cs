@@ -8,7 +8,7 @@ namespace Tabula.Tests
         [Fact]
         public void Unicode13IntValues()
         {
-            foreach (var line in File.ReadAllLines(@"Resources\UnicodeData_13.0.txt"))
+            foreach (var line in File.ReadAllLines("Resources/UnicodeData_13.0.txt"))
             {
                 var properties = line.Split(';');
 
