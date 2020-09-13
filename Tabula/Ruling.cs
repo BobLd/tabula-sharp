@@ -1,11 +1,8 @@
 ﻿using ClipperLib;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.DocumentLayoutAnalysis;
 using UglyToad.PdfPig.Geometry;
@@ -400,38 +397,15 @@ namespace Tabula
             return $"{this.GetType()}[x1={this.x1} y1={this.y1} x2={this.x2} y2={this.y2}]";
         }
 
-        #region clipper temporary
-        private static IntPoint ToClipperIntPoint(PdfPoint point)
-        {
-            return new IntPoint(point.X * 10_000.0, point.Y * 10_000.0);
-        }
-
-        private static List<IntPoint> ToClipperIntPoints(PdfRectangle rect)
-        {
-            return new List<IntPoint>()
-            {
-                ToClipperIntPoint(rect.BottomLeft),
-                ToClipperIntPoint(rect.TopLeft),
-                ToClipperIntPoint(rect.TopRight),
-                ToClipperIntPoint(rect.BottomRight),
-                ToClipperIntPoint(rect.BottomLeft),
-            };
-        }
-        private static List<IntPoint> ToClipperIntPoints(Ruling rect)
-        {
-            return new List<IntPoint>() { ToClipperIntPoint(rect.line.Point1), ToClipperIntPoint(rect.line.Point2) };
-        }
-        #endregion
-
         public static List<Ruling> cropRulingsToArea(List<Ruling> rulings, PdfRectangle area)
         {
             // use clipper
             var clipper = new Clipper();
-            clipper.AddPath(ToClipperIntPoints(area), PolyType.ptClip, true);
+            clipper.AddPath(Clipper.ToClipperIntPoints(area), PolyType.ptClip, true);
 
             foreach (Ruling r in rulings)
             {
-                clipper.AddPath(ToClipperIntPoints(r), PolyType.ptSubject, false);
+                clipper.AddPath(Clipper.ToClipperIntPoints(r), PolyType.ptSubject, false);
             }
 
             var solutions = new PolyTree();

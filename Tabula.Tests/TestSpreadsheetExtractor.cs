@@ -91,46 +91,52 @@ namespace Tabula.Tests
 
         private static readonly Ruling[] EXTERNALLY_DEFINED_RULINGS = new Ruling[]
         {
-            new Ruling(new PdfPoint(320.0f, 285.0f), new PdfPoint(564.4409f, 285.0f)),
-            new Ruling(new PdfPoint(320.0f, 457.0f), new PdfPoint(564.4409f, 457.0f)),
-            new Ruling(new PdfPoint(320.0f, 331.0f), new PdfPoint(564.4409f, 331.0f)),
-            new Ruling(new PdfPoint(320.0f, 315.0f), new PdfPoint(564.4409f, 315.0f)),
-            new Ruling(new PdfPoint(320.0f, 347.0f), new PdfPoint(564.4409f, 347.0f)),
-            new Ruling(new PdfPoint(320.0f, 363.0f), new PdfPoint(564.44088f, 363.0f)),
-            new Ruling(new PdfPoint(320.0f, 379.0f), new PdfPoint(564.44087f, 379.0f)),
-            new Ruling(new PdfPoint(320.0f, 395.5f), new PdfPoint(564.44086f, 395.5f)),
-            new Ruling(new PdfPoint(320.00006f, 415.0f), new PdfPoint(564.4409f, 415.0f)),
-            new Ruling(new PdfPoint(320.00007f, 431.0f), new PdfPoint(564.4409f, 431.0f)),
+            // height of page = 792
+            // horizontal lines
+            new Ruling(new PdfPoint(320.0,      792 - 285.0), new PdfPoint(564.4409,  792 - 285.0)),
+            new Ruling(new PdfPoint(320.0,      792 - 457.0), new PdfPoint(564.4409,  792 - 457.0)),
+            new Ruling(new PdfPoint(320.0,      792 - 331.0), new PdfPoint(564.4409,  792 - 331.0)),
+            new Ruling(new PdfPoint(320.0,      792 - 315.0), new PdfPoint(564.4409,  792 - 315.0)),
+            new Ruling(new PdfPoint(320.0,      792 - 347.0), new PdfPoint(564.4409,  792 - 347.0)),
+            new Ruling(new PdfPoint(320.0,      792 - 363.0), new PdfPoint(564.44088, 792 - 363.0)),
+            new Ruling(new PdfPoint(320.0,      792 - 379.0), new PdfPoint(564.44087, 792 - 379.0)),
+            new Ruling(new PdfPoint(320.0,      792 - 395.5), new PdfPoint(564.44086, 792 - 395.5)),
+            new Ruling(new PdfPoint(320.00006,  792 - 415.0), new PdfPoint(564.4409,  792 - 415.0)),
+            new Ruling(new PdfPoint(320.00007,  792 - 431.0), new PdfPoint(564.4409,  792 - 431.0)),
 
-            new Ruling(new PdfPoint(320.0f, 285.0f), new PdfPoint(320.0f, 457.0f)),
-            new Ruling(new PdfPoint(565.0f, 285.0f), new PdfPoint(564.4409f, 457.0f)),
-            new Ruling(new PdfPoint(470.5542f, 285.0f), new PdfPoint(470.36865f, 457.0f))
+            // vertical lines
+            new Ruling(new PdfPoint(320.0,      792 - 457.0), new PdfPoint(320.0,     792 - 285.0)),
+            new Ruling(new PdfPoint(565.0,      792 - 457.0), new PdfPoint(564.4409,  792 - 285.0)),
+            new Ruling(new PdfPoint(470.5542,   792 - 457.0), new PdfPoint(470.36865, 792 - 285.0))
         };
 
         private static readonly Ruling[] EXTERNALLY_DEFINED_RULINGS2 = new Ruling[]
         {
-            new Ruling(new PdfPoint(51.796964f, 180.0f), new PdfPoint(560.20312f, 180.0f)),
-            new Ruling(new PdfPoint(51.797017f, 219.0f), new PdfPoint(560.2031f, 219.0f)),
-            new Ruling(new PdfPoint(51.797f, 239.0f), new PdfPoint(560.2031f, 239.0f)),
-            new Ruling(new PdfPoint(51.797f, 262.0f), new PdfPoint(560.20312f, 262.0f)),
-            new Ruling(new PdfPoint(51.797f, 283.50247f), new PdfPoint(560.05024f, 283.50247f)),
-            new Ruling(new PdfPoint(51.796964f, 309.0f), new PdfPoint(560.20312f, 309.0f)),
-            new Ruling(new PdfPoint(51.796982f, 333.0f), new PdfPoint(560.20312f, 333.0f)),
-            new Ruling(new PdfPoint(51.797f, 366.0f), new PdfPoint(560.20312f, 366.0f)),
-
-            new Ruling(new PdfPoint(52.0f, 181.0f), new PdfPoint(51.797f, 366.0f)),
-            new Ruling(new PdfPoint(208.62891f, 181.0f), new PdfPoint(208.62891f, 366.0f)),
-            new Ruling(new PdfPoint(357.11328f, 180.0f), new PdfPoint(357.0f, 366.0f)),
-            new Ruling(new PdfPoint(560.11328f, 180.0f), new PdfPoint(560.0f, 366.0f))
+            // height of page = 792
+            // horizontal lines
+            new Ruling(new PdfPoint(51.796964,  792 - 180.0), new PdfPoint(560.20312,       792 - 180.0)),
+            new Ruling(new PdfPoint(51.797017,  792 - 219.0), new PdfPoint(560.2031,        792 - 219.0)),
+            new Ruling(new PdfPoint(51.797,     792 - 239.0), new PdfPoint(560.2031,        792 - 239.0)),
+            new Ruling(new PdfPoint(51.797,     792 - 262.0), new PdfPoint(560.20312,       792 - 262.0)),
+            new Ruling(new PdfPoint(51.797,     792 - 283.50247), new PdfPoint(560.05024,   792 - 283.50247)),
+            new Ruling(new PdfPoint(51.796964,  792 - 309.0), new PdfPoint(560.20312,       792 - 309.0)),
+            new Ruling(new PdfPoint(51.796982,  792 - 333.0), new PdfPoint(560.20312,       792 - 333.0)),
+            new Ruling(new PdfPoint(51.797,     792 - 366.0), new PdfPoint(560.20312,       792 - 366.0)),
+            
+            // vertical lines
+            new Ruling(new PdfPoint(52.0,       792 - 366.0), new PdfPoint(51.797,      792 - 181.0)),
+            new Ruling(new PdfPoint(208.62891,  792 - 366.0), new PdfPoint(208.62891,   792 - 181.0)),
+            new Ruling(new PdfPoint(357.11328,  792 - 366.0), new PdfPoint(357.0,       792 - 181.0)),
+            new Ruling(new PdfPoint(560.11328,  792 - 366.0), new PdfPoint(560.0,       792 - 181.0))
         };
 
-        [Fact]//  [Fact(Skip = "TODO")]
+        [Fact]
         public void testLinesToCells()
         {
             List<Cell> cells = SpreadsheetExtractionAlgorithm.findCells(HORIZONTAL_RULING_LINES.ToList(), VERTICAL_RULING_LINES.ToList());
-            Utils.sort(cells, new TableRectangle.ILL_DEFINED_ORDER()); //cells.Sort(new TableRectangle.ILL_DEFINED_ORDER());
+            Utils.sort(cells, new TableRectangle.ILL_DEFINED_ORDER());
             List<Cell> expected = EXPECTED_CELLS.ToList();
-            Utils.sort(expected, new TableRectangle.ILL_DEFINED_ORDER()); //expected.Sort(new TableRectangle.ILL_DEFINED_ORDER());
+            Utils.sort(expected, new TableRectangle.ILL_DEFINED_ORDER());
             Assert.Equal(expected, cells);
         }
 
@@ -401,25 +407,28 @@ namespace Tabula.Tests
             List<Table> tables = bea.extract(page, EXTERNALLY_DEFINED_RULINGS.ToList());
             Assert.Single(tables);
             Table table = tables[0];
+            Assert.Equal(18, table.cells.Count);
 
-            Assert.Equal("Payroll Period", table.getRows()[0][0].getText());
-            Assert.Equal("One Withholding\rAllowance", table.getRows()[0][1].getText());
-            Assert.Equal("Weekly", table.getRows()[1][0].getText());
-            Assert.Equal("$71.15", table.getRows()[1][1].getText());
-            Assert.Equal("Biweekly", table.getRows()[2][0].getText());
-            Assert.Equal("142.31", table.getRows()[2][1].getText());
-            Assert.Equal("Semimonthly", table.getRows()[3][0].getText());
-            Assert.Equal("154.17", table.getRows()[3][1].getText());
-            Assert.Equal("Monthly", table.getRows()[4][0].getText());
-            Assert.Equal("308.33", table.getRows()[4][1].getText());
-            Assert.Equal("Quarterly", table.getRows()[5][0].getText());
-            Assert.Equal("925.00", table.getRows()[5][1].getText());
-            Assert.Equal("Semiannually", table.getRows()[6][0].getText());
-            Assert.Equal("1,850.00", table.getRows()[6][1].getText());
-            Assert.Equal("Annually", table.getRows()[7][0].getText());
-            Assert.Equal("3,700.00", table.getRows()[7][1].getText());
-            Assert.Equal("Daily or Miscellaneous\r(each day of the payroll period)", table.getRows()[8][0].getText());
-            Assert.Equal("14.23", table.getRows()[8][1].getText());
+            var rows = table.getRows();
+
+            Assert.Equal("Payroll Period", rows[0][0].getText());
+            Assert.Equal("One Withholding\rAllowance", rows[0][1].getText());
+            Assert.Equal("Weekly", rows[1][0].getText());
+            Assert.Equal("$71.15", rows[1][1].getText());
+            Assert.Equal("Biweekly", rows[2][0].getText());
+            Assert.Equal("142.31", rows[2][1].getText());
+            Assert.Equal("Semimonthly", rows[3][0].getText());
+            Assert.Equal("154.17", rows[3][1].getText());
+            Assert.Equal("Monthly", rows[4][0].getText());
+            Assert.Equal("308.33", rows[4][1].getText());
+            Assert.Equal("Quarterly", rows[5][0].getText());
+            Assert.Equal("925.00", rows[5][1].getText());
+            Assert.Equal("Semiannually", rows[6][0].getText());
+            Assert.Equal("1,850.00", rows[6][1].getText());
+            Assert.Equal("Annually", rows[7][0].getText());
+            Assert.Equal("3,700.00", rows[7][1].getText());
+            Assert.Equal("Daily or Miscellaneous\r(each day of the payroll period)", rows[8][0].getText());
+            Assert.Equal("14.23", rows[8][1].getText());
         }
 
         [Fact]// [Fact]//(Skip = "TODO")]
@@ -451,14 +460,13 @@ namespace Tabula.Tests
         [Fact]//[Fact(Skip = "TODO")]
         public void testDontStackOverflowQuicksort()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/failing_sort.pdf",
-                        1);
+            PageArea page = UtilsForTesting.getPage("Resources/failing_sort.pdf", 1);
 
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
             List<Table> tables = sea.extract(page);
             for (int i = 1; i < tables.Count; i++)
             {
-                Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
+                Assert.True(tables[i - 1].getTop() >= tables[i].getTop()); //Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
             }
         }
 

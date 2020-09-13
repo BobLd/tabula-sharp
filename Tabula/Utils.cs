@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using UglyToad.PdfPig.Core;
-using UglyToad.PdfPig.Geometry;
 
 namespace Tabula
 {

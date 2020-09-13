@@ -109,7 +109,6 @@ namespace Tabula.Extractors
             List<Table> spreadsheets = new List<Table>();
             foreach (TableRectangle area in spreadsheetAreas)
             {
-
                 List<Cell> overlappingCells = new List<Cell>();
                 foreach (Cell c in cells)
                 {
@@ -203,7 +202,7 @@ namespace Tabula.Extractors
 
                 foreach (PdfPoint p in intersectionPointsList.subList(i, intersectionPointsList.Count))
                 {
-                    if (p.X == topLeft.X && p.Y > topLeft.Y)
+                    if (p.X == topLeft.X && p.Y < topLeft.Y) //  p.Y > topLeft.Y
                     {
                         xPoints.Add(p);
                     }
@@ -364,18 +363,18 @@ namespace Tabula.Extractors
             // calculate grid-aligned minimum area rectangles for each found polygon
             foreach (List<PolygonVertex> poly in polygons)
             {
-                double top = double.MaxValue;//java.lang.Float.MAX_VALUE;
+                double top = double.MinValue; //.MaxValue;//java.lang.Float.MAX_VALUE;
                 double left = double.MaxValue;//java.lang.Float.MAX_VALUE;
-                double bottom = double.MinValue;//java.lang.Float.MIN_VALUE;
+                double bottom = double.MaxValue;//java.lang.Float.MIN_VALUE;
                 double right = double.MinValue;//java.lang.Float.MIN_VALUE;
                 foreach (PolygonVertex pt in poly)
                 {
-                    top = Math.Min(top, pt.point.Y);
+                    top = Math.Max(top, pt.point.Y); // Min
                     left = Math.Min(left, pt.point.X);
-                    bottom = Math.Max(bottom, pt.point.Y);
+                    bottom = Math.Min(bottom, pt.point.Y); // Max
                     right = Math.Max(right, pt.point.X);
                 }
-                rectangles.Add(new TableRectangle(top, left, right - left, bottom - top));
+                rectangles.Add(new TableRectangle(new PdfRectangle(left, bottom, right, top))); // top, left, right - left, bottom - top));
             }
 
             return rectangles;

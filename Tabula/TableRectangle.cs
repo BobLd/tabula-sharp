@@ -1,9 +1,10 @@
-﻿using System;
+﻿using ClipperLib;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using UglyToad.PdfPig.Core;
+using UglyToad.PdfPig.Geometry;
 
 namespace Tabula
 {
@@ -222,12 +223,32 @@ namespace Tabula
 
         public bool intersects(TableRectangle tableRectangle)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return this.BoundingBox.IntersectsWith(tableRectangle.BoundingBox);
         }
 
         public bool intersectsLine(Ruling ruling)
         {
-            throw new NotImplementedException();
+            // needs checks
+            // use clipper
+            var clipper = new Clipper();
+            clipper.AddPath(Clipper.ToClipperIntPoints(this.BoundingBox), PolyType.ptClip, true);
+
+
+            clipper.AddPath(Clipper.ToClipperIntPoints(ruling), PolyType.ptSubject, false);
+
+
+            var solutions = new PolyTree();
+            if (clipper.Execute(ClipType.ctIntersection, solutions))
+            {
+                return solutions.Childs.Count > 0;
+            }
+            else
+            {
+                return false;
+            }
+
+            //throw new NotImplementedException();
         }
 
         #region helpers
