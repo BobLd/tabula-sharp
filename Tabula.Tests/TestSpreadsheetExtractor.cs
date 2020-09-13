@@ -40,34 +40,34 @@ namespace Tabula.Tests
 
         private static readonly Cell[] EXPECTED_CELLS = new Cell[]
         {
-            //new Cell(40.0f, 18.0f, 208.0f, 4.0f),
-            //new Cell(44.0f, 18.0f, 52.0f, 6.0f),
-            //new Cell(50.0f, 18.0f, 52.0f, 4.0f),
-            //new Cell(54.0f, 18.0f, 52.0f, 6.0f),
-            //new Cell(60.0f, 18.0f, 52.0f, 4.0f),
-            //new Cell(64.0f, 18.0f, 52.0f, 6.0f),
-            //new Cell(70.0f, 18.0f, 52.0f, 4.0f),
-            //new Cell(74.0f, 18.0f, 52.0f, 6.0f),
-            //new Cell(44.0f, 70.0f, 156.0f, 6.0f),
-            //new Cell(50.0f, 70.0f, 156.0f, 4.0f),
-            //new Cell(54.0f, 70.0f, 156.0f, 6.0f),
-            //new Cell(60.0f, 70.0f, 156.0f, 4.0f),
-            //new Cell(64.0f, 70.0f, 156.0f, 6.0f),
-            //new Cell(70.0f, 70.0f, 156.0f, 4.0f),
-            //new Cell(74.0f, 70.0f, 156.0f, 6.0f)
+            new Cell(new PdfRectangle(18.0, 40.0 - 4.0, 18.0 + 208.0, 40.0)), // 40.0f, 18.0f, 208.0f, 4.0f),
+            new Cell(new PdfRectangle(18.0, 44.0 - 6.0, 18.0 + 52.0, 44.0)), // 44.0f, 18.0f, 52.0f, 6.0f),
+            new Cell(new PdfRectangle(18.0, 50.0 - 4.0, 18.0 + 52.0, 50.0)), // 50.0f, 18.0f, 52.0f, 4.0f),
+            new Cell(new PdfRectangle(18.0, 54.0 - 6.0, 18.0 + 52.0, 54.0)), // 54.0f, 18.0f, 52.0f, 6.0f),
+            new Cell(new PdfRectangle(18.0, 60.0 - 4.0, 18.0 + 52.0, 60.0)), // 60.0f, 18.0f, 52.0f, 4.0f),
+            new Cell(new PdfRectangle(18.0, 64.0 - 6.0, 18.0 + 52.0, 64.0)), // 64.0f, 18.0f, 52.0f, 6.0f),
+            new Cell(new PdfRectangle(18.0, 70.0 - 4.0, 18.0 + 52.0, 70.0)), // 70.0f, 18.0f, 52.0f, 4.0f),
+            new Cell(new PdfRectangle(18.0, 74.0 - 6.0, 18.0 + 52.0, 74.0)), // 74.0f, 18.0f, 52.0f, 6.0f),
+            new Cell(new PdfRectangle(70.0, 44.0 - 6.0, 70.0 + 156.0, 44.0)), // 44.0f, 70.0f, 156.0f, 6.0f),
+            new Cell(new PdfRectangle(70.0, 50.0 - 4.0, 70.0 + 156.0, 50.0)), // 50.0f, 70.0f, 156.0f, 4.0f),
+            new Cell(new PdfRectangle(70.0, 54.0 - 6.0, 70.0 + 156.0, 54.0)), // 54.0f, 70.0f, 156.0f, 6.0f),
+            new Cell(new PdfRectangle(70.0, 60.0 - 4.0, 70.0 + 156.0, 60.0)), // 60.0f, 70.0f, 156.0f, 4.0f),
+            new Cell(new PdfRectangle(70.0, 64.0 - 6.0, 70.0 + 156.0, 64.0)), // 64.0f, 70.0f, 156.0f, 6.0f),
+            new Cell(new PdfRectangle(70.0, 70.0 - 4.0, 70.0 + 156.0, 70.0)), // 70.0f, 70.0f, 156.0f, 4.0f),
+            new Cell(new PdfRectangle(70.0, 74.0 - 6.0, 70.0 + 156.0, 74.0)), // 74.0f, 70.0f, 156.0f, 6.0f)
         };
 
         private static readonly Ruling[][] SINGLE_CELL_RULINGS = new[]
         {
             new Ruling[]
             {
-                //new Ruling(new PdfPoint(151.653545f, 185.66929f), new PdfPoint(380.73438f, 185.66929f)),
-                //new Ruling(new PdfPoint(151.653545f, 314.64567f), new PdfPoint(380.73438f, 314.64567f))
+                new Ruling(new PdfPoint(151.653545f, 185.66929f), new PdfPoint(380.73438f, 185.66929f)),
+                new Ruling(new PdfPoint(151.653545f, 314.64567f), new PdfPoint(380.73438f, 314.64567f))
             },
             new Ruling[]
             {
-                //new Ruling(new PdfPoint(151.653545f, 185.66929f), new PdfPoint(151.653545f, 314.64567f)),
-                //new Ruling(new PdfPoint(380.73438f, 185.66929f), new PdfPoint(380.73438f, 314.64567f))
+                new Ruling(new PdfPoint(151.653545f, 185.66929f), new PdfPoint(151.653545f, 314.64567f)),
+                new Ruling(new PdfPoint(380.73438f, 185.66929f), new PdfPoint(380.73438f, 314.64567f))
             }
         };
 
@@ -140,19 +140,19 @@ namespace Tabula.Tests
             Assert.Equal(expected, cells);
         }
 
-        [Fact]//(Skip = "TODO")]
+        [Fact]
         public void testDetectSingleCell()
         {
             List<Cell> cells = SpreadsheetExtractionAlgorithm.findCells(SINGLE_CELL_RULINGS[0].ToList(), SINGLE_CELL_RULINGS[1].ToList());
             Assert.Single(cells);
             Cell cell = cells[0];
             Assert.True(Utils.feq(151.65355, cell.getLeft()));
-            Assert.True(Utils.feq(185.6693, cell.getTop()));
+            Assert.True(Utils.feq(185.6693, cell.getBottom())); // .getTop()
             Assert.True(Utils.feq(229.08083, cell.getWidth()));
             Assert.True(Utils.feq(128.97636, cell.getHeight()));
         }
 
-        [Fact]// [Fact(Skip = "TODO")]
+        [Fact]
         public void testDetectTwoSingleCells()
         {
             List<Cell> cells = SpreadsheetExtractionAlgorithm.findCells(TWO_SINGLE_CELL_RULINGS[0].ToList(), TWO_SINGLE_CELL_RULINGS[1].ToList());
@@ -161,7 +161,7 @@ namespace Tabula.Tests
             Assert.False(cells[0].intersects(cells[1]));
         }
 
-        [Fact]//  [Fact(Skip = "TODO")]
+        [Fact(Skip = "TODO")]
         public void testFindSpreadsheetsFromCells()
         {
             //CSVParser parse = org.apache.commons.csv.CSVParser.parse(new File("src/test/resources/technology/tabula/csv/TestSpreadsheetExtractor-CELLS.csv"),
@@ -184,19 +184,18 @@ namespace Tabula.Tests
             //assertTrue(foundRectangles.equals(expected));
         }
 
-        // TODO Add assertions
-        [Fact(Skip = "TODO")]
+        [Fact(Skip = "TODO Add assertions")]
         public void testSpreadsheetExtraction()
         {
             //PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/argentina_diputados_voting_record.pdf", 269.875f, 12.75f, 790.5f, 561f);
             //SpreadsheetExtractionAlgorithm.findCells(page.getHorizontalRulings(), page.getVerticalRulings());
         }
 
-        [Fact]//   [Fact(Skip = "TODO")]
+        [Fact]
         public void testSpanningCells()
         {
             PageArea page = UtilsForTesting.getPage("Resources/spanning_cells.pdf", 1);
-            String expectedJson = UtilsForTesting.loadJson("Resources/json/spanning_cells.json");
+            string expectedJson = UtilsForTesting.loadJson("Resources/json/spanning_cells.json");
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
             List<Table> tables = se.extract(page);
             Assert.Equal(2, tables.Count);
@@ -217,7 +216,7 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact]//  [Fact(Skip = "TODO")]
+        [Fact]
         public void testSpanningCellsToCsv()
         {
             PageArea page = UtilsForTesting.getPage("Resources/spanning_cells.pdf", 1);
@@ -226,11 +225,9 @@ namespace Tabula.Tests
             List<Table> tables = se.extract(page);
             Assert.Equal(2, tables.Count);
 
-
             //StringBuilder sb = new StringBuilder();
             //(new CSVWriter()).write(sb, tables);
             //Assert.Equal(expectedCsv, sb.toString());
-
 
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
@@ -240,11 +237,11 @@ namespace Tabula.Tests
                 var reader = new StreamReader(stream);
                 stream.Position = 0;
                 var s = reader.ReadToEnd().Trim(); // trim to remove last new line
-                Assert.Equal(expectedCsv, s); //.Replace("\r\n", "\n"));
+                Assert.Equal(expectedCsv, s.Replace("\r\n", "\n")); //.Replace("\r\n", "\n"));
             }
         }
 
-        [Fact]//  [Fact(Skip = "TODO")]
+        [Fact]
         public void testIncompleteGrid()
         {
             PageArea page = UtilsForTesting.getPage("Resources/china.pdf", 1);
@@ -253,7 +250,7 @@ namespace Tabula.Tests
             Assert.Equal(2, tables.Count);
         }
 
-        [Fact]// [Fact(Skip = "TODO")]
+        [Fact]
         public void testNaturalOrderOfRectanglesDoesNotBreakContract()
         {
             PageArea page = UtilsForTesting.getPage("Resources/us-017.pdf", 2);
@@ -287,7 +284,6 @@ namespace Tabula.Tests
             Assert.Equal(6, rulings.Count);
 
             //float[] expectedRulings = new float[] { 105.549774, 107.52332, 160.58167, 377.1792, 434.95804, 488.21783 };
-
             double[] expectedRulings = new double[] { 105.554812, 107.522417, 160.568521, 377.172662, 434.963828, 488.229949 };
 
             var lefts = rulings.Select(x => x.getLeft()).ToArray();
@@ -297,24 +293,37 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact]//  [Fact(Skip = "TODO")]
+        [Fact]
         public void testSpreadsheetWithNoBoundingFrameShouldBeSpreadsheet()
         {
-            //PageArea page = UtilsForTesting.getAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1, 150.56f, 58.9f, 654.7f, 536.12f);
+            PageArea page = UtilsForTesting.getAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1,
+                new PdfRectangle(58.9, 842 - 654.7, 536.12, 698)); // 842 - 150.56)); // 150.56f, 58.9f, 654.7f, 536.12f);
 
-            //String expectedCsv = UtilsForTesting.loadCsv("Resources/csv/spreadsheet_no_bounding_frame.csv");
+            String expectedCsv = UtilsForTesting.loadCsv("Resources/csv/spreadsheet_no_bounding_frame.csv");
 
-            //SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            //bool isTabular = se.isTabular(page);
-            //Assert.True(isTabular);
-            //List<Table> tables = se.extract(page);
+            SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
+            bool isTabular = se.isTabular(page);
+            Assert.True(isTabular);
+            List<Table> tables = se.extract(page);
+
             //StringBuilder sb = new StringBuilder();
             //(new CSVWriter()).write(sb, tables[0]);
-
             //Assert.Equal(expectedCsv, sb.ToString());
+
+            using (var stream = new MemoryStream())
+            using (var sb = new StreamWriter(stream) { AutoFlush = true })
+            {
+                (new CSVWriter()).write(sb, tables[0]);
+
+                var reader = new StreamReader(stream);
+                stream.Position = 0;
+                var result = reader.ReadToEnd().Trim(); // trim to remove last new line
+
+                Assert.Equal(expectedCsv, result.Replace("\r\n", "\n"));
+            }
         }
 
-        [Fact]//    [Fact(Skip = "TODO")]
+        [Fact(Skip = "TODO")]
         public void testExtractSpreadsheetWithinAnArea()
         {
             //PageArea page = UtilsForTesting.getAreaFromPage("Resources/puertos1.pdf", 1, 273.9035714285714f, 30.32142857142857f, 554.8821428571429f, 546.7964285714286f);
@@ -371,7 +380,7 @@ namespace Tabula.Tests
             //}
         }
 
-        [Fact]//  [Fact]
+        [Fact]
         public void testAlmostIntersectingRulingsShouldIntersect()
         {
             Ruling v = new Ruling(new PdfPoint(555.960876f, 271.569641f), new PdfPoint(555.960876f, 786.899902f));
@@ -380,8 +389,7 @@ namespace Tabula.Tests
             Assert.Single(m.Values);
         }
 
-        // TODO add assertions
-        [Fact(Skip = "TODO")]
+        [Fact(Skip = "TODO add assertions")]
         public void testDontRaiseSortException()
         {
             //PageArea page = UtilsForTesting.getAreaFromPage("Resources/us-017.pdf", 2, 446.0f, 97.0f, 685.0f, 520.0f);
@@ -390,16 +398,16 @@ namespace Tabula.Tests
             //bea.extract(page)[0];
         }
 
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void testShouldDetectASingleSpreadsheet()
         {
-            //PageArea page = UtilsForTesting.getAreaFromPage("Resources/offense.pdf", 1, 68.08f, 16.44f, 680.85f, 597.84f);
-            //SpreadsheetExtractionAlgorithm bea = new SpreadsheetExtractionAlgorithm();
-            //List<Table> tables = bea.extract(page);
-            //Assert.Single(tables);
+            PageArea page = UtilsForTesting.getAreaFromPage("Resources/offense.pdf", 1, new PdfRectangle(16.44, 792 - 680.85, 597.84, 792 - 16.44)); // 68.08f, 16.44f, 680.85f, 597.84f);
+            SpreadsheetExtractionAlgorithm bea = new SpreadsheetExtractionAlgorithm();
+            List<Table> tables = bea.extract(page);
+            Assert.Single(tables);
         }
 
-        [Fact]// [Fact(Skip = "TODO")]
+        [Fact]
         public void testExtractTableWithExternallyDefinedRulings()
         {
             PageArea page = UtilsForTesting.getPage("Resources/us-007.pdf", 1);
@@ -431,7 +439,7 @@ namespace Tabula.Tests
             Assert.Equal("14.23", rows[8][1].getText());
         }
 
-        [Fact]// [Fact]//(Skip = "TODO")]
+        [Fact]
         public void testAnotherExtractTableWithExternallyDefinedRulings()
         {
             PageArea page = UtilsForTesting.getPage("Resources/us-024.pdf", 1);
@@ -444,7 +452,7 @@ namespace Tabula.Tests
             Assert.Equal("6.6", table.getRows()[6][2].getText());
         }
 
-        [Fact]//   [Fact(Skip = "TODO")]
+        [Fact]
         public void testSpreadsheetsSortedByTopAndRight()
         {
             PageArea page = UtilsForTesting.getPage("Resources/sydney_disclosure_contract.pdf", 1);
@@ -457,7 +465,7 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact]//[Fact(Skip = "TODO")]
+        [Fact]
         public void testDontStackOverflowQuicksort()
         {
             PageArea page = UtilsForTesting.getPage("Resources/failing_sort.pdf", 1);
@@ -470,7 +478,7 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact]// [Fact(Skip = "TODO")]
+        [Fact]
         public void testRTL()
         {
             PageArea page = UtilsForTesting.getPage("Resources/arabic.pdf", 1);
@@ -499,7 +507,7 @@ namespace Tabula.Tests
         }
 
 
-        [Fact]//    [Fact(Skip = "TODO")]
+        [Fact]
         public void testRealLifeRTL()
         {
             PageArea page = UtilsForTesting.getPage("Resources/mednine.pdf", 1);
@@ -532,17 +540,19 @@ namespace Tabula.Tests
 
         }
 
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void testExtractColumnsCorrectly3()
         {
-            //PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/frx_2012_disclosure.pdf", 106.01f, 48.09f, 227.31f, 551.89f);
-            //SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            //Table table = sea.extract(page)[0];
-
-            //Assert.Equal("REGIONAL PULMONARY & SLEEP\rMEDICINE", table.getRows()[8][1].getText());
+            // top,     left,   bottom,  right
+            // 106.01f, 48.09f, 227.31f, 551.89f
+            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/frx_2012_disclosure.pdf", new PdfRectangle(48.09, 792 - 227.31, 551.89, 792 - 106.01));
+            SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
+            Table table = sea.extract(page)[0];
+            var rows = table.getRows();
+            Assert.Equal("REGIONAL PULMONARY & SLEEP\rMEDICINE", table.getRows()[8][1].getText());
         }
 
-        [Fact]//  [Fact(Skip = "TODO")]
+        [Fact]
         public void testSpreadsheetExtractionIssue656()
         {
             // page height = 482, width 762.3 // 612
