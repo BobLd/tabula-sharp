@@ -280,7 +280,7 @@ namespace Tabula
         {
             public int Compare([AllowNull] PdfPoint arg0, [AllowNull] PdfPoint arg1)
             {
-                return arg0.Y.CompareTo(arg1.Y);
+                return -arg0.Y.CompareTo(arg1.Y);  //bobld multiply by -1 to sort from top to bottom (reading order)
             }
         }
 

@@ -414,9 +414,16 @@ namespace Tabula
                 List<Ruling> rv = new List<Ruling>();
                 foreach (var solution in solutions.Childs)
                 {
-                    rv.Add(new Ruling(new PdfPoint(solution.Contour[0].X / 10_000.0, solution.Contour[0].Y / 10_000.0),
-                                      new PdfPoint(solution.Contour[1].X / 10_000.0, solution.Contour[1].Y / 10_000.0)));
+                    var x0 = solution.Contour[0].X / 10_000.0;
+                    var x1 = solution.Contour[1].X / 10_000.0;
+                    double xmin = Math.Min(x0, x1);
+                    double xmax = Math.Max(x0, x1);
 
+                    // warning
+                    // force xmin to be in p1, xmax to be in p2, might lead to odd stuff if not vertic or horiz
+                    // do not bother with y for the moment, will throw an error anyway in Ruling()
+                    rv.Add(new Ruling(new PdfPoint(xmin, solution.Contour[0].Y / 10_000.0),
+                                      new PdfPoint(xmax, solution.Contour[1].Y / 10_000.0)));
                 }
                 return rv;
             }
@@ -440,7 +447,8 @@ namespace Tabula
         {
             public int Compare([AllowNull] Ruling o1, [AllowNull] Ruling o2)
             {
-                return o1.getTop().CompareTo(o2.getTop());//return java.lang.Double.compare(o1.getTop(), o2.getTop());
+                return -o1.getTop().CompareTo(o2.getTop());  //bobld multiply by -1 to sort from top to bottom (reading order)
+                //return java.lang.Double.compare(o1.getTop(), o2.getTop());
             }
         }
         public class TreeMapPdfPointComparator : IComparer<PdfPoint>

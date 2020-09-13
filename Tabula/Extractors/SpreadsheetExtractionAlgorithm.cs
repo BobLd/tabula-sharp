@@ -86,7 +86,8 @@ namespace Tabula.Extractors
         public List<Table> extract(PageArea page, List<Ruling> rulings)
         {
             // split rulings into horizontal and vertical
-            List<Ruling> horizontalR = new List<Ruling>(), verticalR = new List<Ruling>();
+            List<Ruling> horizontalR = new List<Ruling>();
+            List<Ruling> verticalR = new List<Ruling>();
 
             foreach (Ruling r in rulings)
             {
