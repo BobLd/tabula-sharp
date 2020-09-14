@@ -105,7 +105,7 @@ namespace Tabula.Tests
         public void testJSONSerializeInfinity()
         {
             String expectedJson = UtilsForTesting.loadJson("Resources/json/schools.json");
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/tabula/schools.pdf", new PdfRectangle(double.NaN, double.NaN, double.NaN, double.NaN)); // 53.74f, 16.97f, 548.74f, 762.3f);
+            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/schools.pdf", new PdfRectangle(double.NaN, double.NaN, double.NaN, double.NaN)); // 53.74f, 16.97f, 548.74f, 762.3f);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
             Table table = sea.extract(page)[0]; //.get(0);
 
