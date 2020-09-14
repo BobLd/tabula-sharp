@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
-using UglyToad.PdfPig.Geometry;
 
 namespace Tabula
 {
@@ -281,7 +282,7 @@ namespace Tabula
         {
             public int Compare([AllowNull] PdfPoint arg0, [AllowNull] PdfPoint arg1)
             {
-                return arg0.Y.CompareTo(arg1.Y);
+                return -arg0.Y.CompareTo(arg1.Y);  //bobld multiply by -1 to sort from top to bottom (reading order)
             }
         }
 
@@ -425,7 +426,7 @@ namespace Tabula
                 avgLoc /= group.Count;
                 for (int p = 0; p < group.Count; p++)
                 {
-                    newXCoordinates[group[p].X] = Utils.round(avgLoc, 2); // round?
+                    newXCoordinates[group[p].X] = Utils.round(avgLoc, 6); // round?
                 }
             }
             // ---
@@ -460,7 +461,7 @@ namespace Tabula
                 avgLoc /= group.Count;
                 for (int p = 0; p < group.Count; p++)
                 {
-                    newYCoordinates[group[p].Y] = Utils.round(avgLoc, 2); // round?
+                    newYCoordinates[group[p].Y] = Utils.round(avgLoc, 6); // round?
                 }
             }
             // ---
@@ -472,6 +473,27 @@ namespace Tabula
                 rulings[i] = new Ruling(new PdfPoint(newXCoordinates[current.line.Point1.X], newYCoordinates[current.line.Point1.Y]),
                                         new PdfPoint(newXCoordinates[current.line.Point2.X], newYCoordinates[current.line.Point2.Y]));
             }
+        }
+
+        public static object pageConvertToImage(Page page, int dpi) //, ImageType imageType) // BufferedImage
+        {
+            throw new NotImplementedException();
+            /*
+            using (PdfDocument document = new PdfDocument())
+            {
+                document.addPage(page);
+                PDFRenderer renderer = new PDFRenderer(document);
+                document.close();
+                return renderer.renderImageWithDPI(0, dpi, imageType);
+            }
+            */
+        }
+
+        public static object pageConvertToImage(PdfDocument doc, Page page, int dpi) //, ImageType imageType) // BufferedImage
+        {
+            throw new NotImplementedException();
+            //PDFRenderer renderer = new PDFRenderer(doc);
+            //return renderer.renderImageWithDPI(doc.getPages().indexOf(page), dpi, imageType);
         }
 
         /// <summary>

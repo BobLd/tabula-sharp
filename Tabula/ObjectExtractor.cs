@@ -44,6 +44,8 @@ namespace Tabula
             return new PdfPoint(Utils.round(pdfPoint.X, decimalPlace), Utils.round(pdfPoint.Y, decimalPlace));
         }
 
+        const int rounding = 6;
+
         public PageArea extractPage(int pageNumber)// throws IOException
         {
             if (pageNumber > this.pdfDocument.NumberOfPages || pageNumber < 1)
@@ -78,7 +80,7 @@ namespace Tabula
 
                     // TODO: how to implement color filter?
 
-                    PdfPoint? start_pos = RoundPdfPoint(first.Location, 2); //new PdfPoint(Utils.round(first.Location.X, 2), Utils.round(first.Location.Y, 2));
+                    PdfPoint? start_pos = RoundPdfPoint(first.Location, rounding); //new PdfPoint(Utils.round(first.Location.X, 2), Utils.round(first.Location.Y, 2));
                     PdfPoint? last_move = start_pos;
                     PdfPoint? end_pos = null;
                     PdfLine line;
@@ -86,9 +88,9 @@ namespace Tabula
 
                     foreach (var command in subpath.Commands) //while (!pi.isDone())
                     {
-                        if (command is Line linePath) // case PathIterator.SEG_LINETO:
+                        if (command is Line linePath)
                         {
-                            end_pos = RoundPdfPoint(linePath.To, 2); // linePath.To // round it?
+                            end_pos = RoundPdfPoint(linePath.To, rounding); // linePath.To // round it?
                             if (!start_pos.HasValue || !end_pos.HasValue)
                             {
                                 break;
@@ -103,13 +105,12 @@ namespace Tabula
                                 rulings.Add(r);
                             }
                         }
-                        // to finish
-                        else if (command is Move move) // case PathIterator.SEG_MOVETO:
+                        else if (command is Move move)
                         {
-                            start_pos = RoundPdfPoint(move.Location, 2); // move.Location; // round it?
+                            start_pos = RoundPdfPoint(move.Location, rounding); // move.Location; // round it?
                             end_pos = start_pos;
                         }
-                        else if (command is Close) // case PathIterator.SEG_CLOSE:
+                        else if (command is Close)
                         {
                             // according to PathIterator docs:
                             // "the preceding subpath should be closed by appending a line
@@ -134,7 +135,6 @@ namespace Tabula
                     }
                 }
             }
-
             /****************************************************************************/
 
             TextStripper pdfTextStripper = new TextStripper(this.pdfDocument, pageNumber);

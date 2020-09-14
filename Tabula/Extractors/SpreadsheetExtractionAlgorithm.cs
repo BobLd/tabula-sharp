@@ -9,7 +9,7 @@ namespace Tabula.Extractors
     //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/extractors/SpreadsheetExtractionAlgorithm.java
     public class SpreadsheetExtractionAlgorithm : ExtractionAlgorithm
     {
-        private static float MAGIC_HEURISTIC_NUMBER = 0.65f;
+        private static double MAGIC_HEURISTIC_NUMBER = 0.65;
 
         public class POINT_COMPARATOR : IComparer<PdfPoint>
         {
@@ -21,12 +21,11 @@ namespace Tabula.Extractors
                 double arg1X = Utils.round(arg1.X, 2);
                 double arg1Y = Utils.round(arg1.Y, 2);
 
-
-                if (arg0Y > arg1Y)
+                if (arg0Y < arg1Y) //(arg0Y > arg1Y)
                 {
                     rv = 1;
                 }
-                else if (arg0Y < arg1Y)
+                else if (arg0Y > arg1Y) // (arg0Y < arg1Y)
                 {
                     rv = -1;
                 }
@@ -61,11 +60,11 @@ namespace Tabula.Extractors
                 {
                     rv = -1;
                 }
-                else if (arg0Y > arg1Y)
+                else if (arg0Y < arg1Y) //(arg0Y > arg1Y)
                 {
                     rv = 1;
                 }
-                else if (arg0Y < arg1Y)
+                else if (arg0Y > arg1Y) //(arg0Y < arg1Y)
                 {
                     rv = -1;
                 }
@@ -87,7 +86,8 @@ namespace Tabula.Extractors
         public List<Table> extract(PageArea page, List<Ruling> rulings)
         {
             // split rulings into horizontal and vertical
-            List<Ruling> horizontalR = new List<Ruling>(), verticalR = new List<Ruling>();
+            List<Ruling> horizontalR = new List<Ruling>();
+            List<Ruling> verticalR = new List<Ruling>();
 
             foreach (Ruling r in rulings)
             {
@@ -110,7 +110,6 @@ namespace Tabula.Extractors
             List<Table> spreadsheets = new List<Table>();
             foreach (TableRectangle area in spreadsheetAreas)
             {
-
                 List<Cell> overlappingCells = new List<Cell>();
                 foreach (Cell c in cells)
                 {
@@ -149,7 +148,6 @@ namespace Tabula.Extractors
 
         public bool isTabular(PageArea page)
         {
-
             // if there's no text at all on the page, it's not a table 
             // (we won't be able to do anything with it though)
             if (page.getText().Count == 0)
@@ -187,7 +185,7 @@ namespace Tabula.Extractors
         public static List<Cell> findCells(List<Ruling> horizontalRulingLines, List<Ruling> verticalRulingLines)
         {
             List<Cell> cellsFound = new List<Cell>();
-            Dictionary<PdfPoint, Ruling[]> intersectionPoints = Ruling.findIntersections(horizontalRulingLines, verticalRulingLines);
+            SortedDictionary<PdfPoint, Ruling[]> intersectionPoints = Ruling.findIntersections(horizontalRulingLines, verticalRulingLines);
             List<PdfPoint> intersectionPointsList = new List<PdfPoint>(intersectionPoints.Keys);
             intersectionPointsList.Sort(new POINT_COMPARATOR());
             bool doBreak = false;
@@ -205,7 +203,7 @@ namespace Tabula.Extractors
 
                 foreach (PdfPoint p in intersectionPointsList.subList(i, intersectionPointsList.Count))
                 {
-                    if (p.X == topLeft.X && p.Y > topLeft.Y)
+                    if (p.X == topLeft.X && p.Y < topLeft.Y) //  p.Y > topLeft.Y
                     {
                         xPoints.Add(p);
                     }
@@ -273,8 +271,8 @@ namespace Tabula.Extractors
                 foreach (PdfPoint pt in cell.getPoints())
                 {
                     if (pointSet.Contains(pt))
-                    { // shared vertex, remove it
-                        pointSet.Remove(pt);
+                    {
+                        pointSet.Remove(pt); // shared vertex, remove it
                     }
                     else
                     {
@@ -366,18 +364,18 @@ namespace Tabula.Extractors
             // calculate grid-aligned minimum area rectangles for each found polygon
             foreach (List<PolygonVertex> poly in polygons)
             {
-                double top = double.MaxValue;//java.lang.Float.MAX_VALUE;
+                double top = double.MinValue; //.MaxValue;//java.lang.Float.MAX_VALUE;
                 double left = double.MaxValue;//java.lang.Float.MAX_VALUE;
-                double bottom = double.MinValue;//java.lang.Float.MIN_VALUE;
+                double bottom = double.MaxValue;//java.lang.Float.MIN_VALUE;
                 double right = double.MinValue;//java.lang.Float.MIN_VALUE;
                 foreach (PolygonVertex pt in poly)
                 {
-                    top = Math.Min(top, pt.point.Y);
+                    top = Math.Max(top, pt.point.Y); // Min
                     left = Math.Min(left, pt.point.X);
-                    bottom = Math.Max(bottom, pt.point.Y);
+                    bottom = Math.Min(bottom, pt.point.Y); // Max
                     right = Math.Max(right, pt.point.X);
                 }
-                rectangles.Add(new TableRectangle(top, left, right - left, bottom - top));
+                rectangles.Add(new TableRectangle(new PdfRectangle(left, bottom, right, top))); // top, left, right - left, bottom - top));
             }
 
             return rectangles;

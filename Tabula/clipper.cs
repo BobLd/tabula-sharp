@@ -51,6 +51,8 @@
 
 using System;
 using System.Collections.Generic;
+using Tabula;
+using UglyToad.PdfPig.Core;
 //using System.Text;          //for Int128.AsString() & StringBuilder
 //using System.IO;            //debugging with streamReader & StreamWriter
 //using System.Windows.Forms; //debugging to clipboard
@@ -67,7 +69,7 @@ namespace ClipperLib
   using Path = List<IntPoint>;
   using Paths = List<List<IntPoint>>;
 
-  public struct DoublePoint
+    public struct DoublePoint
   {
     public double X;
     public double Y;
@@ -1356,10 +1358,39 @@ namespace ClipperLib
 
   public class Clipper : ClipperBase
   {
-      //InitOptions that can be passed to the constructor ...
-      public const int ioReverseSolution = 1;
-      public const int ioStrictlySimple = 2;
-      public const int ioPreserveCollinear = 4;
+
+        #region clipper temporary
+        public static IntPoint ToClipperIntPoint(PdfPoint point)
+        {
+            return new IntPoint(point.X * 10_000.0, point.Y * 10_000.0);
+        }
+
+        public static List<IntPoint> ToClipperIntPoints(PdfRectangle rect)
+        {
+            return new List<IntPoint>()
+            {
+                ToClipperIntPoint(rect.BottomLeft),
+                ToClipperIntPoint(rect.TopLeft),
+                ToClipperIntPoint(rect.TopRight),
+                ToClipperIntPoint(rect.BottomRight),
+                ToClipperIntPoint(rect.BottomLeft),
+            };
+        }
+        public static List<IntPoint> ToClipperIntPoints(Ruling rect)
+        {
+            return new List<IntPoint>() { ToClipperIntPoint(rect.line.Point1), ToClipperIntPoint(rect.line.Point2) };
+        }
+
+        public static List<IntPoint> ToClipperIntPoints(PdfLine rect)
+        {
+            return new List<IntPoint>() { ToClipperIntPoint(rect.Point1), ToClipperIntPoint(rect.Point2) };
+        }
+        #endregion
+
+        //InitOptions that can be passed to the constructor ...
+        public const int ioReverseSolution = 1;
+        public const int ioStrictlySimple = 2;
+        public const int ioPreserveCollinear = 4;
 
       private ClipType m_ClipType;
       private Maxima m_Maxima;

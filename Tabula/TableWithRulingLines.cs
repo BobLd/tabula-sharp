@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
+using System.Linq;
 using Tabula.Extractors;
+using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
@@ -12,7 +13,7 @@ namespace Tabula
         {
             public int Compare([AllowNull] Cell arg0, [AllowNull] Cell arg1)
             {
-                return arg0.getTop().CompareTo(arg1.getTop());
+                return -arg0.getTop().CompareTo(arg1.getTop()); // bobld multiply by -1 to sort from top to bottom (reading order)
             }
         }
 
@@ -50,10 +51,16 @@ namespace Tabula
                 rowCells.MoveNext();
                 Cell cell = rowCells.Current; //.next();
 
+                // BobLd: careaful here!!
                 List<List<Cell>> others = TableWithRulingLines.rowsOfCells(
                         si.contains(
-                                new TableRectangle(cell.getBottom(), si.getBounds().getLeft(), cell.getLeft() - si.getBounds().getLeft(),
-                                        si.getBounds().getBottom() - cell.getBottom())
+                                //new TableRectangle(cell.getBottom(), //top
+                                //                   si.getBounds().getLeft(), // left
+                                //                   cell.getLeft() - si.getBounds().getLeft(),//width
+                                //                   si.getBounds().getBottom() - cell.getBottom()) // height
+
+                                // BobLd: really not sure here
+                                new PdfRectangle(si.getBounds().getLeft(), si.getBounds().getBottom(), cell.getLeft(), cell.getBottom())
                                 ));
                 int startColumn = 0;
                 foreach (List<Cell> r in others)
@@ -81,7 +88,7 @@ namespace Tabula
                 return rv;
             }
 
-            cells.Sort(new CellComparator());
+            cells = cells.OrderBy(c => c, new CellComparator()).ToList();// need to use OrderBy insted of Sort() to keep order when equality // //cells.Sort(new CellComparator());
 
             var iter = cells.GetEnumerator();
 

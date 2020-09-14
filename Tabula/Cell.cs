@@ -31,13 +31,14 @@ namespace Tabula
         }
 
         public Cell(PdfPoint topLeft, PdfPoint bottomRight)
-            : base(topLeft.Y, topLeft.X, (bottomRight.X - topLeft.X), (bottomRight.Y - topLeft.Y))
+            : this (new PdfRectangle(topLeft.X, bottomRight.Y, bottomRight.X, topLeft.Y))
+            //: base(topLeft.Y, topLeft.X, (bottomRight.X - topLeft.X), (bottomRight.Y - topLeft.Y))
         {
             //super((float)topLeft.getY(), (float)topLeft.getX(), (float)(bottomRight.getX() - topLeft.getX()), (float)(bottomRight.getY() - topLeft.getY()));
             this.setPlaceholder(false);
             this.setSpanning(false);
             this.setTextElements(new List<TextChunk>());
-            throw new ArgumentOutOfRangeException();
+            //throw new ArgumentOutOfRangeException();
         }
 
         private bool spanning;
