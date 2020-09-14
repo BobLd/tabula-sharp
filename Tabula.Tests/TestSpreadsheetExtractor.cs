@@ -478,7 +478,7 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "RtL text to do later")]
         public void testRTL()
         {
             PageArea page = UtilsForTesting.getPage("Resources/arabic.pdf", 1);
@@ -507,13 +507,13 @@ namespace Tabula.Tests
         }
 
 
-        [Fact]
+        [Fact(Skip = "RtL text to do later")]
         public void testRealLifeRTL()
         {
             PageArea page = UtilsForTesting.getPage("Resources/mednine.pdf", 1);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
             List<Table> tables = sea.extract(page);
-            Assert.Equal(1, tables.Count);
+            Assert.Single(tables);
             Table table = tables[0];
             var rows = table.getRows();
 
