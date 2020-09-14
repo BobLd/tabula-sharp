@@ -81,7 +81,7 @@ namespace Tabula.Extractors
             {
                 columns = columnPositions(lines);
             }
-            columns = columns.Distinct().ToList(); // added by bobld: remove duplicates
+            columns = columns.Distinct().ToList(); // added by bobld: remove duplicates because testExtractColumnsCorrectly2() fails, why do we need it here and not in the java version
 
             Table table = new Table(this);
             table.setRect(page.BoundingBox);
@@ -171,6 +171,8 @@ namespace Tabula.Extractors
                     }
                 }
 
+                // added by bobld
+                // We need more checks here
                 /*
                 foreach (TextChunk te in lineTextElements)
                 {
@@ -180,8 +182,6 @@ namespace Tabula.Extractors
                 }
                 */
 
-                // added by bobld
-                // We need more checks here
                 if (lineTextElements.Count > 0)
                 {
                     // because testExtractColumnsCorrectly3() fails

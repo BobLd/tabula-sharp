@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
@@ -152,6 +153,7 @@ namespace Tabula
                 return textChunks;
             }
 
+            /*
             // it's a problem that this `remove` is side-effecty
             // other things depend on `textElements` and it can sometimes lead to the first textElement in textElement
             // not appearing in the final output because it's been removed here.
@@ -163,6 +165,10 @@ namespace Tabula
             copyOfTextElements.RemoveAt(0);
 
             textChunks.Add(new TextChunk(removed));
+            */
+
+            textChunks.Add(new TextChunk(textElements[0]));
+
             TextChunk firstTC = textChunks[0];
 
             double previousAveCharWidth = firstTC.width;
@@ -177,7 +183,7 @@ namespace Tabula
             TextChunk currentChunk;
             bool sameLine, acrossVerticalRuling;
 
-            foreach (TextElement chr in copyOfTextElements)
+            foreach (TextElement chr in textElements.Skip(0)) //copyOfTextElements)
             {
                 currentChunk = textChunks[textChunks.Count - 1];
                 prevChar = currentChunk.textElements[currentChunk.textElements.Count - 1];
