@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Tabula.Csv;
 using Tabula.Extractors;
 using Tabula.Json;
@@ -225,10 +226,11 @@ namespace Tabula.Tests
             List<Table> tables = se.extract(page);
             Assert.Equal(2, tables.Count);
 
-            //StringBuilder sb = new StringBuilder();
-            //(new CSVWriter()).write(sb, tables);
-            //Assert.Equal(expectedCsv, sb.toString());
+            StringBuilder sb = new StringBuilder();
+            (new CSVWriter()).write(sb, tables);
+            Assert.Equal(expectedCsv, sb.ToString().Replace("\r\n", "\n").Trim());
 
+            /*
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
             {
@@ -239,6 +241,7 @@ namespace Tabula.Tests
                 var s = reader.ReadToEnd().Trim(); // trim to remove last new line
                 Assert.Equal(expectedCsv, s.Replace("\r\n", "\n")); //.Replace("\r\n", "\n"));
             }
+            */
         }
 
         [Fact]
@@ -257,13 +260,14 @@ namespace Tabula.Tests
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
             List<Table> tables = se.extract(page);
 
-            //StringBuilder sb = new StringBuilder();
-            //(new CSVWriter()).write(sb, tables[0]);
-            //string result = sb.ToString();
-            //Assert.Equal(expected, result);
-
             string expected = "Project,Agency,Institution\r\nNanotechnology and its publics,NSF,Pennsylvania State University\r\n\"Public information and deliberation in nanoscience and\rnanotechnology policy (SGER)\",Interagency,\"North Carolina State\rUniversity\"\r\n\"Social and ethical research and education in agrifood\rnanotechnology (NIRT)\",NSF,Michigan State University\r\n\"From laboratory to society: developing an informed\rapproach to nanoscale science and engineering (NIRT)\",NSF,University of South Carolina\r\nDatabase and innovation timeline for nanotechnology,NSF,UCLA\r\nSocial and ethical dimensions of nanotechnology,NSF,University of Virginia\r\n\"Undergraduate exploration of nanoscience,\rapplications and societal implications (NUE)\",NSF,\"Michigan Technological\rUniversity\"\r\n\"Ethics and belief inside the development of\rnanotechnology (CAREER)\",NSF,University of Virginia\r\n\"All centers, NNIN and NCN have a societal\rimplications components\",\"NSF, DOE,\rDOD, and NIH\",\"All nanotechnology centers\rand networks\""; // \r\n
 
+            StringBuilder sb = new StringBuilder();
+            (new CSVWriter()).write(sb, tables[0]);
+            string result = sb.ToString().Trim();
+            Assert.Equal(expected.Replace("\r\n", "\r"), result.Replace("\r\n", "\r"));
+
+            /*
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
             {
@@ -274,6 +278,7 @@ namespace Tabula.Tests
                 var result = reader.ReadToEnd().Trim(); // trim to remove last new line
                 Assert.Equal(expected, result); //.Replace("\r\n", "\n"));
             }
+            */
         }
 
         [Fact]
@@ -568,11 +573,12 @@ namespace Tabula.Tests
             Assert.Single(tables);
             Table table = tables[0];
 
-            //StringBuilder sb = new StringBuilder();
-            //(new CSVWriter()).write(sb, table);
-            //String result = sb.toString();
-            //Assert.Equal(expectedCsv, result);
+            StringBuilder sb = new StringBuilder();
+            (new CSVWriter()).write(sb, table);
+            String result = sb.ToString();
+            Assert.Equal(expectedCsv.Replace("\n", "\r"), result.Replace("\r\n", "\n").Replace("\n", "\r").Trim());
 
+            /*
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
             {
@@ -585,6 +591,7 @@ namespace Tabula.Tests
                 // is there an issue with \r and \n?
                 Assert.Equal(expectedCsv.Replace("\n", "\r"), s.Replace("\r\n", "\n").Replace("\n", "\r"));
             }
+            */
         }
     }
 }
