@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Tabula.Writers;
 
 namespace Tabula.Json
@@ -22,6 +23,29 @@ namespace Tabula.Json
         public void write(StreamWriter sb, IReadOnlyList<Table> tables)
         {
             this.Serialize(sb, tables);
+        }
+
+        public void write(StringBuilder sb, Table table)
+        {
+            write(sb, new Table[] { table });
+        }
+
+        public void write(StringBuilder sb, IReadOnlyList<Table> tables)
+        {
+            using (var stream = new MemoryStream())
+            using (var sw = new StreamWriter(stream) { AutoFlush = true })
+            {
+                new JSONWriter().write(sw, tables);
+
+                var reader = new StreamReader(stream);
+                stream.Position = 0;
+                string line;
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    sb.AppendLine(line);
+                }
+            }
         }
     }
 }

@@ -220,7 +220,7 @@ namespace Tabula.Tests
         public void testSpanningCellsToCsv()
         {
             PageArea page = UtilsForTesting.getPage("Resources/spanning_cells.pdf", 1);
-            String expectedCsv = UtilsForTesting.loadCsv("Resources/csv/spanning_cells.csv");
+            string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/spanning_cells.csv");
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
             List<Table> tables = se.extract(page);
             Assert.Equal(2, tables.Count);
