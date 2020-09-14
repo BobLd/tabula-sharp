@@ -34,11 +34,14 @@ namespace Tabula.Csv
                 foreach (var row in table.getRows())
                 {
                     List<string> cells = new List<string>(row.Count);
+                    bool isfirst = true;
                     foreach (RectangularTextContainer tc in row)
                     {
-                        cells.Add(tc.getText());
+                        //cells.Add(tc.getText());
+                        csv.WriteField(tc.getText()); //, (string.IsNullOrEmpty(tc.getText()) && isfirst) || tc.getText().Contains(delimiter));
+                        isfirst = false;
                     }
-                    csv.WriteField(cells);
+                    //csv.WriteField(cells);
                     csv.NextRecord();
                 }
             }
