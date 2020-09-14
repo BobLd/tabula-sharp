@@ -455,7 +455,7 @@ namespace Tabula
         {
             public int Compare([AllowNull] PdfPoint o1, [AllowNull] PdfPoint o2)
             {
-                if (o1.Y < o2.Y) return 1;  // (o1.Y> o2.Y)
+                if (o1.Y < o2.Y) return 1;  // (o1.Y > o2.Y)
                 if (o1.Y > o2.Y) return -1; // (o1.Y < o2.Y)
                 if (o1.X > o2.X) return 1;
                 if (o1.X < o2.X) return -1;
@@ -670,8 +670,8 @@ namespace Tabula
         public PdfPoint getP2() => line.Point2;
 
         /// <summary>
-        /// True if both horizontal and overlap (i.e. infinite intersection points).
-        /// True if both vertical and overlap (i.e. infinite intersection points).
+        /// True if both horizontal, aligned and overlap (i.e. infinite intersection points).
+        /// True if both vertical, aligned and overlap (i.e. infinite intersection points).
         /// True if not parallel and intersect (i.e. in intersection point).
         /// </summary>
         /// <param name="other"></param>
@@ -687,12 +687,20 @@ namespace Tabula
             // include case where both are horizontal and overlap
             if (this.horizontal() && other.horizontal())
             {
-                if (this.y1.Equals(other.y1)) return true;
+                if (this.y1.Equals(other.y1) && // share same y
+                    Math.Max(0, Math.Min(this.getRight(), other.getRight()) - Math.Max(this.getLeft(), other.getLeft())) > 0) // overlap
+                {
+                    return true;
+                }
             }
             // include case where both are vertical and overlap
             else if (this.vertical() && other.vertical())
             {
-                if (this.x1.Equals(other.x1)) return true;
+                if (this.x1.Equals(other.x1) && // share same x
+                    Math.Max(0, Math.Min(this.getTop(), other.getTop()) - Math.Max(this.getBottom(), other.getBottom())) > 0) // overlap
+                {
+                    return true;
+                }
             }
             // else check if parallel and overlap
 

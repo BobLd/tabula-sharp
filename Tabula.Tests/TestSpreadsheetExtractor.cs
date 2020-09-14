@@ -513,22 +513,23 @@ namespace Tabula.Tests
             PageArea page = UtilsForTesting.getPage("Resources/mednine.pdf", 1);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
             List<Table> tables = sea.extract(page);
-            // Assert.Equal(1, tables.size());
+            Assert.Equal(1, tables.Count);
             Table table = tables[0];
+            var rows = table.getRows();
 
-            Assert.Equal("الانتخابات التشريعية  2014", table.getRows()[0][0].getText()); // the doubled spaces might be a bug in my implementation.
-            Assert.Equal("ورقة كشف نتائج دائرة مدنين", table.getRows()[1][0].getText());
-            Assert.Equal("426", table.getRows()[4][0].getText());
-            Assert.Equal("63", table.getRows()[4][1].getText());
-            Assert.Equal("43", table.getRows()[4][2].getText());
-            Assert.Equal("56", table.getRows()[4][3].getText());
-            Assert.Equal("58", table.getRows()[4][4].getText());
-            Assert.Equal("49", table.getRows()[4][5].getText());
-            Assert.Equal("55", table.getRows()[4][6].getText());
-            Assert.Equal("33", table.getRows()[4][7].getText());
-            Assert.Equal("32", table.getRows()[4][8].getText());
-            Assert.Equal("37", table.getRows()[4][9].getText());
-            Assert.Equal("قائمة من أجل تحقيق سلطة الشعب", table.getRows()[4][10].getText());
+            Assert.Equal("الانتخابات التشريعية  2014", rows[0][0].getText()); // the doubled spaces might be a bug in my implementation. // bobld: missing space or worng words order
+            Assert.Equal("ورقة كشف نتائج دائرة مدنين", rows[1][0].getText());
+            Assert.Equal("426", rows[4][0].getText());
+            Assert.Equal("63", rows[4][1].getText());
+            Assert.Equal("43", rows[4][2].getText());
+            Assert.Equal("56", rows[4][3].getText());
+            Assert.Equal("58", rows[4][4].getText());
+            Assert.Equal("49", rows[4][5].getText());
+            Assert.Equal("55", rows[4][6].getText());
+            Assert.Equal("33", rows[4][7].getText());
+            Assert.Equal("32", rows[4][8].getText());
+            Assert.Equal("37", rows[4][9].getText());
+            Assert.Equal("قائمة من أجل تحقيق سلطة الشعب", rows[4][10].getText());
 
             // there is one remaining problems that are not yet addressed
             // - diacritics (e.g. Arabic's tanwinً and probably Hebrew nekudot) are put in the wrong place.
@@ -536,8 +537,7 @@ namespace Tabula.Tests
 
             // these (commented-out) tests reflect the theoretical correct answer,
             // which is not currently possible because of the two problems listed above
-            // Assert.Equal("مرحباً",                       table.getRows()[0][0].getText()); // really ought to be ً, but this is forgiveable for now
-
+            //Assert.Equal("مرحباً", rows[0][0].getText()); // really ought to be ً, but this is forgiveable for now
         }
 
         [Fact]
@@ -545,7 +545,9 @@ namespace Tabula.Tests
         {
             // top,     left,   bottom,  right
             // 106.01f, 48.09f, 227.31f, 551.89f
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/frx_2012_disclosure.pdf", new PdfRectangle(48.09, 792 - 227.31, 551.89, 792 - 106.01));
+            // bottom = 792 - 227.31 = 564.69
+            // top =  792 - 106.01 = 685.99
+            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/frx_2012_disclosure.pdf", new PdfRectangle(48.09, 564.69, 551.89, 684.99)); // changed 685.99 to 684.99 because was adding an empty row at the top
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
             Table table = sea.extract(page)[0];
             var rows = table.getRows();

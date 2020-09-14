@@ -367,7 +367,7 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact] //(Skip = "skip for the moment, RtL text.")]
+        [Fact(Skip = "skip for the moment, RtL text.")]
         public void testRealLifeRTL2()
         {
             string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/indictb1h_14.csv");
