@@ -90,7 +90,6 @@ namespace Tabula
 
             cells = cells.OrderBy(c => c, new CellComparator()).ToList();// need to use OrderBy insted of Sort() to keep order when equality // //cells.Sort(new CellComparator());
 
-
             var iter = cells.GetEnumerator();
 
             //.next();

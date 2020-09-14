@@ -43,7 +43,7 @@ namespace Tabula
             }
         }
 
-        protected static float VERTICAL_COMPARISON_THRESHOLD = 0.4f;
+        protected static double VERTICAL_COMPARISON_THRESHOLD = 0.4;
 
         public PdfRectangle BoundingBox { get; private set; }
 
@@ -57,6 +57,7 @@ namespace Tabula
             BoundingBox = rectangle;
         }
 
+        [Obsolete("Use TableRectangle(PdfRectangle) instead")]
         public TableRectangle(double top, double left, double width, double height) : this()
         {
             //this.setRect(left, top, width, height);
@@ -139,7 +140,7 @@ namespace Tabula
 
         public double getRight() => BoundingBox.Right;
 
-        public void setRight(float right)
+        public void setRight(double right)
         {
             //this.setRect(this.x, this.y, right - this.x, this.height);
 
@@ -148,7 +149,7 @@ namespace Tabula
 
         public double getLeft() => BoundingBox.Left;
 
-        public void setLeft(float left)
+        public void setLeft(double left)
         {
             //double deltaWidth = left - this.x;
             //this.setRect(left, this.y, this.width - deltaWidth, this.height);
@@ -158,7 +159,7 @@ namespace Tabula
 
         public double getBottom() => BoundingBox.Bottom;
 
-        public void setBottom(float bottom)
+        public void setBottom(double bottom)
         {
             this.setRect(this.x, this.y, this.width, bottom - this.y);
 
@@ -229,14 +230,13 @@ namespace Tabula
 
         public bool intersectsLine(Ruling ruling)
         {
+            /*
             // needs checks
             // use clipper
             var clipper = new Clipper();
             clipper.AddPath(Clipper.ToClipperIntPoints(this.BoundingBox), PolyType.ptClip, true);
 
-
             clipper.AddPath(Clipper.ToClipperIntPoints(ruling), PolyType.ptSubject, false);
-
 
             var solutions = new PolyTree();
             if (clipper.Execute(ClipType.ctIntersection, solutions))
@@ -247,8 +247,26 @@ namespace Tabula
             {
                 return false;
             }
+            */
+            return intersectsLine(ruling.line);
+        }
 
-            //throw new NotImplementedException();
+        public bool intersectsLine(PdfLine line)
+        {
+            var clipper = new Clipper();
+            clipper.AddPath(Clipper.ToClipperIntPoints(this.BoundingBox), PolyType.ptClip, true);
+
+            clipper.AddPath(Clipper.ToClipperIntPoints(line), PolyType.ptSubject, false);
+
+            var solutions = new PolyTree();
+            if (clipper.Execute(ClipType.ctIntersection, solutions))
+            {
+                return solutions.Childs.Count > 0;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         #region helpers
@@ -298,6 +316,22 @@ namespace Tabula
         private PdfRectangle createUnion(PdfRectangle rectangle, PdfRectangle other)
         {
             return Utils.bounds(new[] { rectangle, other });
+        }
+
+        public bool contains(PdfPoint point)
+        {
+            // inc;ude border???
+            return this.BoundingBox.Contains(point);
+        }
+
+        public bool contains(TableLine tableLine)
+        {
+            return this.BoundingBox.Contains(tableLine.BoundingBox);
+        }
+
+        public bool contains(TableRectangle other)
+        {
+            return this.BoundingBox.Contains(other.BoundingBox);
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion

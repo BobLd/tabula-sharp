@@ -1380,6 +1380,11 @@ namespace ClipperLib
         {
             return new List<IntPoint>() { ToClipperIntPoint(rect.line.Point1), ToClipperIntPoint(rect.line.Point2) };
         }
+
+        public static List<IntPoint> ToClipperIntPoints(PdfLine rect)
+        {
+            return new List<IntPoint>() { ToClipperIntPoint(rect.Point1), ToClipperIntPoint(rect.Point2) };
+        }
         #endregion
 
         //InitOptions that can be passed to the constructor ...

@@ -662,7 +662,8 @@ namespace Tabula
         public double x2 => this.line.Point2.X;
         public double y1 => this.line.Point1.Y;
         public double y2 => this.line.Point2.Y;
-
+        public double getX1() => x1;
+        public double getX2() => x2;
         public double getY2() => y2;
         public double getY1() => y1;
         public PdfPoint getP1() => line.Point1;
@@ -696,6 +697,12 @@ namespace Tabula
             // else check if parallel and overlap
 
             return this.line.IntersectsWith(other.line);
+        }
+
+        public bool intersects(TableRectangle rectangle)
+        {
+            // should be the same???
+            return rectangle.intersectsLine(this);
         }
         #endregion
     }
