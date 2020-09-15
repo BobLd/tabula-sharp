@@ -24,7 +24,7 @@ namespace Tabula.Tests
 
         private static readonly Ruling[] VERTICAL_RULING_LINES = new[]
         {
-            new Ruling(new PdfPoint(18.0, 40.0), new PdfPoint(18.0,   40.0 + 18.0)), // 40.0f, 18.0f, 0.0f, 40.0f),
+            new Ruling(new PdfPoint(18.0, 40.0), new PdfPoint(18.0,   40.0 + 40.0)), // 40.0f, 18.0f, 0.0f, 40.0f),
             new Ruling(new PdfPoint(70.0, 44.0), new PdfPoint(70.0,   44.0 + 36.0)), // 44.0f, 70.0f, 0.0f, 36.0f),
             new Ruling(new PdfPoint(226.0, 40.0), new PdfPoint(226.0, 40.0 + 40.0)), // 40.0f, 226.0f, 0.0f, 40.0f)
         };
@@ -44,21 +44,22 @@ namespace Tabula.Tests
 
         private static readonly Cell[] EXPECTED_CELLS = new Cell[]
         {
-            new Cell(new PdfRectangle(18.0, 40.0 - 4.0, 18.0 + 208.0, 40.0)), // 40.0f, 18.0f, 208.0f, 4.0f),
-            new Cell(new PdfRectangle(18.0, 44.0 - 6.0, 18.0 + 52.0, 44.0)), // 44.0f, 18.0f, 52.0f, 6.0f),
-            new Cell(new PdfRectangle(18.0, 50.0 - 4.0, 18.0 + 52.0, 50.0)), // 50.0f, 18.0f, 52.0f, 4.0f),
-            new Cell(new PdfRectangle(18.0, 54.0 - 6.0, 18.0 + 52.0, 54.0)), // 54.0f, 18.0f, 52.0f, 6.0f),
-            new Cell(new PdfRectangle(18.0, 60.0 - 4.0, 18.0 + 52.0, 60.0)), // 60.0f, 18.0f, 52.0f, 4.0f),
-            new Cell(new PdfRectangle(18.0, 64.0 - 6.0, 18.0 + 52.0, 64.0)), // 64.0f, 18.0f, 52.0f, 6.0f),
-            new Cell(new PdfRectangle(18.0, 70.0 - 4.0, 18.0 + 52.0, 70.0)), // 70.0f, 18.0f, 52.0f, 4.0f),
-            new Cell(new PdfRectangle(18.0, 74.0 - 6.0, 18.0 + 52.0, 74.0)), // 74.0f, 18.0f, 52.0f, 6.0f),
-            new Cell(new PdfRectangle(70.0, 44.0 - 6.0, 70.0 + 156.0, 44.0)), // 44.0f, 70.0f, 156.0f, 6.0f),
-            new Cell(new PdfRectangle(70.0, 50.0 - 4.0, 70.0 + 156.0, 50.0)), // 50.0f, 70.0f, 156.0f, 4.0f),
-            new Cell(new PdfRectangle(70.0, 54.0 - 6.0, 70.0 + 156.0, 54.0)), // 54.0f, 70.0f, 156.0f, 6.0f),
-            new Cell(new PdfRectangle(70.0, 60.0 - 4.0, 70.0 + 156.0, 60.0)), // 60.0f, 70.0f, 156.0f, 4.0f),
-            new Cell(new PdfRectangle(70.0, 64.0 - 6.0, 70.0 + 156.0, 64.0)), // 64.0f, 70.0f, 156.0f, 6.0f),
-            new Cell(new PdfRectangle(70.0, 70.0 - 4.0, 70.0 + 156.0, 70.0)), // 70.0f, 70.0f, 156.0f, 4.0f),
-            new Cell(new PdfRectangle(70.0, 74.0 - 6.0, 70.0 + 156.0, 74.0)), // 74.0f, 70.0f, 156.0f, 6.0f)
+            // re-done in Excel
+            new Cell(new PdfRectangle(18, 74, 70, 80)),
+            new Cell(new PdfRectangle(70, 74, 226, 80)),
+            new Cell(new PdfRectangle(18, 70, 70, 74)),
+            new Cell(new PdfRectangle(70, 70, 226, 74)),
+            new Cell(new PdfRectangle(18, 64, 70, 70)),
+            new Cell(new PdfRectangle(70, 64, 226, 70)),
+            new Cell(new PdfRectangle(18, 60, 70, 64)),
+            new Cell(new PdfRectangle(70, 60, 226, 64)),
+            new Cell(new PdfRectangle(18, 54, 70, 60)),
+            new Cell(new PdfRectangle(70, 54, 226, 60)),
+            new Cell(new PdfRectangle(18, 50, 70, 54)),
+            new Cell(new PdfRectangle(70, 50, 226, 54)),
+            new Cell(new PdfRectangle(18, 44, 70, 50)),
+            new Cell(new PdfRectangle(70, 44, 226, 50)),
+            new Cell(new PdfRectangle(18, 40, 226, 44)),
         };
 
         private static readonly Ruling[][] SINGLE_CELL_RULINGS = new[]
@@ -134,13 +135,21 @@ namespace Tabula.Tests
             new Ruling(new PdfPoint(560.11328,  792 - 366.0), new PdfPoint(560.0,       792 - 181.0))
         };
 
-        [Fact(Skip = "fails as of v0.7")]
+        [Fact]
         public void testLinesToCells()
         {
             List<Cell> cells = SpreadsheetExtractionAlgorithm.findCells(HORIZONTAL_RULING_LINES.ToList(), VERTICAL_RULING_LINES.ToList());
             Utils.sort(cells, new TableRectangle.ILL_DEFINED_ORDER());
             List<Cell> expected = EXPECTED_CELLS.ToList();
             Utils.sort(expected, new TableRectangle.ILL_DEFINED_ORDER());
+
+            Assert.Equal(expected.Count, cells.Count);
+
+            for (int i = 0; i < expected.Count; i++)
+            {
+                Assert.Equal(expected[i], cells[i]);
+            }
+
             Assert.Equal(expected, cells);
         }
 
