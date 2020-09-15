@@ -208,19 +208,6 @@ namespace Tabula.Tests
             StringBuilder sb = new StringBuilder();
             (new JSONWriter()).write(sb, tables);
             Assert.Equal(expectedJson, sb.ToString());
-
-            /*
-            using (var stream = new MemoryStream())
-            using (var sb = new StreamWriter(stream) { AutoFlush = true })
-            {
-                (new JSONWriter()).write(sb, tables);
-
-                var reader = new StreamReader(stream);
-                stream.Position = 0;
-                var s = reader.ReadToEnd().Trim(); // trim to remove last new line
-                Assert.Equal(expectedJson, s); //.Replace("\r\n", "\n"));
-            }
-            */
         }
 
         [Fact]
@@ -235,19 +222,6 @@ namespace Tabula.Tests
             StringBuilder sb = new StringBuilder();
             (new CSVWriter()).write(sb, tables);
             Assert.Equal(expectedCsv, sb.ToString().Replace("\r\n", "\n").Trim());
-
-            /*
-            using (var stream = new MemoryStream())
-            using (var sb = new StreamWriter(stream) { AutoFlush = true })
-            {
-                (new CSVWriter()).write(sb, tables);
-
-                var reader = new StreamReader(stream);
-                stream.Position = 0;
-                var s = reader.ReadToEnd().Trim(); // trim to remove last new line
-                Assert.Equal(expectedCsv, s.Replace("\r\n", "\n")); //.Replace("\r\n", "\n"));
-            }
-            */
         }
 
         [Fact]
@@ -272,19 +246,6 @@ namespace Tabula.Tests
             (new CSVWriter()).write(sb, tables[0]);
             string result = sb.ToString().Trim();
             Assert.Equal(expected.Replace("\r\n", "\r"), result.Replace("\r\n", "\r"));
-
-            /*
-            using (var stream = new MemoryStream())
-            using (var sb = new StreamWriter(stream) { AutoFlush = true })
-            {
-                (new CSVWriter()).write(sb, tables);
-
-                var reader = new StreamReader(stream);
-                stream.Position = 0;
-                var result = reader.ReadToEnd().Trim(); // trim to remove last new line
-                Assert.Equal(expected, result); //.Replace("\r\n", "\n"));
-            }
-            */
         }
 
         [Fact]
