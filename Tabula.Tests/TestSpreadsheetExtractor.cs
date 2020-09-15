@@ -131,7 +131,7 @@ namespace Tabula.Tests
             new Ruling(new PdfPoint(560.11328,  792 - 366.0), new PdfPoint(560.0,       792 - 181.0))
         };
 
-        [Fact(Skip = "fails as of v0.6")]
+        [Fact(Skip = "fails as of v0.7")]
         public void testLinesToCells()
         {
             List<Cell> cells = SpreadsheetExtractionAlgorithm.findCells(HORIZONTAL_RULING_LINES.ToList(), VERTICAL_RULING_LINES.ToList());
@@ -192,7 +192,7 @@ namespace Tabula.Tests
             //SpreadsheetExtractionAlgorithm.findCells(page.getHorizontalRulings(), page.getVerticalRulings());
         }
 
-        [Fact(Skip = "fails as of v0.6")]
+        [Fact(Skip = "fails as of v0.7")]
         public void testSpanningCells()
         {
             PageArea page = UtilsForTesting.getPage("Resources/spanning_cells.pdf", 1);
@@ -300,7 +300,7 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact(Skip = "fails as of v0.6")]
+        [Fact(Skip = "fails as of v0.7")]
         public void testSpreadsheetWithNoBoundingFrameShouldBeSpreadsheet()
         {
             PageArea page = UtilsForTesting.getAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1,
@@ -409,7 +409,7 @@ namespace Tabula.Tests
         }
         */
 
-        [Fact(Skip = "fails as of v0.6")]
+        [Fact(Skip = "fails as of v0.7")]
         public void testShouldDetectASingleSpreadsheet()
         {
             PageArea page = UtilsForTesting.getAreaFromPage("Resources/offense.pdf", 1, new PdfRectangle(16.44, 792 - 680.85, 597.84, 792 - 16.44)); // 68.08f, 16.44f, 680.85f, 597.84f);
