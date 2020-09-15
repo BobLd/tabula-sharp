@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Tabula.Tests
 {
-    public class UnicodeExtensionsTests
+    public class TestsUnicodeExtensions
     {
         [Fact]
         public void Unicode13IntValues()

@@ -201,10 +201,11 @@ namespace Tabula.Tests
             List<Table> tables = se.extract(page);
             Assert.Equal(2, tables.Count);
 
-            //StringBuilder sb = new StringBuilder();
-            //(new JSONWriter()).write(sb, tables);
-            //Assert.Equal(expectedJson, sb.ToString());
+            StringBuilder sb = new StringBuilder();
+            (new JSONWriter()).write(sb, tables);
+            Assert.Equal(expectedJson, sb.ToString());
 
+            /*
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
             {
@@ -215,6 +216,7 @@ namespace Tabula.Tests
                 var s = reader.ReadToEnd().Trim(); // trim to remove last new line
                 Assert.Equal(expectedJson, s); //.Replace("\r\n", "\n"));
             }
+            */
         }
 
         [Fact]
@@ -311,10 +313,11 @@ namespace Tabula.Tests
             Assert.True(isTabular);
             List<Table> tables = se.extract(page);
 
-            //StringBuilder sb = new StringBuilder();
-            //(new CSVWriter()).write(sb, tables[0]);
-            //Assert.Equal(expectedCsv, sb.ToString());
+            StringBuilder sb = new StringBuilder();
+            (new CSVWriter()).write(sb, tables[0]);
+            Assert.Equal(expectedCsv, sb.ToString());
 
+            /*
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
             {
@@ -326,6 +329,7 @@ namespace Tabula.Tests
 
                 Assert.Equal(expectedCsv, result.Replace("\r\n", "\n"));
             }
+            */
         }
 
         [Fact(Skip = "TODO")]
@@ -394,6 +398,7 @@ namespace Tabula.Tests
             Assert.Single(m.Values);
         }
 
+        /*
         [Fact(Skip = "TODO add assertions")]
         public void testDontRaiseSortException()
         {
@@ -402,6 +407,7 @@ namespace Tabula.Tests
             //SpreadsheetExtractionAlgorithm bea = new SpreadsheetExtractionAlgorithm();
             //bea.extract(page)[0];
         }
+        */
 
         [Fact(Skip = "fails as of v0.6")]
         public void testShouldDetectASingleSpreadsheet()

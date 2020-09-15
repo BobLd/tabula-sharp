@@ -367,11 +367,11 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact(Skip = "skip for the moment, RtL text.")]
+        [Fact]
         public void testRealLifeRTL2()
         {
             string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/indictb1h_14.csv");
-            PageArea page = UtilsForTesting.getAreaFromPage(@"Resources/indictb1h_14.pdf", 1, new PdfRectangle(120.0, 168, 459.9, 636)); // need to check area // 205.0f, 120.0f, 622.82f, 459.9f);
+            PageArea page = UtilsForTesting.getAreaFromPage("Resources/indictb1h_14.pdf", 1, new PdfRectangle(120.0, 842 - 622.82, 459.9, 842 - 120.0)); // 205.0f, 120.0f, 622.82f, 459.9f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.extract(page)[0];
 
