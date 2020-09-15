@@ -24,4 +24,4 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore --framework netcoreapp3.1
     - name: Test
-      run: dotnet test --no-restore --verbosity minimal
+      run: dotnet test --no-restore --verbosity minimal --framework netcoreapp3.1
