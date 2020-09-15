@@ -28,6 +28,7 @@ namespace Tabula
             this.dir = dir;
         }
 
+        [Obsolete("Use TextElement(PdfRectangle...) instead.")]
         public TextElement(double y, double x, double width, double height,
             FontDetails font, double fontSize, string c, double widthOfSpace) :
             this(y, x, width, height, font, fontSize, c, widthOfSpace, 0f)
@@ -35,6 +36,7 @@ namespace Tabula
             throw new ArgumentOutOfRangeException();
         }
 
+        [Obsolete("Use TextElement(PdfRectangle...) instead.")]
         public TextElement(double y, double x, double width,
             double height, FontDetails font, double fontSize, string c, double widthOfSpace, double dir)
             : base(x, y, width, height)

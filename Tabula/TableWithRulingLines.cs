@@ -17,8 +17,9 @@ namespace Tabula
             }
         }
 
-        List<Ruling> verticalRulings, horizontalRulings;
-        RectangleSpatialIndex<Cell> si = new RectangleSpatialIndex<Cell>();
+        private readonly List<Ruling> verticalRulings;
+        private readonly List<Ruling> horizontalRulings;
+        readonly RectangleSpatialIndex<Cell> si = new RectangleSpatialIndex<Cell>();
 
         public TableWithRulingLines(TableRectangle area, List<Cell> cells, List<Ruling> horizontalRulings, List<Ruling> verticalRulings, ExtractionAlgorithm extractionAlgorithm)
             : base(extractionAlgorithm)

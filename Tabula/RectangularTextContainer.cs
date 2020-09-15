@@ -19,9 +19,9 @@ namespace Tabula
 			throw new ArgumentOutOfRangeException();
 		}
 
-		public abstract String getText();
+		public abstract string getText();
 
-		public abstract String getText(bool useLineReturns);
+		public abstract string getText(bool useLineReturns);
 
 		public override string ToString()
 		{
@@ -32,7 +32,6 @@ namespace Tabula
 			return sb.ToString();
 		}
 	}
-
 
 	public abstract class RectangularTextContainer<T> : RectangularTextContainer where T : HasText
 	{

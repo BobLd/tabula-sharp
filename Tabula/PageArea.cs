@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
@@ -24,6 +22,8 @@ namespace Tabula
         private RectangleSpatialIndex<TextElement> spatial_index;
         private Page pdPage;
         private PdfDocument pdDoc;
+
+        [Obsolete("Use PageArea(PdfRectangle, ...) instead.")]
         public PageArea(double top, double left, double width, double height, int rotation, int page_number, Page pdPage, PdfDocument doc)
             : base(top, left, width, height)
         {
@@ -34,6 +34,7 @@ namespace Tabula
             this.pdDoc = doc;
         }
 
+        [Obsolete("Use PageArea(PdfRectangle, ...) instead.")]
         public PageArea(double top, double left, double width, double height, int rotation, int page_number, Page pdPage, PdfDocument doc,
                     List<TextElement> characters, List<Ruling> rulings)
             : this(top, left, width, height, rotation, page_number, pdPage, doc)
@@ -43,6 +44,7 @@ namespace Tabula
             this.rulings = rulings;
         }
 
+        [Obsolete("Use PageArea(PdfRectangle, ...) instead.")]
         public PageArea(double top, double left, double width, double height, int rotation, int page_number, Page pdPage, PdfDocument doc,
              List<TextElement> characters, List<Ruling> rulings,
              double minCharWidth, double minCharHeight, RectangleSpatialIndex<TextElement> index)
@@ -82,24 +84,13 @@ namespace Tabula
                 min_char_height = t.Min(x => x.height);
             }
 
-            /*
-            PageArea rv = new PageArea(
-                area.getTop(),
-                area.getLeft(),
-                (float)area.getWidth(),
-                (float)area.getHeight(),
-                rotation,
-                pageNumber,
-                pdPage,
-                pdDoc,
-                t,
-                Ruling.cropRulingsToArea(getRulings(), area),
-                min_char_width,
-                min_char_height,
-                spatial_index);
-            */
-            PageArea rv = new PageArea(area, rotation, pageNumber,
-                                       pdPage, pdDoc, t, Ruling.cropRulingsToArea(getRulings(), area),
+            PageArea rv = new PageArea(area,
+                                       rotation,
+                                       pageNumber,
+                                       pdPage,
+                                       pdDoc,
+                                       t,
+                                       Ruling.cropRulingsToArea(getRulings(), area),
                                        min_char_width,
                                        min_char_height,
                                        spatial_index);
@@ -159,7 +150,7 @@ namespace Tabula
             return pageNumber;
         }
 
-        [Obsolete("use {@linkplain #getText()} instead")]
+        [Obsolete("use getText() instead.")]
         public List<TextElement> getTexts()
         {
             return texts;

@@ -16,7 +16,7 @@ namespace Tabula
         {
             if (val < 0)
             {
-                throw new ArgumentException();
+                throw new ArgumentOutOfRangeException();
             }
 
             // need to add check for max value
