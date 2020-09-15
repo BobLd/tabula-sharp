@@ -1,5 +1,7 @@
-﻿using System;
+﻿using CsvHelper;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -319,7 +321,7 @@ namespace Tabula.Tests
             Assert.Equal(expectedCsv, sb.ToString());
         }
 
-        [Fact]
+        [Fact(Skip = "TO DO")]
         public void testExtractSpreadsheetWithinAnArea()
         {
             PageArea page = UtilsForTesting.getAreaFromPage("Resources/puertos1.pdf", 1, new PdfRectangle(30.32142857142857, 793 - 554.8821428571429, 546.7964285714286, 793 - 273.9035714285714)); // 273.9035714285714f, 30.32142857142857f, 554.8821428571429f, 546.7964285714286f);
@@ -328,7 +330,7 @@ namespace Tabula.Tests
             Table table = tables[0];
             Assert.Equal(15, table.getRows().Count);
 
-            String expected = "\"\",TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM\n" +
+            const string expected = "\"\",TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM\n" +
                     "Peces vivos,1,25,1,23,2,38,1,37,2,67,2,89,1\n" +
                     "\"Pescado fresco\n" +
                     "o refrigerado.\n" +
@@ -360,20 +362,23 @@ namespace Tabula.Tests
                     "aptos p/c humano\",\"16,947\",\"8,547\",\"11,867\",\"6,315\",\"32,528\",\"13,985\",\"37,313\",\"18,989\",\"35,787\",\"19,914\",\"37,821\",\"27,174\",\"30,000\"\n" +
                     "TOTAL,\"453,515\",\"895,111\",\"456,431\",\"718,382\",\"487,183\",\"886,211\",\"494,220\",\"816,623\",\"495,580\",\"810,565\",\"627,469\",\"1,248,804\",\"540,367\"\n";
 
-
-            //// TODO add better assertions
-            //StringBuilder sb = new StringBuilder();
-            //(new CSVWriter()).write(sb, tables[0]);
-            //String result = sb.ToString();
+            // TODO add better assertions
+            StringBuilder sb = new StringBuilder();
+            (new CSVWriter()).write(sb, tables[0]);
+            string result = sb.ToString();
 
             //List<CSVRecord> parsedExpected = org.apache.commons.csv.CSVParser.parse(expected, CSVFormat.EXCEL).getRecords();
             //List<CSVRecord> parsedResult = org.apache.commons.csv.CSVParser.parse(result, CSVFormat.EXCEL).getRecords();
-
-            //Assert.Equal(parsedResult.Count, parsedExpected.Count);
-            //for (int i = 0; i < parsedResult.Count; i++)
-            //{
-            //    Assert.Equal(parsedResult[i].size(), parsedExpected[i].size());
-            //}
+            using (var csv = new CsvReader(new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(result))), CultureInfo.InvariantCulture))
+            {
+                /*
+                Assert.Equal(parsedResult.Count, parsedExpected.Count);
+                for (int i = 0; i < parsedResult.Count; i++)
+                {
+                    Assert.Equal(parsedResult[i].size(), parsedExpected[i].size());
+                }
+                */
+            }
         }
 
         [Fact]
