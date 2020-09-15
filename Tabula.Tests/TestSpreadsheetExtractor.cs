@@ -15,8 +15,9 @@ namespace Tabula.Tests
     {
         public static TableRectangle[] EXPECTED_RECTANGLES = new TableRectangle[]
         {
-            //new TableRectangle(40.0f, 18.0f, 208.0f, 40.0f),
-            //new TableRectangle(84.0f, 18.0f, 962.0f, 464.0f)
+            // top, left, width, height
+            new TableRectangle(new PdfRectangle(18.0, 40.0, 18.0 + 208.0, 40.0 + 40.0)),  //new TableRectangle(40.0f, 18.0f, 208.0f, 40.0f),
+            new TableRectangle(new PdfRectangle(18.0, 84.0, 18.0 + 962.0, 84.0 + 464.0))  //new TableRectangle(84.0f, 18.0f, 962.0f, 464.0f)
         };
 
         private static readonly Ruling[] VERTICAL_RULING_LINES = new[]
@@ -162,35 +163,36 @@ namespace Tabula.Tests
             Assert.False(cells[0].intersects(cells[1]));
         }
 
-        [Fact(Skip = "TODO")]
+        [Fact]//(Skip = "TODO")]
         public void testFindSpreadsheetsFromCells()
         {
-            //CSVParser parse = org.apache.commons.csv.CSVParser.parse(new File("src/test/resources/technology/tabula/csv/TestSpreadsheetExtractor-CELLS.csv"),
-            //    Charset.forName("utf-8"),
-            //    CSVFormat.DEFAULT);
+            var parse = UtilsForTesting.loadCsvLines("Resources/csv/TestSpreadsheetExtractor-CELLS.csv");
+            List<Cell> cells = new List<Cell>();
+            foreach (var record in parse)
+            {
+                var top = double.Parse(record[0]);      // top
+                var left = double.Parse(record[1]);     // left
+                var width = double.Parse(record[2]);    // width
+                var height = double.Parse(record[3]);   // height
+                cells.Add(new Cell(new PdfRectangle(left, top, left + width, top + height)));
+            }
 
-            //List<Cell> cells = new ArrayList<>();
+            List<TableRectangle> expected = EXPECTED_RECTANGLES.ToList();
+            Utils.sort(expected, new TableRectangle.ILL_DEFINED_ORDER());
+            List<TableRectangle> foundRectangles = SpreadsheetExtractionAlgorithm.findSpreadsheetsFromCells(cells.Cast<TableRectangle>().ToList());
+            Utils.sort(foundRectangles, new TableRectangle.ILL_DEFINED_ORDER());
 
-            //for (CSVRecord record : parse) {
-            //    cells.add(new Cell(Float.parseFloat(record[0]),
-            //            Float.parseFloat(record[1]),
-            //            Float.parseFloat(record[2]),
-            //            Float.parseFloat(record[3])));
-            //}
-
-            //List<Rectangle> expected = Arrays.asList(EXPECTED_RECTANGLES);
-            //Collections.sort(expected, Rectangle.ILL_DEFINED_ORDER);
-            //List<Rectangle> foundRectangles = SpreadsheetExtractionAlgorithm.findSpreadsheetsFromCells(cells);
-            //Collections.sort(foundRectangles, Rectangle.ILL_DEFINED_ORDER);
-            //assertTrue(foundRectangles.equals(expected));
+            Assert.Equal(foundRectangles, expected);
         }
 
+        /*
         [Fact(Skip = "TODO Add assertions")]
         public void testSpreadsheetExtraction()
         {
-            //PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/argentina_diputados_voting_record.pdf", 269.875f, 12.75f, 790.5f, 561f);
-            //SpreadsheetExtractionAlgorithm.findCells(page.getHorizontalRulings(), page.getVerticalRulings());
+            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/argentina_diputados_voting_record.pdf", 269.875f, 12.75f, 790.5f, 561f);
+            SpreadsheetExtractionAlgorithm.findCells(page.getHorizontalRulings(), page.getVerticalRulings());
         }
+        */
 
         [Fact(Skip = "fails as of v0.7")]
         public void testSpanningCells()
@@ -303,10 +305,9 @@ namespace Tabula.Tests
         [Fact(Skip = "fails as of v0.7")]
         public void testSpreadsheetWithNoBoundingFrameShouldBeSpreadsheet()
         {
-            PageArea page = UtilsForTesting.getAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1,
-                new PdfRectangle(58.9, 842 - 654.7, 536.12, 698)); // 842 - 150.56)); // 150.56f, 58.9f, 654.7f, 536.12f);
+            PageArea page = UtilsForTesting.getAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1, new PdfRectangle(58.9, 842 - 654.7, 536.12, 698)); // 842 - 150.56)); // 150.56f, 58.9f, 654.7f, 536.12f);
 
-            String expectedCsv = UtilsForTesting.loadCsv("Resources/csv/spreadsheet_no_bounding_frame.csv");
+            string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/spreadsheet_no_bounding_frame.csv");
 
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
             bool isTabular = se.isTabular(page);
@@ -316,62 +317,48 @@ namespace Tabula.Tests
             StringBuilder sb = new StringBuilder();
             (new CSVWriter()).write(sb, tables[0]);
             Assert.Equal(expectedCsv, sb.ToString());
-
-            /*
-            using (var stream = new MemoryStream())
-            using (var sb = new StreamWriter(stream) { AutoFlush = true })
-            {
-                (new CSVWriter()).write(sb, tables[0]);
-
-                var reader = new StreamReader(stream);
-                stream.Position = 0;
-                var result = reader.ReadToEnd().Trim(); // trim to remove last new line
-
-                Assert.Equal(expectedCsv, result.Replace("\r\n", "\n"));
-            }
-            */
         }
 
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void testExtractSpreadsheetWithinAnArea()
         {
-            //PageArea page = UtilsForTesting.getAreaFromPage("Resources/puertos1.pdf", 1, 273.9035714285714f, 30.32142857142857f, 554.8821428571429f, 546.7964285714286f);
-            //SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            //List<Table> tables = se.extract(page);
-            //Table table = tables[0];
-            //Assert.Equal(15, table.getRows().Count);
+            PageArea page = UtilsForTesting.getAreaFromPage("Resources/puertos1.pdf", 1, new PdfRectangle(30.32142857142857, 793 - 554.8821428571429, 546.7964285714286, 793 - 273.9035714285714)); // 273.9035714285714f, 30.32142857142857f, 554.8821428571429f, 546.7964285714286f);
+            SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
+            List<Table> tables = se.extract(page);
+            Table table = tables[0];
+            Assert.Equal(15, table.getRows().Count);
 
-            //String expected = "\"\",TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM\n" +
-            //        "Peces vivos,1,25,1,23,2,38,1,37,2,67,2,89,1\n" +
-            //        "\"Pescado fresco\n" +
-            //        "o refrigerado.\n" +
-            //        "exc. filetes\",7.704,7.175,8.931,6.892,12.635,10.255,16.742,13.688,14.357,11.674,13.035,13.429,9.727\n" +
-            //        "\"Pescado congelado\n" +
-            //        "exc. filetes\",90.560,105.950,112.645,108.416,132.895,115.874,152.767,133.765,148.882,134.847,156.619,165.134,137.179\n" +
-            //        "\"Filetes y demás car-\n" +
-            //        "nes de pescado\",105.434,200.563,151.142,218.389,152.174,227.780,178.123,291.863,169.422,313.735,176.427,381.640,144.814\n" +
-            //        "\"Pescado sec./sal./\n" +
-            //        "en salm. har./pol./\n" +
-            //        "pell. aptos\n" +
-            //        "p/c humano\",6.837,14.493,6.660,9.167,14.630,17.579,18.150,21.302,18.197,25.739,13.460,23.549,11.709\n" +
-            //        "Crustáceos,61.691,375.798,52.488,251.043,47.635,387.783,27.815,217.443,7.123,86.019,39.488,373.583,45.191\n" +
-            //        "Moluscos,162.027,174.507,109.436,111.443,90.834,104.741,57.695,109.141,98.182,206.304,187.023,251.352,157.531\n" +
-            //        "\"Prod. no exp. en\n" +
-            //        "otros capítulos.\n" +
-            //        "No apto p/c humano\",203,328,7,35,521,343,\"1,710\",\"1,568\",125,246,124,263,131\n" +
-            //        "\"Grasas y aceites de\n" +
-            //        "pescado y mamíferos\n" +
-            //        "marinos\",913,297,\"1,250\",476,\"1,031\",521,\"1,019\",642,690,483,489,710,959\n" +
-            //        "\"Extractos y jugos de\n" +
-            //        "pescado y mariscos\",5,25,1,3,4,4,31,93,39,117,77,230,80\n" +
-            //        "\"Preparaciones y con-\n" +
-            //        "servas de pescado\",846,\"3,737\",\"1,688\",\"4,411\",\"1,556\",\"3,681\",\"2,292\",\"5,474\",\"2,167\",\"7,494\",\"2,591\",\"8,833\",\"2,795\"\n" +
-            //        "\"Preparaciones y con-\n" +
-            //        "servas de mariscos\",348,\"3,667\",345,\"1,771\",738,\"3,627\",561,\"2,620\",607,\"3,928\",314,\"2,819\",250\n" +
-            //        "\"Harina, polvo y pe-\n" +
-            //        "llets de pescado.No\n" +
-            //        "aptos p/c humano\",\"16,947\",\"8,547\",\"11,867\",\"6,315\",\"32,528\",\"13,985\",\"37,313\",\"18,989\",\"35,787\",\"19,914\",\"37,821\",\"27,174\",\"30,000\"\n" +
-            //        "TOTAL,\"453,515\",\"895,111\",\"456,431\",\"718,382\",\"487,183\",\"886,211\",\"494,220\",\"816,623\",\"495,580\",\"810,565\",\"627,469\",\"1,248,804\",\"540,367\"\n";
+            String expected = "\"\",TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM\n" +
+                    "Peces vivos,1,25,1,23,2,38,1,37,2,67,2,89,1\n" +
+                    "\"Pescado fresco\n" +
+                    "o refrigerado.\n" +
+                    "exc. filetes\",7.704,7.175,8.931,6.892,12.635,10.255,16.742,13.688,14.357,11.674,13.035,13.429,9.727\n" +
+                    "\"Pescado congelado\n" +
+                    "exc. filetes\",90.560,105.950,112.645,108.416,132.895,115.874,152.767,133.765,148.882,134.847,156.619,165.134,137.179\n" +
+                    "\"Filetes y demás car-\n" +
+                    "nes de pescado\",105.434,200.563,151.142,218.389,152.174,227.780,178.123,291.863,169.422,313.735,176.427,381.640,144.814\n" +
+                    "\"Pescado sec./sal./\n" +
+                    "en salm. har./pol./\n" +
+                    "pell. aptos\n" +
+                    "p/c humano\",6.837,14.493,6.660,9.167,14.630,17.579,18.150,21.302,18.197,25.739,13.460,23.549,11.709\n" +
+                    "Crustáceos,61.691,375.798,52.488,251.043,47.635,387.783,27.815,217.443,7.123,86.019,39.488,373.583,45.191\n" +
+                    "Moluscos,162.027,174.507,109.436,111.443,90.834,104.741,57.695,109.141,98.182,206.304,187.023,251.352,157.531\n" +
+                    "\"Prod. no exp. en\n" +
+                    "otros capítulos.\n" +
+                    "No apto p/c humano\",203,328,7,35,521,343,\"1,710\",\"1,568\",125,246,124,263,131\n" +
+                    "\"Grasas y aceites de\n" +
+                    "pescado y mamíferos\n" +
+                    "marinos\",913,297,\"1,250\",476,\"1,031\",521,\"1,019\",642,690,483,489,710,959\n" +
+                    "\"Extractos y jugos de\n" +
+                    "pescado y mariscos\",5,25,1,3,4,4,31,93,39,117,77,230,80\n" +
+                    "\"Preparaciones y con-\n" +
+                    "servas de pescado\",846,\"3,737\",\"1,688\",\"4,411\",\"1,556\",\"3,681\",\"2,292\",\"5,474\",\"2,167\",\"7,494\",\"2,591\",\"8,833\",\"2,795\"\n" +
+                    "\"Preparaciones y con-\n" +
+                    "servas de mariscos\",348,\"3,667\",345,\"1,771\",738,\"3,627\",561,\"2,620\",607,\"3,928\",314,\"2,819\",250\n" +
+                    "\"Harina, polvo y pe-\n" +
+                    "llets de pescado.No\n" +
+                    "aptos p/c humano\",\"16,947\",\"8,547\",\"11,867\",\"6,315\",\"32,528\",\"13,985\",\"37,313\",\"18,989\",\"35,787\",\"19,914\",\"37,821\",\"27,174\",\"30,000\"\n" +
+                    "TOTAL,\"453,515\",\"895,111\",\"456,431\",\"718,382\",\"487,183\",\"886,211\",\"494,220\",\"816,623\",\"495,580\",\"810,565\",\"627,469\",\"1,248,804\",\"540,367\"\n";
 
 
             //// TODO add better assertions
