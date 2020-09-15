@@ -206,7 +206,7 @@ namespace Tabula.Tests
         }
         */
 
-        [Fact]//(Skip = "fails as of v0.8a")] // might be different coordinate system issue
+        [Fact]
         public void testSpanningCells()
         {
             PageArea page = UtilsForTesting.getPage("Resources/spanning_cells.pdf", 1);
