@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using Tabula.Csv;
 using Tabula.Extractors;
 using UglyToad.PdfPig.Core;
@@ -181,50 +182,62 @@ namespace Tabula.Tests
         [Fact]
         public void testExtractColumnsCorrectly()
         {
-            // fails on linux, seems to be linked to PdfPig. Letters bounding boxes are different??
-            PageArea page = UtilsForTesting.getAreaFromPage(EU_002_PDF, 1, new PdfRectangle(70.0, 725 - (233 - 115), 510.0, 725)); // 115.0f, 70.0f, 233.0f, 510.0f);
-            BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-            Table table = bea.extract(page)[0];
-
-            var actualArray = UtilsForTesting.tableToArrayOfRows(table);
-            Assert.Equal(EU_002_EXPECTED.Length, actualArray.Length);
-
-            for (int i = 0; i < EU_002_EXPECTED.Length; i++)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                var expecteds = EU_002_EXPECTED[i];
-                var actuals = actualArray[i];
-                Assert.Equal(expecteds.Length, actuals.Length);
-                for (int j = 0; j < expecteds.Length; j++)
+                PageArea page = UtilsForTesting.getAreaFromPage(EU_002_PDF, 1, new PdfRectangle(70.0, 725 - (233 - 115), 510.0, 725)); // 115.0f, 70.0f, 233.0f, 510.0f);
+                BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
+                Table table = bea.extract(page)[0];
+
+                var actualArray = UtilsForTesting.tableToArrayOfRows(table);
+                Assert.Equal(EU_002_EXPECTED.Length, actualArray.Length);
+
+                for (int i = 0; i < EU_002_EXPECTED.Length; i++)
                 {
-                    var e = expecteds[j];
-                    var a = actuals[j];
-                    Assert.Equal(e, a);
+                    var expecteds = EU_002_EXPECTED[i];
+                    var actuals = actualArray[i];
+                    Assert.Equal(expecteds.Length, actuals.Length);
+                    for (int j = 0; j < expecteds.Length; j++)
+                    {
+                        var e = expecteds[j];
+                        var a = actuals[j];
+                        Assert.Equal(e, a);
+                    }
                 }
+            }
+            else
+            {
+                // fails on linux and mac os. Linked to PdfPig not finding the correct font.
             }
         }
 
         [Fact]
         public void testExtractColumnsCorrectly2()
         {
-            // fails on linux, seems to be linked to PdfPig. Letters bounding boxes are different??
-            PageArea page = UtilsForTesting.getPage(EU_017_PDF, 3);
-            BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.getVerticalRulings());
-            Table table = bea.extract(page.getArea(new PdfRectangle(148.44, 543 - (711.875 - 299.625), 452.32, 543)))[0]; //299.625f, 148.44f, 711.875f, 452.32f))[0];
-
-            var result = UtilsForTesting.tableToArrayOfRows(table);
-
-            Assert.Equal(EU_017_EXPECTED.Length, result.Length);
-            for (int i = 0; i < EU_017_EXPECTED.Length; i++)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                var expecteds = EU_017_EXPECTED[i];
-                var actuals = result[i];
-                Assert.Equal(expecteds.Length, actuals.Length);
-                for (int j = 0; j < expecteds.Length; j++)
+                PageArea page = UtilsForTesting.getPage(EU_017_PDF, 3);
+                BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.getVerticalRulings());
+                Table table = bea.extract(page.getArea(new PdfRectangle(148.44, 543 - (711.875 - 299.625), 452.32, 543)))[0]; //299.625f, 148.44f, 711.875f, 452.32f))[0];
+
+                var result = UtilsForTesting.tableToArrayOfRows(table);
+
+                Assert.Equal(EU_017_EXPECTED.Length, result.Length);
+                for (int i = 0; i < EU_017_EXPECTED.Length; i++)
                 {
-                    var e = expecteds[j];
-                    var a = actuals[j];
-                    Assert.Equal(e, a);
+                    var expecteds = EU_017_EXPECTED[i];
+                    var actuals = result[i];
+                    Assert.Equal(expecteds.Length, actuals.Length);
+                    for (int j = 0; j < expecteds.Length; j++)
+                    {
+                        var e = expecteds[j];
+                        var a = actuals[j];
+                        Assert.Equal(e, a);
+                    }
                 }
+            }
+            else
+            {
+                // fails on linux and mac os. Linked to PdfPig not finding the correct font.
             }
         }
 
