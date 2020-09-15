@@ -20,7 +20,7 @@ namespace Tabula
 
         private class PointComparator : IComparer<PdfPoint>
         {
-            public int Compare([AllowNull] PdfPoint o1, [AllowNull] PdfPoint o2)
+            public int Compare(PdfPoint o1, PdfPoint o2)
             {
                 double o1X = Utils.round(o1.X, 2);
                 double o1Y = Utils.round(o1.Y, 2);

@@ -25,8 +25,9 @@ namespace Tabula
             /// <param name="o1"></param>
             /// <param name="o2"></param>
             /// <returns></returns>
-            public int Compare([AllowNull] TableRectangle o1, [AllowNull] TableRectangle o2)
+            public int Compare(TableRectangle o1, TableRectangle o2)
             {
+                /*
                 if (o1.Equals(o2)) return 0;
                 if (o1.verticalOverlap(o2) > VERTICAL_COMPARISON_THRESHOLD)
                 {
@@ -40,6 +41,27 @@ namespace Tabula
                 {
                     return -o1.getBottom().CompareTo(o2.getBottom()); //bobld multiply by -1 to sort from top to bottom (reading order)
                 }
+                */
+
+                //https://github.com/3stack-software/tabula-java/blob/bbb508ba41538a51de6e49c7777f5067dec85b74/src/main/java/technology/tabula/Rectangle.java
+                if (o1.Equals(o2)) return 0;
+                double overlap = o1.verticalOverlap(o2);
+                double requiredOverlap = Math.Min(o1.height, o2.height) * VERTICAL_COMPARISON_THRESHOLD;
+                if (overlap < requiredOverlap)
+                {
+                    int retval = -o1.getBottom().CompareTo(o2.getBottom()); //bobld multiply by -1 to sort from top to bottom (reading order)
+
+                    if (retval != 0)
+                    {
+                        retval = -o1.getTop().CompareTo(o2.getTop()); //bobld multiply by -1 to sort from top to bottom (reading order)
+                    }
+
+                    if (retval != 0)
+                    {
+                        return retval;
+                    }
+                }
+                return o1.isLtrDominant() == -1 && o2.isLtrDominant() == -1 ? -o1.getX().CompareTo(o2.getX()) : o1.getX().CompareTo(o2.getX());
             }
         }
 
@@ -64,7 +86,7 @@ namespace Tabula
             throw new ArgumentException();
         }
 
-        public int CompareTo([AllowNull] TableRectangle other)
+        public int CompareTo(TableRectangle other)
         {
             return new ILL_DEFINED_ORDER().Compare(this, other);
         }

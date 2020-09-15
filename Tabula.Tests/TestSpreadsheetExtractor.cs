@@ -1,4 +1,6 @@
 ﻿using CsvHelper;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -204,7 +206,7 @@ namespace Tabula.Tests
         }
         */
 
-        [Fact(Skip = "fails as of v0.8a")] // might be different coordinate system issue
+        [Fact]
         public void testSpanningCells()
         {
             PageArea page = UtilsForTesting.getPage("Resources/spanning_cells.pdf", 1);
@@ -213,9 +215,53 @@ namespace Tabula.Tests
             List<Table> tables = se.extract(page);
             Assert.Equal(2, tables.Count);
 
+            var expectedJObject = (JArray)JsonConvert.DeserializeObject(expectedJson);
+
             StringBuilder sb = new StringBuilder();
             (new JSONWriter()).write(sb, tables);
-            Assert.Equal(expectedJson, sb.ToString());
+            var actualJObject = (JArray)JsonConvert.DeserializeObject(sb.ToString());
+
+            double pageHeight = 842;
+            double precision = 2;
+            for (int i = 0; i < 2; i++)
+            {
+                Assert.Equal(expectedJObject[i]["extraction_method"], actualJObject[i]["extraction_method"]);
+
+                Assert.True(Math.Abs(Math.Floor(pageHeight - expectedJObject[i]["top"].Value<double>()) - Math.Floor(actualJObject[i]["top"].Value<double>())) < precision);
+                Assert.True(Math.Abs(Math.Floor(expectedJObject[i]["left"].Value<double>()) - Math.Floor(actualJObject[i]["left"].Value<double>())) < precision);
+                Assert.True(Math.Abs(Math.Floor(expectedJObject[i]["width"].Value<double>()) - Math.Floor(actualJObject[i]["width"].Value<double>())) < precision);
+                Assert.True(Math.Abs(Math.Floor(expectedJObject[i]["height"].Value<double>()) - Math.Floor(actualJObject[i]["height"].Value<double>())) < precision);
+                Assert.True(Math.Abs(Math.Floor(expectedJObject[i]["right"].Value<double>()) - Math.Floor(actualJObject[i]["right"].Value<double>())) < precision);
+                Assert.True(Math.Abs(Math.Floor(pageHeight - expectedJObject[i]["bottom"].Value<double>()) - Math.Floor(actualJObject[i]["bottom"].Value<double>())) < precision);
+
+                var expectedData = (JArray)expectedJObject[i]["data"];
+                var actualData = (JArray)actualJObject[i]["data"];
+                Assert.Equal(expectedData.Count, actualData.Count);
+
+                for (int r = 0; r < expectedData.Count; r++)
+                {
+                    var rowExpected = (JArray)expectedData[r];
+                    var rowActual = (JArray)actualData[r];
+                    Assert.Equal(rowExpected.Count, rowActual.Count);
+
+                    for (int c = 0; c < rowExpected.Count; c++)
+                    {
+                        var cellExpected = (JObject)rowExpected[c];
+                        var cellActual = (JObject)rowActual[c];
+
+                        if (string.IsNullOrEmpty(cellExpected["text"].Value<string>())) continue; // empty cell have no coordinate data???
+
+                        Assert.True(Math.Abs(Math.Floor(pageHeight - cellExpected["top"].Value<double>()) - Math.Floor(cellActual["top"].Value<double>())) < precision);
+                        Assert.True(Math.Abs(Math.Floor(cellExpected["left"].Value<double>()) - Math.Floor(cellActual["left"].Value<double>())) < precision);
+                        Assert.True(Math.Abs(Math.Floor(cellExpected["width"].Value<double>()) - Math.Floor(cellActual["width"].Value<double>())) < precision);
+                        Assert.True(Math.Abs(Math.Floor(cellExpected["height"].Value<double>()) - Math.Floor(cellActual["height"].Value<double>())) < precision);
+                        Assert.Equal(cellExpected["text"].Value<string>(), cellActual["text"].Value<string>());
+                    }
+                }
+            }
+
+
+            //Assert.Equal(expectedJson, sb.ToString());
         }
 
         [Fact]
@@ -275,7 +321,7 @@ namespace Tabula.Tests
         [Fact(Skip = "fails as of v0.8a")]
         public void testSpreadsheetWithNoBoundingFrameShouldBeSpreadsheet()
         {
-            PageArea page = UtilsForTesting.getAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1, new PdfRectangle(58.9, 842 - 654.7, 536.12, 698)); // 842 - 150.56)); // 150.56f, 58.9f, 654.7f, 536.12f);
+            PageArea page = UtilsForTesting.getAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1, new PdfRectangle(58.9, 842 - 654.7, 536.12, 842 - 150.56)); // 842 - 150.56)); // 150.56f, 58.9f, 654.7f, 536.12f);
             string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/spreadsheet_no_bounding_frame.csv");
 
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
@@ -457,15 +503,17 @@ namespace Tabula.Tests
             // Assert.Equal(1, tables.size());
             Table table = tables[0];
 
-            Assert.Equal("اسمي سلطان", table.getRows()[1][1].getText());
-            Assert.Equal("من اين انت؟", table.getRows()[2][1].getText());
-            Assert.Equal("1234", table.getRows()[3][0].getText());
-            Assert.Equal("هل انت شباك؟", table.getRows()[4][0].getText());
-            Assert.Equal("انا من ولاية كارولينا الشمال", table.getRows()[2][0].getText()); // conjoined lam-alif gets missed
-            Assert.Equal("اسمي Jeremy في الانجليزية", table.getRows()[4][1].getText()); // conjoined lam-alif gets missed
-            Assert.Equal("عندي 47 قطط", table.getRows()[3][1].getText()); // the real right answer is 47.
-            Assert.Equal("Jeremy is جرمي in Arabic", table.getRows()[5][0].getText()); // the real right answer is 47.
-            Assert.Equal("مرحباً", table.getRows()[1][0].getText()); // really ought to be ً, but this is forgiveable for now
+            var rows = table.getRows();
+
+            Assert.Equal("اسمي سلطان", rows[1][1].getText());
+            Assert.Equal("من اين انت؟", rows[2][1].getText());
+            Assert.Equal("1234", rows[3][0].getText());
+            Assert.Equal("هل انت شباك؟", rows[4][0].getText());
+            Assert.Equal("انا من ولاية كارولينا الشمال", rows[2][0].getText()); // conjoined lam-alif gets missed
+            Assert.Equal("اسمي Jeremy في الانجليزية", rows[4][1].getText()); // conjoined lam-alif gets missed
+            Assert.Equal("عندي 47 قطط", rows[3][1].getText()); // the real right answer is 47.
+            Assert.Equal("Jeremy is جرمي in Arabic", rows[5][0].getText()); // the real right answer is 47.
+            Assert.Equal("مرحباً", rows[1][0].getText()); // really ought to be ً, but this is forgiveable for now
 
             // there is one remaining problems that are not yet addressed
             // - diacritics (e.g. Arabic's tanwinً and probably Hebrew nekudot) are put in the wrong place.

@@ -331,7 +331,7 @@ namespace Tabula.Detectors
 
         public class TreeSetRectangleComparer : IComparer<TableRectangle>
         {
-            public int Compare([AllowNull] TableRectangle o1, [AllowNull] TableRectangle o2)
+            public int Compare(TableRectangle o1, TableRectangle o2)
             {
                 if (o1.Equals(o2))
                 {

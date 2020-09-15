@@ -30,7 +30,7 @@ namespace Tabula.Extractors
 
         private class VerticalRulingComparer : IComparer<Ruling>
         {
-            public int Compare([AllowNull] Ruling arg0, [AllowNull] Ruling arg1)
+            public int Compare(Ruling arg0, Ruling arg1)
             {
                 return arg0.getLeft().CompareTo(arg1.getLeft());
             }
@@ -38,7 +38,7 @@ namespace Tabula.Extractors
 
         private class TextChunkComparer : IComparer<TextChunk>
         {
-            public int Compare([AllowNull] TextChunk o1, [AllowNull] TextChunk o2)
+            public int Compare(TextChunk o1, TextChunk o2)
             {
                 return o1.getLeft().CompareTo(o2.getLeft());
             }

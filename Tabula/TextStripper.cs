@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Unicode;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
@@ -76,11 +75,18 @@ namespace Tabula
             for (int i = 0; i < s.Length; i++)
             {
                 c = s[i];
-                bool isSpecial = c >= UnicodeRanges.Specials.FirstCodePoint && c <= (UnicodeRanges.Specials.FirstCodePoint + UnicodeRanges.Specials.Length); // -1 ?? // really not sure!!
-
-                printable |= !char.IsControl(c) && !isSpecial; //!Character.isISOControl(c) && block != null && block != Character.UnicodeBlock.SPECIALS;
+                printable |= !char.IsControl(c) && !IsSpecial(c); //!Character.isISOControl(c) && block != null && block != Character.UnicodeBlock.SPECIALS;
             }
             return printable;
+        }
+
+        private bool IsSpecial(char c)
+        {
+#if NETCOREAPP3_1
+            return c >= System.Text.Unicode.UnicodeRanges.Specials.FirstCodePoint && c < (System.Text.Unicode.UnicodeRanges.Specials.FirstCodePoint + System.Text.Unicode.UnicodeRanges.Specials.Length);
+#else
+            return c >= '\uFFF0' && c <= '\uFFFF';
+#endif
         }
 
         static double GetExpectedWhitespaceSize(Letter letter)

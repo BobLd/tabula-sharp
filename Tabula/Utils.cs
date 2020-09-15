@@ -236,10 +236,10 @@ namespace Tabula
 
             List<int> rv = new List<int>();
 
-            String[] ranges = pagesSpec.Split(",");
+            String[] ranges = pagesSpec.Split(',');
             for (int i = 0; i < ranges.Length; i++)
             {
-                String[] r = ranges[i].Split("-");
+                String[] r = ranges[i].Split('-');
                 if (r.Length == 0 || !Utils.isNumeric(r[0]) || (r.Length > 1 && !Utils.isNumeric(r[1])))
                 {
                     throw new FormatException("Syntax error in page range specification");// ParseException("Syntax error in page range specification");
@@ -267,7 +267,7 @@ namespace Tabula
 
         private class PointXComparer : IComparer<PdfPoint>
         {
-            public int Compare([AllowNull] PdfPoint arg0, [AllowNull] PdfPoint arg1)
+            public int Compare(PdfPoint arg0, PdfPoint arg1)
             {
                 return arg0.X.CompareTo(arg1.X);
             }
@@ -275,7 +275,7 @@ namespace Tabula
 
         private class PointYComparer : IComparer<PdfPoint>
         {
-            public int Compare([AllowNull] PdfPoint arg0, [AllowNull] PdfPoint arg1)
+            public int Compare(PdfPoint arg0, PdfPoint arg1)
             {
                 return -arg0.Y.CompareTo(arg1.Y);  //bobld multiply by -1 to sort from top to bottom (reading order)
             }

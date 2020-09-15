@@ -13,7 +13,7 @@ namespace Tabula.Extractors
 
         public class POINT_COMPARATOR : IComparer<PdfPoint>
         {
-            public int Compare([AllowNull] PdfPoint arg0, [AllowNull] PdfPoint arg1)
+            public int Compare(PdfPoint arg0, PdfPoint arg1)
             {
                 int rv = 0;
                 double arg0X = Utils.round(arg0.X, 2);
@@ -44,7 +44,7 @@ namespace Tabula.Extractors
 
         public class X_FIRST_POINT_COMPARATOR : IComparer<PdfPoint>
         {
-            public int Compare([AllowNull] PdfPoint arg0, [AllowNull] PdfPoint arg1)
+            public int Compare(PdfPoint arg0, PdfPoint arg1)
             {
                 int rv = 0;
                 double arg0X = Utils.round(arg0.X, 2);
