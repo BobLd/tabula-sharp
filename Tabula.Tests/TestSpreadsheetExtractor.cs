@@ -205,7 +205,7 @@ namespace Tabula.Tests
         }
         */
 
-        [Fact(Skip = "fails as of v0.7")]
+        [Fact(Skip = "fails as of v0.8a")] // might be different coordinate system issue
         public void testSpanningCells()
         {
             PageArea page = UtilsForTesting.getPage("Resources/spanning_cells.pdf", 1);
@@ -264,7 +264,6 @@ namespace Tabula.Tests
             List<Ruling> rulings = page.getVerticalRulings();
             Assert.Equal(6, rulings.Count);
 
-            //float[] expectedRulings = new float[] { 105.549774, 107.52332, 160.58167, 377.1792, 434.95804, 488.21783 };
             double[] expectedRulings = new double[] { 105.554812, 107.522417, 160.568521, 377.172662, 434.963828, 488.229949 };
 
             var lefts = rulings.Select(x => x.getLeft()).ToArray();
@@ -274,11 +273,10 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact(Skip = "fails as of v0.7")]
+        [Fact(Skip = "fails as of v0.8a")]
         public void testSpreadsheetWithNoBoundingFrameShouldBeSpreadsheet()
         {
             PageArea page = UtilsForTesting.getAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1, new PdfRectangle(58.9, 842 - 654.7, 536.12, 698)); // 842 - 150.56)); // 150.56f, 58.9f, 654.7f, 536.12f);
-
             string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/spreadsheet_no_bounding_frame.csv");
 
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
@@ -371,7 +369,7 @@ namespace Tabula.Tests
         }
         */
 
-        [Fact(Skip = "fails as of v0.7")]
+        [Fact(Skip = "fails as of v0.8a")]
         public void testShouldDetectASingleSpreadsheet()
         {
             PageArea page = UtilsForTesting.getAreaFromPage("Resources/offense.pdf", 1, new PdfRectangle(16.44, 792 - 680.85, 597.84, 792 - 16.44)); // 68.08f, 16.44f, 680.85f, 597.84f);

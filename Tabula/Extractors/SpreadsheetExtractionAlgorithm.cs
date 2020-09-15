@@ -172,6 +172,7 @@ namespace Tabula.Extractors
             if (tables.Count == 0)
             {
                 // TODO WHAT DO WE DO HERE?
+                System.Diagnostics.Debug.Write("SpreadsheetExtractionAlgorithm.isTabular(): no table found.");
             }
             table = tables[0];
             int rowsDefinedWithoutLines = table.getRowCount();
@@ -294,8 +295,6 @@ namespace Tabula.Extractors
                 float currY = (float)pointsSortY[i].Y;
                 while (i < pointSet.Count && Utils.feq(pointsSortY[i].Y, currY))
                 {
-                    //edgesH.put(pointsSortY.get(i), pointsSortY.get(i + 1));
-                    //edgesH.put(pointsSortY.get(i + 1), pointsSortY.get(i));
                     edgesH[pointsSortY[i]] = pointsSortY[i + 1];
                     edgesH[pointsSortY[i + 1]] = pointsSortY[i];
                     i += 2;
@@ -308,8 +307,6 @@ namespace Tabula.Extractors
                 float currX = (float)pointsSortX[i].X;
                 while (i < pointSet.Count && Utils.feq(pointsSortX[i].X, currX))
                 {
-                    //edgesV.put(pointsSortX.get(i), pointsSortX.get(i + 1));
-                    //edgesV.put(pointsSortX.get(i + 1), pointsSortX.get(i));
                     edgesV[pointsSortX[i]] = pointsSortX[i + 1];
                     edgesV[pointsSortX[i + 1]] = pointsSortX[i];
                     i += 2;
@@ -361,13 +358,13 @@ namespace Tabula.Extractors
                 polygons.Add(polygon);
             }
 
-            // calculate grid-aligned minimum area rectangles for each found polygon
+            // calculate axis-aligned minimum area rectangles for each found polygon
             foreach (List<PolygonVertex> poly in polygons)
             {
-                double top = double.MinValue; //.MaxValue;//java.lang.Float.MAX_VALUE;
-                double left = double.MaxValue;//java.lang.Float.MAX_VALUE;
-                double bottom = double.MaxValue;//java.lang.Float.MIN_VALUE;
-                double right = double.MinValue;//java.lang.Float.MIN_VALUE;
+                double top = double.MinValue;       //java.lang.Float.MAX_VALUE;
+                double left = double.MaxValue;      //java.lang.Float.MAX_VALUE;
+                double bottom = double.MaxValue;    //java.lang.Float.MIN_VALUE;
+                double right = double.MinValue;     //java.lang.Float.MIN_VALUE;
                 foreach (PolygonVertex pt in poly)
                 {
                     top = Math.Max(top, pt.point.Y); // Min
@@ -405,10 +402,17 @@ namespace Tabula.Extractors
 
             public override bool Equals(Object other)
             {
+                if (other is PolygonVertex o)
+                {
+                    return this.point.Equals(o.point);
+                }
+                return false;
+                /*
                 if (this == other)
                     return true;
                 if (!(other is PolygonVertex)) return false;
                 return this.point.Equals(((PolygonVertex)other).point);
+                */
             }
 
             public override int GetHashCode()
