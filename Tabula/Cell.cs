@@ -22,6 +22,7 @@ namespace Tabula
             this.setTextElements(new List<TextChunk>());
         }
 
+        [Obsolete("")]
         public Cell(double top, double left, double width, double height) : base(top, left, width, height)
         {
             this.setPlaceholder(false);

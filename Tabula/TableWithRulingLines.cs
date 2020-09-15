@@ -24,7 +24,6 @@ namespace Tabula
         public TableWithRulingLines(TableRectangle area, List<Cell> cells, List<Ruling> horizontalRulings, List<Ruling> verticalRulings, ExtractionAlgorithm extractionAlgorithm)
             : base(extractionAlgorithm)
         {
-            //super(extractionAlgorithm);
             this.setRect(area);
             this.verticalRulings = verticalRulings;
             this.horizontalRulings = horizontalRulings;
@@ -107,7 +106,7 @@ namespace Tabula
                 c = iter.Current; //.next();
                 if (!Utils.feq(c.getTop(), lastTop))
                 {
-                    lastRow = new List<Cell>(); //ArrayList<>();
+                    lastRow = new List<Cell>();
                     rv.Add(lastRow);
                 }
                 lastRow.Add(c);
