@@ -182,7 +182,7 @@ namespace Tabula.Tests
         [Fact]
         public void testExtractColumnsCorrectly()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 PageArea page = UtilsForTesting.getAreaFromPage(EU_002_PDF, 1, new PdfRectangle(70.0, 725 - (233 - 115), 510.0, 725)); // 115.0f, 70.0f, 233.0f, 510.0f);
                 BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
@@ -208,13 +208,14 @@ namespace Tabula.Tests
             {
                 // fails on linux and mac os. Linked to PdfPig not finding the correct font.
                 // need to use apt-get -y install ttf-mscorefonts-installer
+                // still have mscorefonts - eula license could not be presented
             }
         }
 
         [Fact]
         public void testExtractColumnsCorrectly2()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 PageArea page = UtilsForTesting.getPage(EU_017_PDF, 3);
                 BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.getVerticalRulings());
@@ -240,6 +241,7 @@ namespace Tabula.Tests
             {
                 // fails on linux and mac os. Linked to PdfPig not finding the correct font.
                 // need to use apt-get -y install ttf-mscorefonts-installer
+                // still have mscorefonts - eula license could not be presented
             }
         }
 
