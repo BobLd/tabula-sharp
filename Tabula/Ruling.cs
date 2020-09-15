@@ -128,7 +128,7 @@ namespace Tabula
         {
             if (this.oblique())
             {
-                throw new InvalidOperationException(); // UnsupportedOperationException();
+                throw new InvalidOperationException();
             }
 
             return this.vertical() ? this.getTop() : this.getRight(); //this.getLeft();
@@ -138,7 +138,7 @@ namespace Tabula
         {
             if (this.oblique())
             {
-                throw new InvalidOperationException(); // UnsupportedOperationException();
+                throw new InvalidOperationException();
             }
 
             if (this.vertical())
@@ -155,7 +155,7 @@ namespace Tabula
         {
             if (this.oblique())
             {
-                throw new InvalidOperationException(); // UnsupportedOperationException();
+                throw new InvalidOperationException();
             }
 
             return this.vertical() ? this.getBottom() : this.getLeft(); //this.getRight();
@@ -165,7 +165,7 @@ namespace Tabula
         {
             if (this.oblique())
             {
-                throw new InvalidOperationException(); // UnsupportedOperationException();
+                throw new InvalidOperationException();
             }
 
             if (this.vertical())
@@ -182,7 +182,7 @@ namespace Tabula
         {
             if (this.oblique())
             {
-                throw new InvalidOperationException(); // UnsupportedOperationException();
+                throw new InvalidOperationException();
             }
 
             if (this.vertical())
@@ -269,7 +269,7 @@ namespace Tabula
 
         public Ruling expand(double amount)
         {
-            Ruling r = (Ruling)this.MemberwiseClone(); //?????? .clone();
+            Ruling r = this.clone(); //.MemberwiseClone(); //?????? .clone();
             r.setStart(this.getStart() + amount); //- amount);
             r.setEnd(this.getEnd() - amount); //+ amount);
             return r;
@@ -305,6 +305,7 @@ namespace Tabula
 
         public override bool Equals(object other)
         {
+            /*
             if (this == other)
                 return true;
 
@@ -312,6 +313,13 @@ namespace Tabula
 
             Ruling o = (Ruling)other;
             return this.getP1().Equals(o.getP1()) && this.getP2().Equals(o.getP2());
+            */
+
+            if (other is Ruling o)
+            {
+                return this.getP1().Equals(o.getP1()) && this.getP2().Equals(o.getP2());
+            }
+            return false;
         }
 
         public override int GetHashCode()
@@ -394,7 +402,7 @@ namespace Tabula
             formatter.close();
             return rv;
             */
-            return $"{this.GetType()}[x1={this.x1} y1={this.y1} x2={this.x2} y2={this.y2}]";
+            return $"{this.GetType()}[x1={this.x1:0.00} y1={this.y1:0.00} x2={this.x2:0.00} y2={this.y2:0.00}]";
         }
 
         public static List<Ruling> cropRulingsToArea(List<Ruling> rulings, PdfRectangle area)
@@ -422,6 +430,7 @@ namespace Tabula
                     // warning
                     // force xmin to be in p1, xmax to be in p2, might lead to odd stuff if not vertic or horiz
                     // do not bother with y for the moment, will throw an error anyway in Ruling()
+                    // needed for testExtractColumnsCorrectly3() and testSpreadsheetExtractionIssue656() to succeed
                     rv.Add(new Ruling(new PdfPoint(xmin, solution.Contour[0].Y / 10_000.0),
                                       new PdfPoint(xmax, solution.Contour[1].Y / 10_000.0)));
                 }
@@ -526,8 +535,7 @@ namespace Tabula
 
             List<SortObject> sos = new List<SortObject>(); //ArrayList<>();
             SortedDictionary<Ruling, bool> tree = new SortedDictionary<Ruling, bool>(new TreeMapRulingComparator());
-            // The SortedDictionary will not work because it throws ArgumentException on duplicate keys. As the OP said, 
-            // duplicate keys will be present. – eugen_nw Mar 24 '16 at 16:04
+            // The SortedDictionary will throw ArgumentException on duplicate keys.
 
             //TreeMap<Ruling, Boolean> tree = new TreeMap<>(new Comparator<Ruling>() 
             //{
@@ -539,8 +547,7 @@ namespace Tabula
             //});
 
             SortedDictionary<PdfPoint, Ruling[]> rv = new SortedDictionary<PdfPoint, Ruling[]>(new TreeMapPdfPointComparator());
-            // The SortedDictionary will not work because it throws ArgumentException on duplicate keys. As the OP said, 
-            // duplicate keys will be present. – eugen_nw Mar 24 '16 at 16:04
+            // The SortedDictionary will throw ArgumentException on duplicate keys.
 
             //TreeMap<Point2D, Ruling[]> rv = new TreeMap<>(new Comparator<Point2D>() 
             //{
@@ -711,6 +718,15 @@ namespace Tabula
         {
             // should be the same???
             return rectangle.intersectsLine(this);
+        }
+
+        /// <summary>
+        /// Deep copy.
+        /// </summary>
+        public Ruling clone()
+        {
+            return new Ruling(new PdfPoint(this.line.Point1.X, this.line.Point1.Y),
+                              new PdfPoint(this.line.Point2.X, this.line.Point2.Y));
         }
         #endregion
     }

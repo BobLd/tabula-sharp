@@ -70,7 +70,8 @@ namespace Tabula
         }
 
         /// <summary>
-        /// Need this for fancy sorting in Tabula.TextChunk
+        /// 1 is LTR, 0 is neutral, -1 is RTL.
+        /// <para>Need this for fancy sorting in Tabula.TextChunk</para>
         /// </summary>
         public virtual int isLtrDominant()
         {
@@ -263,10 +264,7 @@ namespace Tabula
             {
                 return solutions.Childs.Count > 0;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         #region helpers

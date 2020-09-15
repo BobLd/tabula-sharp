@@ -62,7 +62,7 @@ namespace Tabula
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            String s = base.ToString();
+            string s = base.ToString();
             sb.Append(s, 0, s.Length - 1);
             sb.Append(",chunks=");
             foreach (TextChunk te in this.textChunks)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
@@ -27,6 +28,7 @@ namespace Tabula
             this.dir = dir;
         }
 
+        [Obsolete("Use TextElement(PdfRectangle...) instead.")]
         public TextElement(double y, double x, double width, double height,
             FontDetails font, double fontSize, string c, double widthOfSpace) :
             this(y, x, width, height, font, fontSize, c, widthOfSpace, 0f)
@@ -34,6 +36,7 @@ namespace Tabula
             throw new ArgumentOutOfRangeException();
         }
 
+        [Obsolete("Use TextElement(PdfRectangle...) instead.")]
         public TextElement(double y, double x, double width,
             double height, FontDetails font, double fontSize, string c, double widthOfSpace, double dir)
             : base(x, y, width, height)
@@ -152,6 +155,7 @@ namespace Tabula
                 return textChunks;
             }
 
+            /*
             // it's a problem that this `remove` is side-effecty
             // other things depend on `textElements` and it can sometimes lead to the first textElement in textElement
             // not appearing in the final output because it's been removed here.
@@ -163,6 +167,10 @@ namespace Tabula
             copyOfTextElements.RemoveAt(0);
 
             textChunks.Add(new TextChunk(removed));
+            */
+
+            textChunks.Add(new TextChunk(textElements[0]));
+
             TextChunk firstTC = textChunks[0];
 
             double previousAveCharWidth = firstTC.width;
@@ -177,7 +185,7 @@ namespace Tabula
             TextChunk currentChunk;
             bool sameLine, acrossVerticalRuling;
 
-            foreach (TextElement chr in copyOfTextElements)
+            foreach (TextElement chr in textElements.Skip(0)) //copyOfTextElements)
             {
                 currentChunk = textChunks[textChunks.Count - 1];
                 prevChar = currentChunk.textElements[currentChunk.textElements.Count - 1];

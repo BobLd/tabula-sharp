@@ -37,7 +37,7 @@ namespace Tabula
 
             foreach (var letter in page.Letters)
             {
-                String c = letter.Value; //textPosition.getUnicode();
+                string c = letter.Value; //textPosition.getUnicode();
 
                 // if c not printable, return
                 if (!isPrintable(c)) continue;
@@ -76,7 +76,7 @@ namespace Tabula
             for (int i = 0; i < s.Length; i++)
             {
                 c = s[i];
-                bool isSpecial = c >= UnicodeRanges.Specials.FirstCodePoint && c <= (UnicodeRanges.Specials.FirstCodePoint + UnicodeRanges.Specials.Length); // really not sure!!
+                bool isSpecial = c >= UnicodeRanges.Specials.FirstCodePoint && c <= (UnicodeRanges.Specials.FirstCodePoint + UnicodeRanges.Specials.Length); // -1 ?? // really not sure!!
 
                 printable |= !char.IsControl(c) && !isSpecial; //!Character.isISOControl(c) && block != null && block != Character.UnicodeBlock.SPECIALS;
             }

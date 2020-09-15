@@ -9,7 +9,7 @@ namespace Tabula
     {
         public static Table empty() { return new Table(""); }
 
-        private Table(String extractionMethod)
+        private Table(string extractionMethod)
         {
             this.extractionMethod = extractionMethod;
         }
@@ -18,14 +18,14 @@ namespace Tabula
             : this(extractionAlgorithm.ToString())
         { }
 
-        private String extractionMethod;
+        private string extractionMethod;
 
         private int rowCount = 0;
         private int colCount = 0;
 
         /* visible for testing */
         //TreeMap<CellPosition, RectangularTextContainer> cells = new TreeMap<>();
-        public Dictionary<CellPosition, Cell> cells = new Dictionary<CellPosition, Cell>();
+        public SortedDictionary<CellPosition, Cell> cells = new SortedDictionary<CellPosition, Cell>();
 
         public int getRowCount() { return rowCount; }
         public int getColCount() { return colCount; }

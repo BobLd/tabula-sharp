@@ -19,6 +19,7 @@ namespace Tabula
         private TextChunk() : base(new PdfRectangle())
         { }
 
+        [Obsolete("Use TextChunk(TextElement) instead.")]
         public TextChunk(double top, double left, double width, double height) : base(top, left, width, height)
         {
             throw new ArgumentOutOfRangeException();
@@ -87,7 +88,7 @@ namespace Tabula
         /// <returns></returns>
         public TextChunk groupByDirectionality(bool isLtrDominant)
         {
-            if (this.getTextElements().Count <= 0)
+            if (this.getTextElements().Count == 0)
             {
                 throw new ArgumentException();
             }
@@ -162,16 +163,15 @@ namespace Tabula
         }
 
         /// <summary>
-        /// 1 is LTR, 0 is neutral, -1 is RTL
+        /// 1 is LtR, 0 is neutral, -1 is RtL.
         /// </summary>
-        /// <returns></returns>
         public override int isLtrDominant()
         {
             int ltrCnt = 0;
             int rtlCnt = 0;
             for (int i = 0; i < this.getTextElements().Count; i++)
             {
-                String elementText = this.getTextElements()[i].getText();
+                string elementText = this.getTextElements()[i].getText();
                 for (int j = 0; j < elementText.Length; j++)
                 {
                     var dir = elementText[j].getDirectionality();
@@ -197,7 +197,6 @@ namespace Tabula
         public void add(TextElement textElement)
         {
             this.textElements.Add(textElement);
-            //this.BoundingBox = Utils.bounds(new[] { this.BoundingBox, textElement.BoundingBox });
             this.merge(textElement);
         }
 
@@ -248,7 +247,7 @@ namespace Tabula
 
         public bool isSameChar(char[] c)
         {
-            String s = this.getText();
+            string s = this.getText();
             List<char> chars = c.ToList();
             for (int i = 0; i < s.Length; i++)
             {
@@ -277,11 +276,7 @@ namespace Tabula
                 new TextChunk(this.getTextElements().subList(i, this.getTextElements().Count))
             };
 
-            // TODO: remove below
-            if (this.getTextElements().Count != (rv[0].getTextElements().Count + rv[1].getTextElements().Count))
-            {
-                throw new NotImplementedException();
-            }
+            System.Diagnostics.Debug.Assert(this.getTextElements().Count == (rv[0].getTextElements().Count + rv[1].getTextElements().Count));
 
             return rv;
         }
@@ -305,7 +300,7 @@ namespace Tabula
             for (int i = 0; i < this.getTextElements().Count; i++)
             {
                 TextElement textElement = this.getTextElements()[i];
-                String text = textElement.getText();
+                string text = textElement.getText();
                 if (text.Length > 1)
                 {
                     currentChar = text.Trim()[0];
@@ -362,7 +357,7 @@ namespace Tabula
 
         public override int GetHashCode()
         {
-            int prime = 31;
+            const int prime = 31;
             int result = base.GetHashCode();
             result = prime * result + ((textElements?.GetHashCode()) ?? 0);
             return result;
@@ -370,6 +365,22 @@ namespace Tabula
 
         public override bool Equals(object obj)
         {
+            if (obj is TextChunk other)
+            {
+                if (textElements == null)
+                {
+                    if (other.textElements != null)
+                        return false;
+                }
+                else if (!textElements.Equals(other.textElements))
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+
+            /*
             if (this == obj)
                 return true;
             if (!base.Equals(obj))
@@ -385,6 +396,7 @@ namespace Tabula
             else if (!textElements.Equals(other.textElements))
                 return false;
             return true;
+            */
         }
 
         public static bool allSameChar(List<TextChunk> textChunks)
@@ -405,6 +417,7 @@ namespace Tabula
                 {
                     continue;
                 }
+
                 if (first == '\u0000')
                 {
                     first = tc.getText()[0];

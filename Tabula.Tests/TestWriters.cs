@@ -150,10 +150,13 @@ namespace Tabula.Tests
         {
             string expectedJson = UtilsForTesting.loadJson("Resources/json/twotables.json");
             List<Table> tables = this.getTables();
-            //StringBuilder sb = new StringBuilder();
-            //(new JSONWriter()).write(sb, tables);
-            //String s = sb.toString();
 
+            StringBuilder sb = new StringBuilder();
+            (new JSONWriter()).write(sb, tables);
+            String s = sb.ToString();
+            Assert.Equal(expectedJson, s);
+
+            /*
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
             {
@@ -173,6 +176,7 @@ namespace Tabula.Tests
                 var json = JsonConvert.DeserializeObject<List<Table>>(s);
                 Assert.Equal(2, json.Count);
             }
+            */
         }
 
         [Fact(Skip = "fails as of v0.6")] //[Fact]//(Skip = "SpreadsheetExtractionAlgorithm not implemented.")]
