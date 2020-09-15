@@ -1,4 +1,6 @@
 ﻿using CsvHelper;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -204,7 +206,7 @@ namespace Tabula.Tests
         }
         */
 
-        [Fact(Skip = "fails as of v0.8a")] // might be different coordinate system issue
+        [Fact]//(Skip = "fails as of v0.8a")] // might be different coordinate system issue
         public void testSpanningCells()
         {
             PageArea page = UtilsForTesting.getPage("Resources/spanning_cells.pdf", 1);
@@ -213,9 +215,53 @@ namespace Tabula.Tests
             List<Table> tables = se.extract(page);
             Assert.Equal(2, tables.Count);
 
+            var expectedJObject = (JArray)JsonConvert.DeserializeObject(expectedJson);
+
             StringBuilder sb = new StringBuilder();
             (new JSONWriter()).write(sb, tables);
-            Assert.Equal(expectedJson, sb.ToString());
+            var actualJObject = (JArray)JsonConvert.DeserializeObject(sb.ToString());
+
+            double pageHeight = 842;
+            double precision = 2;
+            for (int i = 0; i < 2; i++)
+            {
+                Assert.Equal(expectedJObject[i]["extraction_method"], actualJObject[i]["extraction_method"]);
+
+                Assert.True(Math.Abs(Math.Floor(pageHeight - expectedJObject[i]["top"].Value<double>()) - Math.Floor(actualJObject[i]["top"].Value<double>())) < precision);
+                Assert.True(Math.Abs(Math.Floor(expectedJObject[i]["left"].Value<double>()) - Math.Floor(actualJObject[i]["left"].Value<double>())) < precision);
+                Assert.True(Math.Abs(Math.Floor(expectedJObject[i]["width"].Value<double>()) - Math.Floor(actualJObject[i]["width"].Value<double>())) < precision);
+                Assert.True(Math.Abs(Math.Floor(expectedJObject[i]["height"].Value<double>()) - Math.Floor(actualJObject[i]["height"].Value<double>())) < precision);
+                Assert.True(Math.Abs(Math.Floor(expectedJObject[i]["right"].Value<double>()) - Math.Floor(actualJObject[i]["right"].Value<double>())) < precision);
+                Assert.True(Math.Abs(Math.Floor(pageHeight - expectedJObject[i]["bottom"].Value<double>()) - Math.Floor(actualJObject[i]["bottom"].Value<double>())) < precision);
+
+                var expectedData = (JArray)expectedJObject[i]["data"];
+                var actualData = (JArray)actualJObject[i]["data"];
+                Assert.Equal(expectedData.Count, actualData.Count);
+
+                for (int r = 0; r < expectedData.Count; r++)
+                {
+                    var rowExpected = (JArray)expectedData[r];
+                    var rowActual = (JArray)actualData[r];
+                    Assert.Equal(rowExpected.Count, rowActual.Count);
+
+                    for (int c = 0; c < rowExpected.Count; c++)
+                    {
+                        var cellExpected = (JObject)rowExpected[c];
+                        var cellActual = (JObject)rowActual[c];
+
+                        if (string.IsNullOrEmpty(cellExpected["text"].Value<string>())) continue; // empty cell have no coordinate data???
+
+                        Assert.True(Math.Abs(Math.Floor(pageHeight - cellExpected["top"].Value<double>()) - Math.Floor(cellActual["top"].Value<double>())) < precision);
+                        Assert.True(Math.Abs(Math.Floor(cellExpected["left"].Value<double>()) - Math.Floor(cellActual["left"].Value<double>())) < precision);
+                        Assert.True(Math.Abs(Math.Floor(cellExpected["width"].Value<double>()) - Math.Floor(cellActual["width"].Value<double>())) < precision);
+                        Assert.True(Math.Abs(Math.Floor(cellExpected["height"].Value<double>()) - Math.Floor(cellActual["height"].Value<double>())) < precision);
+                        Assert.Equal(cellExpected["text"].Value<string>(), cellActual["text"].Value<string>());
+                    }
+                }
+            }
+
+
+            //Assert.Equal(expectedJson, sb.ToString());
         }
 
         [Fact]
