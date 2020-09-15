@@ -7,8 +7,7 @@ Port of [tabula-java](https://github.com/tabulapdf/tabula-java)
 ![Linux](https://github.com/BobLd/tabula-sharp/workflows/Linux/badge.svg)
 ![Mac OS](https://github.com/BobLd/tabula-sharp/workflows/Mac%20OS/badge.svg)
 
-About Linux and MacOS tests failing:
-- Known problem of missing fonts ([PdfPig](https://github.com/UglyToad/PdfPig) related), installing `mscorefonts`on Linux fixes the problem - these tests will only run on Windows
+Supports .NET Core 3.1; .NET Standard 2.0; .NET Framework 4.5, 4.51, 4.52, 4.6, 4.61, 4.62, 4.7
 
 **TO DO**
 - some tests are failing
