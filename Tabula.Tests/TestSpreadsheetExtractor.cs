@@ -254,7 +254,7 @@ namespace Tabula.Tests
             StringBuilder sb = new StringBuilder();
             (new CSVWriter()).write(sb, tables[0]);
             string result = sb.ToString().Trim();
-            Assert.Equal(expected.Replace("\r\n", "\r"), result.Replace("\r\n", "\r"));
+            Assert.Equal(expected.Replace("\r\n", "\r"), result.Replace("\r\n", "\n").Replace("\n", "\r"));
         }
 
         [Fact]

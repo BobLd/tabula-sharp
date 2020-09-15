@@ -77,7 +77,7 @@ namespace Tabula.Tests
             (new TSVWriter()).write(sb, table);
             String s = sb.ToString();
             //System.out.println(s);
-            String[] lines = s.Split("\r\n");
+            String[] lines = s.Replace("\r\n", "\n").Replace("\n", "\r\n").Split("\r\n");
             Assert.Equal(lines[0], EXPECTED_CSV_WRITER_OUTPUT);
         }
 
