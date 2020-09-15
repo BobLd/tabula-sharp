@@ -321,7 +321,7 @@ namespace Tabula.Tests
         [Fact(Skip = "fails as of v0.8a")]
         public void testSpreadsheetWithNoBoundingFrameShouldBeSpreadsheet()
         {
-            PageArea page = UtilsForTesting.getAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1, new PdfRectangle(58.9, 842 - 654.7, 536.12, 698)); // 842 - 150.56)); // 150.56f, 58.9f, 654.7f, 536.12f);
+            PageArea page = UtilsForTesting.getAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1, new PdfRectangle(58.9, 842 - 654.7, 536.12, 842 - 150.56)); // 842 - 150.56)); // 150.56f, 58.9f, 654.7f, 536.12f);
             string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/spreadsheet_no_bounding_frame.csv");
 
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
@@ -503,15 +503,17 @@ namespace Tabula.Tests
             // Assert.Equal(1, tables.size());
             Table table = tables[0];
 
-            Assert.Equal("اسمي سلطان", table.getRows()[1][1].getText());
-            Assert.Equal("من اين انت؟", table.getRows()[2][1].getText());
-            Assert.Equal("1234", table.getRows()[3][0].getText());
-            Assert.Equal("هل انت شباك؟", table.getRows()[4][0].getText());
-            Assert.Equal("انا من ولاية كارولينا الشمال", table.getRows()[2][0].getText()); // conjoined lam-alif gets missed
-            Assert.Equal("اسمي Jeremy في الانجليزية", table.getRows()[4][1].getText()); // conjoined lam-alif gets missed
-            Assert.Equal("عندي 47 قطط", table.getRows()[3][1].getText()); // the real right answer is 47.
-            Assert.Equal("Jeremy is جرمي in Arabic", table.getRows()[5][0].getText()); // the real right answer is 47.
-            Assert.Equal("مرحباً", table.getRows()[1][0].getText()); // really ought to be ً, but this is forgiveable for now
+            var rows = table.getRows();
+
+            Assert.Equal("اسمي سلطان", rows[1][1].getText());
+            Assert.Equal("من اين انت؟", rows[2][1].getText());
+            Assert.Equal("1234", rows[3][0].getText());
+            Assert.Equal("هل انت شباك؟", rows[4][0].getText());
+            Assert.Equal("انا من ولاية كارولينا الشمال", rows[2][0].getText()); // conjoined lam-alif gets missed
+            Assert.Equal("اسمي Jeremy في الانجليزية", rows[4][1].getText()); // conjoined lam-alif gets missed
+            Assert.Equal("عندي 47 قطط", rows[3][1].getText()); // the real right answer is 47.
+            Assert.Equal("Jeremy is جرمي in Arabic", rows[5][0].getText()); // the real right answer is 47.
+            Assert.Equal("مرحباً", rows[1][0].getText()); // really ought to be ً, but this is forgiveable for now
 
             // there is one remaining problems that are not yet addressed
             // - diacritics (e.g. Arabic's tanwinً and probably Hebrew nekudot) are put in the wrong place.
