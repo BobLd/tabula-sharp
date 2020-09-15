@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using Tabula.Csv;
 using Tabula.Extractors;
+using Tabula.Writers;
 using UglyToad.PdfPig.Core;
 using Xunit;
 

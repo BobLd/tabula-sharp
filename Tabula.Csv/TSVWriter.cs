@@ -1,4 +1,4 @@
-﻿namespace Tabula.Csv
+﻿namespace Tabula.Writers
 {
     public class TSVWriter : CSVWriter
     {

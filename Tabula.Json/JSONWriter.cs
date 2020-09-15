@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Tabula.Writers;
+using Tabula.Json;
 
-namespace Tabula.Json
+namespace Tabula.Writers
 {
     public class JSONWriter : JsonSerializer, Writer
     {

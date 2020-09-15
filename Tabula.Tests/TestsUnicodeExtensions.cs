@@ -6,7 +6,7 @@ namespace Tabula.Tests
     public class TestsUnicodeExtensions
     {
         [Fact]
-        public void Unicode13IntValues()
+        public void testUnicode13IntValues()
         {
             foreach (var line in File.ReadAllLines("Resources/UnicodeData_13.0.txt"))
             {

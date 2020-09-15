@@ -1,11 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Tabula.Csv;
 using Tabula.Extractors;
-using Tabula.Json;
+using Tabula.Writers;
 using UglyToad.PdfPig.Core;
 using Xunit;
 
