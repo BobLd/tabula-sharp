@@ -11,7 +11,7 @@ namespace Tabula.Json
 
         public override bool CanRead => false;
 
-        public override void WriteJson(JsonWriter writer, [AllowNull] RectangularTextContainer src, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, RectangularTextContainer src, JsonSerializer serializer)
         {
             if (src == null) return;
 
@@ -26,7 +26,7 @@ namespace Tabula.Json
             result.WriteTo(writer);
         }
 
-        public override RectangularTextContainer ReadJson(JsonReader reader, Type objectType, [AllowNull] RectangularTextContainer existingValue, bool hasExistingValue, JsonSerializer serializer)
+        public override RectangularTextContainer ReadJson(JsonReader reader, Type objectType, RectangularTextContainer existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

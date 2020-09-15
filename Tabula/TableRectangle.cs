@@ -25,7 +25,7 @@ namespace Tabula
             /// <param name="o1"></param>
             /// <param name="o2"></param>
             /// <returns></returns>
-            public int Compare([AllowNull] TableRectangle o1, [AllowNull] TableRectangle o2)
+            public int Compare(TableRectangle o1, TableRectangle o2)
             {
                 /*
                 if (o1.Equals(o2)) return 0;
@@ -86,7 +86,7 @@ namespace Tabula
             throw new ArgumentException();
         }
 
-        public int CompareTo([AllowNull] TableRectangle other)
+        public int CompareTo(TableRectangle other)
         {
             return new ILL_DEFINED_ORDER().Compare(this, other);
         }

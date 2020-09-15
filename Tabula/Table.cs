@@ -114,7 +114,7 @@ namespace Tabula
 
         readonly int row, col;
 
-        public int CompareTo([AllowNull] CellPosition other)
+        public int CompareTo(CellPosition other)
         {
             int rowdiff = row - other.row;
             return rowdiff != 0 ? rowdiff : col - other.col;

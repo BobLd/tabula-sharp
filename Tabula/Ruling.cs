@@ -454,7 +454,7 @@ namespace Tabula
 
         public class TreeMapRulingComparator : IComparer<Ruling>
         {
-            public int Compare([AllowNull] Ruling o1, [AllowNull] Ruling o2)
+            public int Compare(Ruling o1, Ruling o2)
             {
                 return -o1.getTop().CompareTo(o2.getTop());  //bobld multiply by -1 to sort from top to bottom (reading order)
                 //return java.lang.Double.compare(o1.getTop(), o2.getTop());
@@ -462,7 +462,7 @@ namespace Tabula
         }
         public class TreeMapPdfPointComparator : IComparer<PdfPoint>
         {
-            public int Compare([AllowNull] PdfPoint o1, [AllowNull] PdfPoint o2)
+            public int Compare(PdfPoint o1, PdfPoint o2)
             {
                 if (o1.Y < o2.Y) return 1;  // (o1.Y > o2.Y)
                 if (o1.Y > o2.Y) return -1; // (o1.Y < o2.Y)
@@ -474,7 +474,7 @@ namespace Tabula
 
         class SortObjectComparer : IComparer<SortObject>
         {
-            public int Compare([AllowNull] SortObject a, [AllowNull] SortObject b)
+            public int Compare(SortObject a, SortObject b)
             {
                 int rv;
                 if (Utils.feq(a.position, b.position))
@@ -616,7 +616,7 @@ namespace Tabula
 
         private class RulingComparer : IComparer<Ruling>
         {
-            public int Compare([AllowNull] Ruling a, [AllowNull] Ruling b)
+            public int Compare(Ruling a, Ruling b)
             {
                 double diff = a.getPosition() - b.getPosition();
                 return (diff == 0 ? a.getStart() - b.getStart() : diff).CompareTo(0);

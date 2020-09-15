@@ -11,7 +11,7 @@ namespace Tabula
     {
         private class CellComparator : IComparer<Cell>
         {
-            public int Compare([AllowNull] Cell arg0, [AllowNull] Cell arg1)
+            public int Compare(Cell arg0, Cell arg1)
             {
                 return -arg0.getTop().CompareTo(arg1.getTop()); // bobld multiply by -1 to sort from top to bottom (reading order)
             }
@@ -88,7 +88,7 @@ namespace Tabula
                 return rv;
             }
 
-            cells = cells.OrderBy(c => c, new CellComparator()).ToList();// need to use OrderBy insted of Sort() to keep order when equality // //cells.Sort(new CellComparator());
+            cells = cells.OrderBy(v => v, new CellComparator()).ToList();// need to use OrderBy insted of Sort() to keep order when equality // //cells.Sort(new CellComparator());
 
             var iter = cells.GetEnumerator();
 
