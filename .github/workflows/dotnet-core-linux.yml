@@ -17,7 +17,7 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: Install mscorefonts
-      run: sudo apt-get install ttf-mscorefonts-installer
+      run: sudo apt-get -y install ttf-mscorefonts-installer
     - name: Install dependencies
       run: dotnet restore
     - name: Build
