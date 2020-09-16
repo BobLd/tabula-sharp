@@ -30,9 +30,9 @@ namespace Tabula
                 double o2X = Utils.round(o2.X, 2);
                 double o2Y = Utils.round(o2.Y, 2);
 
-                if (o1Y > o2Y) // (o1Y > o2Y) // bobld: inverse to sort from top to bottom (reading order)
+                if (o1Y > o2Y) // bobld: do not inverse - makes tests fais 
                     return 1;
-                if (o1Y < o2Y) // (o1Y < o2Y) // bobld: inverse to sort from top to bottom (reading order)
+                if (o1Y < o2Y) // bobld: do not inverse - makes tests fais 
                     return -1;
                 if (o1X > o2X)
                     return 1;

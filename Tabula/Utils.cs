@@ -182,7 +182,12 @@ namespace Tabula
          */
         public static void sort<T>(List<T> list) where T : TableRectangle //IComparable<T> // <T extends Comparable<? super T>> 
         {
-            list.Sort();
+            //list.Sort();
+
+            // Using OrderBy() insted of Sort() to keep order when equality
+            var newList = list.OrderBy(x => x).ToList();
+            list.Clear();
+            list.AddRange(newList);
 
             //if (useQuickSort) QuickSort.sort(list);
             //else list.Sort();
@@ -190,8 +195,12 @@ namespace Tabula
 
         public static void sort<T>(List<T> list, IComparer<T> comparator) where T : TableRectangle
         {
-            list.Sort(comparator);
+            //list.Sort(comparator);
 
+            // Using OrderBy() insted of Sort() to keep order when equality
+            var newList = list.OrderBy(x => x, comparator).ToList();
+            list.Clear();
+            list.AddRange(newList);
             //if (useQuickSort) QuickSort.sort(list, comparator);
             //else Collections.sort(list, comparator);
         }

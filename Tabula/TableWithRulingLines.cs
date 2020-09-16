@@ -46,10 +46,10 @@ namespace Tabula
             for (int i = 0; i < rowsOfCells.Count; i++)
             {
                 List<Cell> row = rowsOfCells[i];
-                var rowCells = row.GetEnumerator(); //.iterator();
+                var rowCells = row.GetEnumerator();
 
                 rowCells.MoveNext();
-                Cell cell = rowCells.Current; //.next();
+                Cell cell = rowCells.Current;
 
                 // BobLd: careaful here!!
                 List<List<Cell>> others = TableWithRulingLines.rowsOfCells(
@@ -69,9 +69,9 @@ namespace Tabula
                 }
 
                 this.add(cell, i, startColumn++);
-                while (rowCells.MoveNext()) //.hasNext())
+                while (rowCells.MoveNext())
                 {
-                    this.add(rowCells.Current, i, startColumn++); //.next()
+                    this.add(rowCells.Current, i, startColumn++);
                 }
             }
         }
@@ -88,11 +88,10 @@ namespace Tabula
                 return rv;
             }
 
-            cells = cells.OrderBy(v => v, new CellComparator()).ToList();// need to use OrderBy insted of Sort() to keep order when equality // //cells.Sort(new CellComparator());
+            Utils.sort(cells, new CellComparator());
 
             var iter = cells.GetEnumerator();
 
-            //.next();
             iter.MoveNext();
             c = iter.Current;
 
@@ -103,7 +102,7 @@ namespace Tabula
 
             while (iter.MoveNext())
             {
-                c = iter.Current; //.next();
+                c = iter.Current;
                 if (!Utils.feq(c.getTop(), lastTop))
                 {
                     lastRow = new List<Cell>();
