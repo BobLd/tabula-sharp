@@ -5,6 +5,5 @@ namespace Tabula.Extractors
     public interface ExtractionAlgorithm
     {
         List<Table> extract(PageArea page);
-        //String toString();
     }
 }

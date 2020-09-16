@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Tabula.Extractors;
 
 namespace Tabula.Detectors
 {
     /**
- * Created by matt on 2015-12-14.
- *
- * This is the basic spreadsheet table detection algorithm currently implemented in tabula (web).
- *
- * It uses intersecting ruling lines to find tables.
- */
+     * Created by matt on 2015-12-14.
+     * This is the basic spreadsheet table detection algorithm currently implemented in tabula (web).
+     * It uses intersecting ruling lines to find tables.
+     */
     public class SpreadsheetDetectionAlgorithm : DetectionAlgorithm
     {
         public List<TableRectangle> detect(PageArea page)

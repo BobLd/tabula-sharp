@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
@@ -9,6 +8,10 @@ using static UglyToad.PdfPig.Core.PdfSubpath;
 
 namespace Tabula
 {
+    /**
+     * ** tabula/ObjectExtractor.java **
+     * ** tabula/ObjectExtractorStreamEngine.java **
+     */
     public class ObjectExtractor
     {
         private PdfDocument pdfDocument;
@@ -27,9 +30,9 @@ namespace Tabula
                 double o2X = Utils.round(o2.X, 2);
                 double o2Y = Utils.round(o2.Y, 2);
 
-                if (o1Y > o2Y)
+                if (o1Y > o2Y) // (o1Y > o2Y) // bobld: inverse to sort from top to bottom (reading order)
                     return 1;
-                if (o1Y < o2Y)
+                if (o1Y < o2Y) // (o1Y < o2Y) // bobld: inverse to sort from top to bottom (reading order)
                     return -1;
                 if (o1X > o2X)
                     return 1;
@@ -46,7 +49,7 @@ namespace Tabula
 
         const int rounding = 6;
 
-        public PageArea extractPage(int pageNumber)// throws IOException
+        public PageArea extractPage(int pageNumber)
         {
             if (pageNumber > this.pdfDocument.NumberOfPages || pageNumber < 1)
             {
@@ -80,7 +83,7 @@ namespace Tabula
 
                     // TODO: how to implement color filter?
 
-                    PdfPoint? start_pos = RoundPdfPoint(first.Location, rounding); //new PdfPoint(Utils.round(first.Location.X, 2), Utils.round(first.Location.Y, 2));
+                    PdfPoint? start_pos = RoundPdfPoint(first.Location, rounding);
                     PdfPoint? last_move = start_pos;
                     PdfPoint? end_pos = null;
                     PdfLine line;

@@ -9,8 +9,8 @@ using UglyToad.PdfPig.DocumentLayoutAnalysis;
 
 namespace Tabula.Detectors
 {
-    // https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/detectors/NurminenDetectionAlgorithm.java
     /**
+     * ** tabula/detectors/NurminenDetectionAlgorithm.java **
      * Created by matt on 2015-12-17.
      * <p>
      * Attempt at an implementation of the table finding algorithm described by

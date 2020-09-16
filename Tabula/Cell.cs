@@ -5,7 +5,9 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
-    // https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Cell.java
+    /**
+    * ** tabula/Cell.java **
+    */
     public class Cell : RectangularTextContainer<TextChunk>
     {
         public static Cell EMPTY => new Cell(new PdfRectangle());
@@ -22,7 +24,7 @@ namespace Tabula
             this.setTextElements(new List<TextChunk>());
         }
 
-        [Obsolete("")]
+        [Obsolete("Use Cell(PdfPoint, PdfPoint) or Cell(PdfRectangle) instead.")]
         public Cell(double top, double left, double width, double height) : base(top, left, width, height)
         {
             this.setPlaceholder(false);
@@ -33,9 +35,7 @@ namespace Tabula
 
         public Cell(PdfPoint topLeft, PdfPoint bottomRight)
             : this (new PdfRectangle(topLeft.X, bottomRight.Y, bottomRight.X, topLeft.Y))
-            //: base(topLeft.Y, topLeft.X, (bottomRight.X - topLeft.X), (bottomRight.Y - topLeft.Y))
         {
-            //super((float)topLeft.getY(), (float)topLeft.getX(), (float)(bottomRight.getX() - topLeft.getX()), (float)(bottomRight.getY() - topLeft.getY()));
             this.setPlaceholder(false);
             this.setSpanning(false);
             this.setTextElements(new List<TextChunk>());
@@ -101,6 +101,11 @@ namespace Tabula
         public void setTextElements(List<TextChunk> textElements)
         {
             this.textElements = textElements;
+        }
+
+        public override string ToString()
+        {
+            return getText();
         }
     }
 }

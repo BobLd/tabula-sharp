@@ -189,13 +189,12 @@ namespace Tabula.Extractors
             SortedDictionary<PdfPoint, Ruling[]> intersectionPoints = Ruling.findIntersections(horizontalRulingLines, verticalRulingLines);
             List<PdfPoint> intersectionPointsList = new List<PdfPoint>(intersectionPoints.Keys);
             intersectionPointsList.Sort(new POINT_COMPARATOR());
-            bool doBreak = false;
 
             for (int i = 0; i < intersectionPointsList.Count; i++)
             {
                 PdfPoint topLeft = intersectionPointsList[i];
                 Ruling[] hv = intersectionPoints[topLeft];
-                doBreak = false;
+                bool doBreak = false;
 
                 // CrossingPointsDirectlyBelow( topLeft );
                 List<PdfPoint> xPoints = new List<PdfPoint>();
@@ -319,7 +318,7 @@ namespace Tabula.Extractors
             while (edgesH.Count != 0)
             {
                 List<PolygonVertex> polygon = new List<PolygonVertex>();
-                PdfPoint first = edgesH.Keys.First(); ////.keySet().iterator().next();
+                PdfPoint first = edgesH.Keys.First();
                 polygon.Add(new PolygonVertex(first, Direction.HORIZONTAL));
                 edgesH.Remove(first);
 
@@ -400,7 +399,7 @@ namespace Tabula.Extractors
                 this.point = point;
             }
 
-            public override bool Equals(Object other)
+            public override bool Equals(object other)
             {
                 if (other is PolygonVertex o)
                 {

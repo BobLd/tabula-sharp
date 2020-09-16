@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 
 namespace Tabula
@@ -10,8 +9,6 @@ namespace Tabula
     // https://github.com/tabulapdf/tabula-java/blob/ebc83ac2bb1a1cbe54ab8081d70f3c9fe81886ea/src/main/java/technology/tabula/TextChunk.java#L11
     public class TextChunk : RectangularTextContainer<TextElement>, HasText
     {
-        public Word word;
-
         public static TextChunk EMPTY => new TextChunk();
 
         public List<TextElement> textElements = new List<TextElement>();

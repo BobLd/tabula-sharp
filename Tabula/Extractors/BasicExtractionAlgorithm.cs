@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Tabula.Extractors
@@ -81,7 +80,10 @@ namespace Tabula.Extractors
             {
                 columns = columnPositions(lines);
             }
-            columns = columns.Distinct().ToList(); // added by bobld: remove duplicates because testExtractColumnsCorrectly2() fails, why do we need it here and not in the java version
+
+            // added by bobld: remove duplicates because testExtractColumnsCorrectly2() fails, 
+            // why do we need it here and not in the java version??
+            columns = columns.Distinct().ToList();
 
             Table table = new Table(this);
             table.setRect(page.BoundingBox);
@@ -164,7 +166,6 @@ namespace Tabula.Extractors
                         cr.merge(te);
                     }
 
-                    //lineTextElements.removeAll(overlaps);
                     foreach (var rem in overlaps)
                     {
                         lineTextElements.Remove(rem);
