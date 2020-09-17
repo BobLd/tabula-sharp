@@ -1378,7 +1378,7 @@ namespace ClipperLib
         }
         public static List<IntPoint> ToClipperIntPoints(Ruling rect)
         {
-            return new List<IntPoint>() { ToClipperIntPoint(rect.line.Point1), ToClipperIntPoint(rect.line.Point2) };
+            return new List<IntPoint>() { ToClipperIntPoint(rect.Line.Point1), ToClipperIntPoint(rect.Line.Point2) };
         }
 
         public static List<IntPoint> ToClipperIntPoints(PdfLine rect)

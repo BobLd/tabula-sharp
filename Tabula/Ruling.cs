@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.DocumentLayoutAnalysis;
 using UglyToad.PdfPig.Geometry;
@@ -12,14 +11,14 @@ namespace Tabula
     //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java
     public class Ruling
     {
-        public PdfLine line { get; private set; }
+        public PdfLine Line { get; private set; }
 
-        public void setLine(double x1, double y1, double x2, double y2)
+        public void SetLine(double x1, double y1, double x2, double y2)
         {
-            setLine(new PdfPoint(x1, y1), new PdfPoint(x2, y2));
+            SetLine(new PdfPoint(x1, y1), new PdfPoint(x2, y2));
         }
 
-        public void setLine(PdfPoint p1, PdfPoint p2)
+        public void SetLine(PdfPoint p1, PdfPoint p2)
         {
             if (Math.Round(p1.Y, 2) > Math.Round(p2.Y, 2)) // using round here to account for almost vert. or horiz. line before normalize
             {
@@ -28,7 +27,7 @@ namespace Tabula
 
             // test X?
 
-            line = new PdfLine(p1, p2);
+            Line = new PdfLine(p1, p2);
         }
 
         private static int PERPENDICULAR_PIXEL_EXPAND_AMOUNT = 2;
@@ -48,25 +47,25 @@ namespace Tabula
         /// <param name="p2">top point</param>
         public Ruling(PdfPoint p1, PdfPoint p2)
         {
-            setLine(p1, p2);
-            this.normalize();
+            SetLine(p1, p2);
+            this.Normalize();
         }
 
         /// <summary>
         /// Normalize almost horizontal or almost vertical lines
         /// </summary>
-        public void normalize()
+        public void Normalize()
         {
-            double angle = this.getAngle();
-            if (Utils.within(angle, 0, 1) || Utils.within(angle, 180, 1))
+            double angle = this.GetAngle();
+            if (Utils.Within(angle, 0, 1) || Utils.Within(angle, 180, 1))
             {
                 // almost horizontal
-                this.setLine(this.x1, this.y1, this.x2, this.y1);
+                this.SetLine(this.X1, this.Y1, this.X2, this.Y1);
             }
-            else if (Utils.within(angle, 90, 1) || Utils.within(angle, 270, 1))
+            else if (Utils.Within(angle, 90, 1) || Utils.Within(angle, 270, 1))
             {
                 // almost vertical
-                this.setLine(this.x1, this.y1, this.x1, this.y2);
+                this.SetLine(this.X1, this.Y1, this.X1, this.Y2);
             }
             //else 
             //{
@@ -74,20 +73,20 @@ namespace Tabula
             //}
         }
 
-        public bool vertical()
+        public bool Vertical()
         {
             //return this.length() > 0 && Utils.feq(this.x1, this.x2); //diff < ORIENTATION_CHECK_THRESHOLD;
-            return this.length() > 0 && Utils.feq(this.x1, this.x2); //diff < ORIENTATION_CHECK_THRESHOLD;
+            return this.Length() > 0 && Utils.Feq(this.X1, this.X2); //diff < ORIENTATION_CHECK_THRESHOLD;
         }
 
-        public bool horizontal()
+        public bool Horizontal()
         {
-            return this.length() > 0 && Utils.feq(this.y1, this.y2); //diff < ORIENTATION_CHECK_THRESHOLD;
+            return this.Length() > 0 && Utils.Feq(this.Y1, this.Y2); //diff < ORIENTATION_CHECK_THRESHOLD;
         }
 
-        public bool oblique()
+        public bool Oblique()
         {
-            return !(this.vertical() || this.horizontal());
+            return !(this.Vertical() || this.Horizontal());
         }
 
         /// <summary>
@@ -95,119 +94,119 @@ namespace Tabula
         /// these are used to have a single collapse method (in page, currently)
         /// </summary>
         /// <returns></returns>
-        public double getPosition()
+        public double GetPosition()
         {
-            if (this.oblique())
+            if (this.Oblique())
             {
-                throw new InvalidOperationException(); // UnsupportedOperationException();
+                throw new InvalidOperationException();
             }
 
-            return this.vertical() ? this.getLeft() : this.getBottom(); //this.getTop();
+            return this.Vertical() ? this.GetLeft() : this.GetBottom(); //this.getTop();
         }
 
-        public void setPosition(float v)
+        public void SetPosition(float v)
         {
-            if (this.oblique())
+            if (this.Oblique())
             {
-                throw new InvalidOperationException(); // UnsupportedOperationException();
+                throw new InvalidOperationException();
             }
 
-            if (this.vertical())
+            if (this.Vertical())
             {
-                this.setLeft(v);
-                this.setRight(v);
+                this.SetLeft(v);
+                this.SetRight(v);
             }
             else
             {
-                this.setTop(v);
-                this.setBottom(v);
+                this.SetTop(v);
+                this.SetBottom(v);
             }
         }
 
-        public double getStart()
+        public double GetStart()
         {
-            if (this.oblique())
+            if (this.Oblique())
             {
                 throw new InvalidOperationException();
             }
 
-            return this.vertical() ? this.getTop() : this.getRight(); //this.getLeft();
+            return this.Vertical() ? this.GetTop() : this.GetRight(); //this.getLeft();
         }
 
-        public void setStart(double v)
+        public void SetStart(double v)
         {
-            if (this.oblique())
+            if (this.Oblique())
             {
                 throw new InvalidOperationException();
             }
 
-            if (this.vertical())
+            if (this.Vertical())
             {
-                this.setTop(v);
+                this.SetTop(v);
             }
             else
             {
-                this.setRight(v); //this.setLeft(v);
+                this.SetRight(v); //this.setLeft(v);
             }
         }
 
-        public double getEnd()
+        public double GetEnd()
         {
-            if (this.oblique())
+            if (this.Oblique())
             {
                 throw new InvalidOperationException();
             }
 
-            return this.vertical() ? this.getBottom() : this.getLeft(); //this.getRight();
+            return this.Vertical() ? this.GetBottom() : this.GetLeft(); //this.getRight();
         }
 
-        public void setEnd(double v)
+        public void SetEnd(double v)
         {
-            if (this.oblique())
+            if (this.Oblique())
             {
                 throw new InvalidOperationException();
             }
 
-            if (this.vertical())
+            if (this.Vertical())
             {
-                this.setBottom(v);
+                this.SetBottom(v);
             }
             else
             {
-                this.setLeft(v); //this.setRight(v);
+                this.SetLeft(v); //this.setRight(v);
             }
         }
 
-        private void setStartEnd(double start, double end)
+        private void SetStartEnd(double start, double end)
         {
-            if (this.oblique())
+            if (this.Oblique())
             {
                 throw new InvalidOperationException();
             }
 
-            if (this.vertical())
+            if (this.Vertical())
             {
-                this.setTop(start);
-                this.setBottom(end);
+                this.SetTop(start);
+                this.SetBottom(end);
             }
             else
             {
-                this.setRight(start);//this.setLeft(start);
-                this.setLeft(end);//this.setRight(end);
+                this.SetRight(start);//this.setLeft(start);
+                this.SetLeft(end);//this.setRight(end);
             }
         }
 
-        public bool perpendicularTo(Ruling other)
+        public bool PerpendicularTo(Ruling other)
         {
-            return this.vertical() == other.horizontal();
+            return this.Vertical() == other.Horizontal();
         }
 
-        public bool colinear(PdfPoint point)
+        public bool Colinear(PdfPoint point)
         {
-            return point.X >= this.x1 &&
-                   point.X <= this.x2 &&
-                   point.Y >= this.y1 &&
-                   point.Y <= this.y2;
+            return point.X >= this.X1 &&
+                   point.X <= this.X2 &&
+                   point.Y >= this.Y1 &&
+                   point.Y <= this.Y2;
         }
 
         /// <summary>
@@ -221,33 +220,33 @@ namespace Tabula
         /// </summary>
         /// <param name="another"></param>
         /// <returns></returns>
-        public bool nearlyIntersects(Ruling another)
+        public bool NearlyIntersects(Ruling another)
         {
-            return this.nearlyIntersects(another, COLINEAR_OR_PARALLEL_PIXEL_EXPAND_AMOUNT);
+            return this.NearlyIntersects(another, COLINEAR_OR_PARALLEL_PIXEL_EXPAND_AMOUNT);
         }
 
-        public bool nearlyIntersects(Ruling another, int colinearOrParallelExpandAmount)
+        public bool NearlyIntersects(Ruling another, int colinearOrParallelExpandAmount)
         {
-            if (this.intersectsLine(another))
+            if (this.IntersectsLine(another))
             {
                 return true;
             }
 
             bool rv;
-            if (this.perpendicularTo(another))
+            if (this.PerpendicularTo(another))
             {
-                rv = this.expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT).intersectsLine(another);
+                rv = this.Expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT).IntersectsLine(another);
             }
             else
             {
-                rv = this.expand(colinearOrParallelExpandAmount)
-                        .intersectsLine(another.expand(colinearOrParallelExpandAmount));
+                rv = this.Expand(colinearOrParallelExpandAmount)
+                        .IntersectsLine(another.Expand(colinearOrParallelExpandAmount));
             }
 
             return rv;
         }
 
-        public Ruling intersect(PdfRectangle clip) // 
+        public Ruling Intersect(PdfRectangle clip)
         {
             // use clipper 
             throw new NotImplementedException();
@@ -267,31 +266,31 @@ namespace Tabula
             */
         }
 
-        public Ruling expand(double amount)
+        public Ruling Expand(double amount)
         {
-            Ruling r = this.clone(); //.MemberwiseClone(); //?????? .clone();
-            r.setStart(this.getStart() + amount); //- amount);
-            r.setEnd(this.getEnd() - amount); //+ amount);
+            Ruling r = this.Clone(); //.MemberwiseClone(); //?????? .clone();
+            r.SetStart(this.GetStart() + amount); //- amount);
+            r.SetEnd(this.GetEnd() - amount); //+ amount);
             return r;
         }
 
-        public PdfPoint? intersectionPoint(Ruling other)
+        public PdfPoint? IntersectionPoint(Ruling other)
         {
-            Ruling this_l = this.expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT);
-            Ruling other_l = other.expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT);
+            Ruling this_l = this.Expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT);
+            Ruling other_l = other.Expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT);
             Ruling horizontal, vertical;
 
-            if (!this_l.intersectsLine(other_l))
+            if (!this_l.IntersectsLine(other_l))
             {
                 return null;
             }
 
-            if (this_l.horizontal() && other_l.vertical())
+            if (this_l.Horizontal() && other_l.Vertical())
             {
                 horizontal = this_l;
                 vertical = other_l;
             }
-            else if (this_l.vertical() && other_l.horizontal())
+            else if (this_l.Vertical() && other_l.Horizontal())
             {
                 vertical = this_l;
                 horizontal = other_l;
@@ -300,7 +299,7 @@ namespace Tabula
             {
                 throw new ArgumentException("lines must be orthogonal, vertical and horizontal");
             }
-            return new PdfPoint(vertical.getLeft(), horizontal.getTop());
+            return new PdfPoint(vertical.GetLeft(), horizontal.GetTop());
         }
 
         public override bool Equals(object other)
@@ -317,74 +316,74 @@ namespace Tabula
 
             if (other is Ruling o)
             {
-                return this.getP1().Equals(o.getP1()) && this.getP2().Equals(o.getP2());
+                return this.GetP1().Equals(o.GetP1()) && this.GetP2().Equals(o.GetP2());
             }
             return false;
         }
 
         public override int GetHashCode()
         {
-            return line.GetHashCode();
+            return Line.GetHashCode();
         }
 
-        public double getTop()
+        public double GetTop()
         {
-            return this.y2; //.y1;
+            return this.Y2; //.y1;
         }
 
-        public void setTop(double v)
+        public void SetTop(double v)
         {
             //setLine(this.getLeft(), v, this.getRight(), this.getBottom());
-            setLine(this.getLeft(), this.getBottom(), this.getRight(), v);
+            SetLine(this.GetLeft(), this.GetBottom(), this.GetRight(), v);
         }
 
-        public double getLeft()
+        public double GetLeft()
         {
-            return this.x1; // not sure here!!
+            return this.X1; // not sure here!!
         }
 
-        public void setLeft(double v)
+        public void SetLeft(double v)
         {
-            setLine(v, this.getTop(), this.getRight(), this.getBottom());
+            SetLine(v, this.GetTop(), this.GetRight(), this.GetBottom());
         }
 
-        public double getBottom()
+        public double GetBottom()
         {
-            return this.y1; //.y2;
+            return this.Y1; //.y2;
         }
 
-        public void setBottom(double v)
+        public void SetBottom(double v)
         {
             //setLine(this.getLeft(), this.getTop(), this.getRight(), v);
-            setLine(this.getLeft(), v, this.getRight(), this.getTop());
+            SetLine(this.GetLeft(), v, this.GetRight(), this.GetTop());
         }
 
-        public double getRight()
+        public double GetRight()
         {
-            return this.x2;  // not sure here!!
+            return this.X2;  // not sure here!!
         }
 
-        public void setRight(double v)
+        public void SetRight(double v)
         {
-            setLine(this.getLeft(), this.getTop(), v, this.getBottom());
+            SetLine(this.GetLeft(), this.GetTop(), v, this.GetBottom());
         }
 
-        public double getWidth()
+        public double GetWidth()
         {
-            return this.getRight() - this.getLeft();
+            return this.GetRight() - this.GetLeft();
         }
 
-        public double getHeight()
+        public double GetHeight()
         {
             //return this.getBottom() - this.getTop();
-            return this.getTop() - this.getBottom();
+            return this.GetTop() - this.GetBottom();
         }
 
-        public double getAngle()
+        public double GetAngle()
         {
             //double angle = Math.toDegrees(Math.Atan2(this.getP2().getY() - this.getP1().getY()
             //                                         this.getP2().getX() - this.getP1().getX()));
-            double angle = Distances.Angle(this.getP1(), this.getP2());
+            double angle = Distances.Angle(this.GetP1(), this.GetP2());
 
             if (angle < 0)
             {
@@ -402,10 +401,10 @@ namespace Tabula
             formatter.close();
             return rv;
             */
-            return $"{this.GetType()}[x1={this.x1:0.00} y1={this.y1:0.00} x2={this.x2:0.00} y2={this.y2:0.00}]";
+            return $"{this.GetType()}[x1={this.X1:0.00} y1={this.Y1:0.00} x2={this.X2:0.00} y2={this.Y2:0.00}]";
         }
 
-        public static List<Ruling> cropRulingsToArea(List<Ruling> rulings, PdfRectangle area)
+        public static List<Ruling> CropRulingsToArea(List<Ruling> rulings, PdfRectangle area)
         {
             // use clipper
             var clipper = new Clipper();
@@ -452,15 +451,16 @@ namespace Tabula
             //return rv;
         }
 
-        public class TreeMapRulingComparator : IComparer<Ruling>
+        private class TreeMapRulingComparator : IComparer<Ruling>
         {
             public int Compare(Ruling o1, Ruling o2)
             {
-                return -o1.getTop().CompareTo(o2.getTop());  //bobld multiply by -1 to sort from top to bottom (reading order)
+                return -o1.GetTop().CompareTo(o2.GetTop());  //bobld multiply by -1 to sort from top to bottom (reading order)
                 //return java.lang.Double.compare(o1.getTop(), o2.getTop());
             }
         }
-        public class TreeMapPdfPointComparator : IComparer<PdfPoint>
+
+        private class TreeMapPdfPointComparator : IComparer<PdfPoint>
         {
             public int Compare(PdfPoint o1, PdfPoint o2)
             {
@@ -472,12 +472,12 @@ namespace Tabula
             }
         }
 
-        class SortObjectComparer : IComparer<SortObject>
+        private class SortObjectComparer : IComparer<SortObject>
         {
             public int Compare(SortObject a, SortObject b)
             {
                 int rv;
-                if (Utils.feq(a.position, b.position))
+                if (Utils.Feq(a.position, b.position))
                 {
                     if (a.type == SOType.VERTICAL && b.type == SOType.HLEFT)
                     {
@@ -508,7 +508,7 @@ namespace Tabula
             }
         }
 
-        class SortObject
+        private class SortObject
         {
             internal SOType type;      //protected
             internal double position;  //protected
@@ -529,7 +529,7 @@ namespace Tabula
         /// <param name="horizontals"></param>
         /// <param name="verticals"></param>
         /// <returns></returns>
-        public static SortedDictionary<PdfPoint, Ruling[]> findIntersections(List<Ruling> horizontals, List<Ruling> verticals)
+        public static SortedDictionary<PdfPoint, Ruling[]> FindIntersections(List<Ruling> horizontals, List<Ruling> verticals)
         {
             //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java#L312
 
@@ -564,13 +564,13 @@ namespace Tabula
 
             foreach (Ruling h in horizontals)
             {
-                sos.Add(new SortObject(SOType.HLEFT, h.getLeft() - PERPENDICULAR_PIXEL_EXPAND_AMOUNT, h));
-                sos.Add(new SortObject(SOType.HRIGHT, h.getRight() + PERPENDICULAR_PIXEL_EXPAND_AMOUNT, h));
+                sos.Add(new SortObject(SOType.HLEFT, h.GetLeft() - PERPENDICULAR_PIXEL_EXPAND_AMOUNT, h));
+                sos.Add(new SortObject(SOType.HRIGHT, h.GetRight() + PERPENDICULAR_PIXEL_EXPAND_AMOUNT, h));
             }
 
             foreach (Ruling v in verticals)
             {
-                sos.Add(new SortObject(SOType.VERTICAL, v.getLeft(), v));
+                sos.Add(new SortObject(SOType.VERTICAL, v.GetLeft(), v));
             }
 
             sos.Sort(new SortObjectComparer());  //Collections.sort(sos, new Comparator<SortObject>() ...
@@ -582,7 +582,7 @@ namespace Tabula
                     case SOType.VERTICAL:
                         foreach (var h in tree)//.entrySet()) 
                         {
-                            PdfPoint? i = h.Key.intersectionPoint(so.ruling);
+                            PdfPoint? i = h.Key.IntersectionPoint(so.ruling);
                             if (!i.HasValue)//== null)
                             {
                                 continue;
@@ -592,8 +592,8 @@ namespace Tabula
                             //              so.ruling.expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT) });
                             rv[i.Value] = new Ruling[]
                             {
-                                h.Key.expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT),
-                                so.ruling.expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT)
+                                h.Key.Expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT),
+                                so.ruling.Expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT)
                             };
                         }
                         break;
@@ -609,21 +609,21 @@ namespace Tabula
             return rv;
         }
 
-        public static List<Ruling> collapseOrientedRulings(List<Ruling> lines)
+        public static List<Ruling> CollapseOrientedRulings(List<Ruling> lines)
         {
-            return collapseOrientedRulings(lines, COLINEAR_OR_PARALLEL_PIXEL_EXPAND_AMOUNT);
+            return CollapseOrientedRulings(lines, COLINEAR_OR_PARALLEL_PIXEL_EXPAND_AMOUNT);
         }
 
         private class RulingComparer : IComparer<Ruling>
         {
             public int Compare(Ruling a, Ruling b)
             {
-                double diff = a.getPosition() - b.getPosition();
-                return (diff == 0 ? a.getStart() - b.getStart() : diff).CompareTo(0);
+                double diff = a.GetPosition() - b.GetPosition();
+                return (diff == 0 ? a.GetStart() - b.GetStart() : diff).CompareTo(0);
             }
         }
 
-        public static List<Ruling> collapseOrientedRulings(List<Ruling> lines, int expandAmount)
+        public static List<Ruling> CollapseOrientedRulings(List<Ruling> lines, int expandAmount)
         {
             List<Ruling> rv = new List<Ruling>();
             lines.Sort(new RulingComparer());
@@ -632,25 +632,25 @@ namespace Tabula
             {
                 Ruling last = rv.Count == 0 ? null : rv[rv.Count - 1];
                 // if current line colinear with next, and are "close enough": expand current line
-                if (last != null && Utils.feq(next_line.getPosition(), last.getPosition()) && last.nearlyIntersects(next_line, expandAmount))
+                if (last != null && Utils.Feq(next_line.GetPosition(), last.GetPosition()) && last.NearlyIntersects(next_line, expandAmount))
                 {
-                    double lastStart = last.getStart();
-                    double lastEnd = last.getEnd();
+                    double lastStart = last.GetStart();
+                    double lastEnd = last.GetEnd();
 
                     bool lastFlipped = lastStart > lastEnd;
-                    bool nextFlipped = next_line.getStart() > next_line.getEnd();
+                    bool nextFlipped = next_line.GetStart() > next_line.GetEnd();
 
                     bool differentDirections = nextFlipped != lastFlipped;
-                    double nextS = differentDirections ? next_line.getEnd() : next_line.getStart();
-                    double nextE = differentDirections ? next_line.getStart() : next_line.getEnd();
+                    double nextS = differentDirections ? next_line.GetEnd() : next_line.GetStart();
+                    double nextE = differentDirections ? next_line.GetStart() : next_line.GetEnd();
 
                     double newStart = lastFlipped ? Math.Max(nextS, lastStart) : Math.Min(nextS, lastStart);
                     double newEnd = lastFlipped ? Math.Min(nextE, lastEnd) : Math.Max(nextE, lastEnd);
-                    last.setStartEnd(newStart, newEnd);
+                    last.SetStartEnd(newStart, newEnd);
 
-                    Debug.Assert(!last.oblique());
+                    Debug.Assert(!last.Oblique());
                 }
-                else if (next_line.length() == 0)
+                else if (next_line.Length() == 0)
                 {
                     continue;
                 }
@@ -664,17 +664,17 @@ namespace Tabula
         }
 
         #region helpers
-        public double length() => this.line.Length;
-        public double x1 => this.line.Point1.X;
-        public double x2 => this.line.Point2.X;
-        public double y1 => this.line.Point1.Y;
-        public double y2 => this.line.Point2.Y;
-        public double getX1() => x1;
-        public double getX2() => x2;
-        public double getY2() => y2;
-        public double getY1() => y1;
-        public PdfPoint getP1() => line.Point1;
-        public PdfPoint getP2() => line.Point2;
+        public double Length() => this.Line.Length;
+        public double X1 => this.Line.Point1.X;
+        public double X2 => this.Line.Point2.X;
+        public double Y1 => this.Line.Point1.Y;
+        public double Y2 => this.Line.Point2.Y;
+        public double GetX1() => X1;
+        public double GetX2() => X2;
+        public double GetY2() => Y2;
+        public double GetY1() => Y1;
+        public PdfPoint GetP1() => Line.Point1;
+        public PdfPoint GetP2() => Line.Point2;
 
         /// <summary>
         /// True if both horizontal, aligned and overlap (i.e. infinite intersection points).
@@ -683,50 +683,50 @@ namespace Tabula
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool intersectsLine(Ruling other)
+        public bool IntersectsLine(Ruling other)
         {
             // include case point are the same
-            if (this.line.Point1.Equals(other.line.Point1) ||
-                this.line.Point1.Equals(other.line.Point2) ||
-                this.line.Point2.Equals(other.line.Point1) ||
-                this.line.Point2.Equals(other.line.Point2)) return true;
+            if (this.Line.Point1.Equals(other.Line.Point1) ||
+                this.Line.Point1.Equals(other.Line.Point2) ||
+                this.Line.Point2.Equals(other.Line.Point1) ||
+                this.Line.Point2.Equals(other.Line.Point2)) return true;
 
             // include case where both are horizontal and overlap
-            if (this.horizontal() && other.horizontal())
+            if (this.Horizontal() && other.Horizontal())
             {
-                if (this.y1.Equals(other.y1) && // share same y
-                    Math.Max(0, Math.Min(this.getRight(), other.getRight()) - Math.Max(this.getLeft(), other.getLeft())) > 0) // overlap
+                if (this.Y1.Equals(other.Y1) && // share same y
+                    Math.Max(0, Math.Min(this.GetRight(), other.GetRight()) - Math.Max(this.GetLeft(), other.GetLeft())) > 0) // overlap
                 {
                     return true;
                 }
             }
             // include case where both are vertical and overlap
-            else if (this.vertical() && other.vertical())
+            else if (this.Vertical() && other.Vertical())
             {
-                if (this.x1.Equals(other.x1) && // share same x
-                    Math.Max(0, Math.Min(this.getTop(), other.getTop()) - Math.Max(this.getBottom(), other.getBottom())) > 0) // overlap
+                if (this.X1.Equals(other.X1) && // share same x
+                    Math.Max(0, Math.Min(this.GetTop(), other.GetTop()) - Math.Max(this.GetBottom(), other.GetBottom())) > 0) // overlap
                 {
                     return true;
                 }
             }
             // else check if parallel and overlap
 
-            return this.line.IntersectsWith(other.line);
+            return this.Line.IntersectsWith(other.Line);
         }
 
-        public bool intersects(TableRectangle rectangle)
+        public bool Intersects(TableRectangle rectangle)
         {
             // should be the same???
-            return rectangle.intersectsLine(this);
+            return rectangle.IntersectsLine(this);
         }
 
         /// <summary>
         /// Deep copy.
         /// </summary>
-        public Ruling clone()
+        public Ruling Clone()
         {
-            return new Ruling(new PdfPoint(this.line.Point1.X, this.line.Point1.Y),
-                              new PdfPoint(this.line.Point2.X, this.line.Point2.Y));
+            return new Ruling(new PdfPoint(this.Line.Point1.X, this.Line.Point1.Y),
+                              new PdfPoint(this.Line.Point2.X, this.Line.Point2.Y));
         }
         #endregion
     }

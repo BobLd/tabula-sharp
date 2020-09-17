@@ -4,53 +4,53 @@ using Xunit;
 
 namespace Tabula.Tests
 {
-	public class TestCell
+    public class TestCell
 	{
 		[Fact]
-		public void testIsSpanning()
+		public void TestIsSpanning()
 		{
 			Cell cell = Cell.EMPTY;
-			Assert.False(cell.isSpanning());
-			cell.setSpanning(true);
-			Assert.True(cell.isSpanning());
+			Assert.False(cell.IsSpanning());
+			cell.SetSpanning(true);
+			Assert.True(cell.IsSpanning());
 		}
 
 		[Fact]
-		public void testIsPlaceholder()
+		public void TestIsPlaceholder()
 		{
 			Cell cell = new Cell(new PdfRectangle());
-			Assert.False(cell.isPlaceholder());
-			cell.setPlaceholder(true);
-			Assert.True(cell.isPlaceholder());
+			Assert.False(cell.IsPlaceholder());
+			cell.SetPlaceholder(true);
+			Assert.True(cell.IsPlaceholder());
 		}
 
 		[Fact]
-		public void testGetTextElements()
+		public void TestGetTextElements()
 		{
 			Cell cell = Cell.EMPTY;
-            Assert.True(cell.getTextElements().Count == 0);
+            Assert.True(cell.GetTextElements().Count == 0);
 
             TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "testTabula4", 5, 0); //PDType1Font.HELVETICA_BOLD
             TextChunk tChunk = new TextChunk(tElement);
             List<TextChunk> tList = new List<TextChunk>();
             tList.Add(tChunk);
-            cell.setTextElements(tList);
-            Assert.Equal("testTabula4", cell.getTextElements()[0].getText());
+            cell.SetTextElements(tList);
+            Assert.Equal("testTabula4", cell.GetTextElements()[0].GetText());
         }
 
 		[Fact]
-		public static void testCellEmpty()
+		public void TestCellEmpty()
         {
 			Cell cell = Cell.EMPTY;
-			cell.setPlaceholder(true);
-			cell.setTextElements(new List<TextChunk>() { new TextChunk(new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "not_empty", 5, 0)) });
-			Assert.False(Cell.EMPTY.isPlaceholder());
-			Assert.NotEqual("not_empty", Cell.EMPTY.getText());
+			cell.SetPlaceholder(true);
+			cell.SetTextElements(new List<TextChunk>() { new TextChunk(new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "not_empty", 5, 0)) });
+			Assert.False(Cell.EMPTY.IsPlaceholder());
+			Assert.NotEqual("not_empty", Cell.EMPTY.GetText());
 
-			Cell.EMPTY.setPlaceholder(true);
-			Cell.EMPTY.setTextElements(new List<TextChunk>() { new TextChunk(new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "not_empty", 5, 0)) });
-			Assert.False(Cell.EMPTY.isPlaceholder());
-			Assert.NotEqual("not_empty", Cell.EMPTY.getText());
+			Cell.EMPTY.SetPlaceholder(true);
+			Cell.EMPTY.SetTextElements(new List<TextChunk>() { new TextChunk(new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "not_empty", 5, 0)) });
+			Assert.False(Cell.EMPTY.IsPlaceholder());
+			Assert.NotEqual("not_empty", Cell.EMPTY.GetText());
 		}
 	}
 }

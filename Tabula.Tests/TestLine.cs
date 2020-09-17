@@ -5,10 +5,10 @@ using Xunit;
 
 namespace Tabula.Tests
 {
-	public class TestLine
+    public class TestLine
 	{
 		[Fact]
-		public void testSetTextElements()
+		public void TestSetTextElements()
 		{
 			TableLine line = new TableLine();
 
@@ -18,53 +18,53 @@ namespace Tabula.Tests
             {
                 tChunk
             };
-            line.setTextElements(tList);
+            line.SetTextElements(tList);
 
-			Assert.Equal("testTabula1", line.getTextElements()[0].getText());
+			Assert.Equal("testTabula1", line.GetTextElements()[0].GetText());
 		}
 
 		[Fact]
-		public void testAddTextChunkIntTextChunk()
+		public void TestAddTextChunkIntTextChunk()
 		{
 			TableLine line = new TableLine();
 
 			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "testTabula2", 5, 0);
 			TextChunk tChunk = new TextChunk(tElement);
-			line.addTextChunk(3, tChunk);
-			Assert.Equal("testTabula2", line.getTextElements()[3].getText());
+			line.AddTextChunk(3, tChunk);
+			Assert.Equal("testTabula2", line.GetTextElements()[3].GetText());
 		}
 
 		[Fact]
-		public void testLessThanAddTextChunkIntTextChunk()
+		public void TestLessThanAddTextChunkIntTextChunk()
 		{
 			TableLine line = new TableLine();
 
 			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "test", 5, 0);
 			TextChunk tChunk = new TextChunk(tElement);
-			line.addTextChunk(0, tChunk);
-			line.addTextChunk(0, tChunk);
+			line.AddTextChunk(0, tChunk);
+			line.AddTextChunk(0, tChunk);
 
-			Assert.Equal("testtest", line.getTextElements()[0].getText());
+			Assert.Equal("testtest", line.GetTextElements()[0].GetText());
 		}
 
 		[Fact]
-		public void testErrorAddTextChunkIntTextChunk()
+		public void TestErrorAddTextChunkIntTextChunk()
 		{
             TableLine line = new TableLine();
             TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "testTabula3", 5, 0);
             TextChunk tChunk = new TextChunk(tElement);
-            Assert.Throws<ArgumentException>(() => line.addTextChunk(-1, tChunk));
+            Assert.Throws<ArgumentException>(() => line.AddTextChunk(-1, tChunk));
         }
 
 		[Fact]
-		public void testToString()
+		public void TestToString()
 		{
 			TableLine line = new TableLine();
 
 			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "test", 5, 0);
 			TextChunk tChunk = new TextChunk(tElement);
-			line.addTextChunk(0, tChunk);
-			line.addTextChunk(0, tChunk);
+			line.AddTextChunk(0, tChunk);
+			line.AddTextChunk(0, tChunk);
 			Assert.Equal("Tabula.TableLine[(x:0, y:0), 0, 0,bottom=0.00,right=0.00,chunks='testtest', ]", line.ToString());
 			//Assert.Equal("technology.tabula.Line[x=0.0,y=0.0,w=0.0,h=0.0,bottom=0.000000,right=0.000000,chunks='testtest', ]", line.ToString());
 		}

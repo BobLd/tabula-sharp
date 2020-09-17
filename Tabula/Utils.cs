@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using UglyToad.PdfPig;
@@ -15,30 +14,30 @@ namespace Tabula
      */
     public static class Utils
     {
-        public static bool within(double first, double second, double variance)
+        public static bool Within(double first, double second, double variance)
         {
             return second < first + variance && second > first - variance;
         }
 
-        public static bool overlap(double y1, double height1, double y2, double height2, double variance)
+        public static bool Overlap(double y1, double height1, double y2, double height2, double variance)
         {
-            return within(y1, y2, variance) || (y2 <= y1 && y2 >= y1 - height1) || (y1 <= y2 && y1 >= y2 - height2);
+            return Within(y1, y2, variance) || (y2 <= y1 && y2 >= y1 - height1) || (y1 <= y2 && y1 >= y2 - height2);
         }
 
-        public static bool overlap(double y1, double height1, double y2, double height2)
+        public static bool Overlap(double y1, double height1, double y2, double height2)
         {
-            return overlap(y1, height1, y2, height2, 0.1f);
+            return Overlap(y1, height1, y2, height2, 0.1f);
         }
 
         private static float EPSILON = 0.01f;
         //private static bool useQuickSort = useCustomQuickSort();
 
-        public static bool feq(double f1, double f2)
+        public static bool Feq(double f1, double f2)
         {
             return Math.Abs(f1 - f2) < EPSILON;
         }
 
-        public static double round(double d, int decimalPlace)
+        public static double Round(double d, int decimalPlace)
         {
             return Math.Round(d, decimalPlace);
             /*
@@ -48,12 +47,12 @@ namespace Tabula
             */
         }
 
-        public static PdfRectangle bounds(IEnumerable<Ruling> shapes)
+        public static PdfRectangle Bounds(IEnumerable<Ruling> shapes)
         {
-            return bounds(shapes.Select(r => r.line.GetBoundingRectangle()));
+            return Bounds(shapes.Select(r => r.Line.GetBoundingRectangle()));
         }
 
-        public static PdfRectangle bounds(IEnumerable<PdfRectangle> shapes)
+        public static PdfRectangle Bounds(IEnumerable<PdfRectangle> shapes)
         {
             if (!shapes.Any())
             {
@@ -81,14 +80,14 @@ namespace Tabula
 
         }
 
-        public static TableRectangle bounds(IEnumerable<TableRectangle> shapes)
+        public static TableRectangle Bounds(IEnumerable<TableRectangle> shapes)
         {
             if (!shapes.Any()) //(shapes.isEmpty())
             {
                 throw new ArgumentException("shapes can't be empty");
             }
 
-            return new TableRectangle(bounds(shapes.Select(s => s.BoundingBox)));
+            return new TableRectangle(Bounds(shapes.Select(s => s.BoundingBox)));
 
             /*
             Iterator <? extends Shape > iter = shapes.iterator();
@@ -106,7 +105,7 @@ namespace Tabula
         }
 
         // range iterator
-        public static IEnumerable<int> range(int begin, int end)
+        public static IEnumerable<int> Range(int begin, int end)
         {
             return Enumerable.Range(begin, end - begin); //.ToList();
             /* return new IList<int>()
@@ -125,7 +124,7 @@ namespace Tabula
         }
 
         /* from apache.commons-lang */
-        public static bool isNumeric(string cs)
+        public static bool IsNumeric(string cs)
         {
             if (string.IsNullOrEmpty(cs))
             {
@@ -143,7 +142,7 @@ namespace Tabula
             return true;
         }
 
-        public static string join(string glue, params string[] s)
+        public static string Join(string glue, params string[] s)
         {
             int k = s.Length;
             if (k == 0)
@@ -160,7 +159,7 @@ namespace Tabula
             return outp.ToString();
         }
 
-        public static List<List<T>> transpose<T>(List<List<T>> table)
+        public static List<List<T>> Transpose<T>(List<List<T>> table)
         {
             List<List<T>> ret = new List<List<T>>();
             int N = table[0].Count;
@@ -180,7 +179,7 @@ namespace Tabula
          * Wrap Collections.sort so we can fallback to a non-stable quicksort if we're
          * running on JDK7+
          */
-        public static void sort<T>(List<T> list) where T : TableRectangle //IComparable<T> // <T extends Comparable<? super T>> 
+        public static void Sort<T>(List<T> list) where T : TableRectangle //IComparable<T> // <T extends Comparable<? super T>> 
         {
             //list.Sort();
 
@@ -193,7 +192,7 @@ namespace Tabula
             //else list.Sort();
         }
 
-        public static void sort<T>(List<T> list, IComparer<T> comparator) where T : TableRectangle
+        public static void Sort<T>(List<T> list, IComparer<T> comparator) where T : TableRectangle
         {
             //list.Sort(comparator);
 
@@ -236,7 +235,7 @@ namespace Tabula
         }
         */
 
-        public static List<int> parsePagesOption(string pagesSpec)
+        public static List<int> ParsePagesOption(string pagesSpec)
         {
             if (pagesSpec.Equals("all"))
             {
@@ -245,11 +244,11 @@ namespace Tabula
 
             List<int> rv = new List<int>();
 
-            String[] ranges = pagesSpec.Split(',');
+            string[] ranges = pagesSpec.Split(',');
             for (int i = 0; i < ranges.Length; i++)
             {
                 String[] r = ranges[i].Split('-');
-                if (r.Length == 0 || !Utils.isNumeric(r[0]) || (r.Length > 1 && !Utils.isNumeric(r[1])))
+                if (r.Length == 0 || !Utils.IsNumeric(r[0]) || (r.Length > 1 && !Utils.IsNumeric(r[1])))
                 {
                     throw new FormatException("Syntax error in page range specification");// ParseException("Syntax error in page range specification");
                 }
@@ -266,7 +265,7 @@ namespace Tabula
                     {
                         throw new FormatException("Syntax error in page range specification");// throw new ParseException("Syntax error in page range specification");
                     }
-                    rv.AddRange(Utils.range(t, f + 1));
+                    rv.AddRange(Utils.Range(t, f + 1));
                 }
             }
 
@@ -296,7 +295,7 @@ namespace Tabula
         /// <param name="rulings"></param>
         /// <param name="xThreshold"></param>
         /// <param name="yThreshold"></param>
-        public static void snapPoints(this List<Ruling> rulings, double xThreshold, double yThreshold)
+        public static void SnapPoints(this List<Ruling> rulings, double xThreshold, double yThreshold)
         {
             // collect points and keep a Line -> p1,p2 map
             Dictionary<double, double> newXCoordinates = new Dictionary<double, double>();
@@ -305,8 +304,8 @@ namespace Tabula
             List<PdfPoint> points = new List<PdfPoint>();
             foreach (Ruling r in rulings)
             {
-                points.Add(r.getP1());
-                points.Add(r.getP2());
+                points.Add(r.GetP1());
+                points.Add(r.GetP2());
             }
 
             // snap by X
@@ -315,7 +314,7 @@ namespace Tabula
             List<List<PdfPoint>> groupedPoints = new List<List<PdfPoint>>();
             groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { points[0] }));
 
-            foreach (PdfPoint p in points.subList(1, points.Count)) // - 1)) error in the java version: the second bound is exclusive. fails 'testColumnRecognition' test + https://github.com/tabulapdf/tabula-java/pull/311
+            foreach (PdfPoint p in points.SubList(1, points.Count)) // - 1)) error in the java version: the second bound is exclusive. fails 'testColumnRecognition' test + https://github.com/tabulapdf/tabula-java/pull/311
             {
                 List<PdfPoint> last = groupedPoints[groupedPoints.Count - 1];
                 if (Math.Abs(p.X - last[0].X) < xThreshold)
@@ -339,7 +338,7 @@ namespace Tabula
                 avgLoc /= group.Count;
                 for (int p = 0; p < group.Count; p++)
                 {
-                    newXCoordinates[group[p].X] = Utils.round(avgLoc, 6); // round?
+                    newXCoordinates[group[p].X] = Utils.Round(avgLoc, 6); // round?
                 }
             }
             // ---
@@ -350,7 +349,7 @@ namespace Tabula
             groupedPoints = new List<List<PdfPoint>>();
             groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { points[0] }));
 
-            foreach (PdfPoint p in points.subList(1, points.Count)) // - 1)) error in the java version: the second bound is exclusive + https://github.com/tabulapdf/tabula-java/pull/311
+            foreach (PdfPoint p in points.SubList(1, points.Count)) // - 1)) error in the java version: the second bound is exclusive + https://github.com/tabulapdf/tabula-java/pull/311
             {
                 List<PdfPoint> last = groupedPoints[groupedPoints.Count - 1];
                 if (Math.Abs(p.Y - last[0].Y) < yThreshold)
@@ -374,7 +373,7 @@ namespace Tabula
                 avgLoc /= group.Count;
                 for (int p = 0; p < group.Count; p++)
                 {
-                    newYCoordinates[group[p].Y] = Utils.round(avgLoc, 6); // round?
+                    newYCoordinates[group[p].Y] = Utils.Round(avgLoc, 6); // round?
                 }
             }
             // ---
@@ -383,12 +382,12 @@ namespace Tabula
             for (int i = 0; i < rulings.Count; i++)
             {
                 var current = rulings[i];
-                rulings[i] = new Ruling(new PdfPoint(newXCoordinates[current.line.Point1.X], newYCoordinates[current.line.Point1.Y]),
-                                        new PdfPoint(newXCoordinates[current.line.Point2.X], newYCoordinates[current.line.Point2.Y]));
+                rulings[i] = new Ruling(new PdfPoint(newXCoordinates[current.Line.Point1.X], newYCoordinates[current.Line.Point1.Y]),
+                                        new PdfPoint(newXCoordinates[current.Line.Point2.X], newYCoordinates[current.Line.Point2.Y]));
             }
         }
 
-        public static object pageConvertToImage(Page page, int dpi) //, ImageType imageType) // BufferedImage
+        public static object PageConvertToImage(Page page, int dpi) //, ImageType imageType) // BufferedImage
         {
             throw new NotImplementedException();
             /*
@@ -402,7 +401,7 @@ namespace Tabula
             */
         }
 
-        public static object pageConvertToImage(PdfDocument doc, Page page, int dpi) //, ImageType imageType) // BufferedImage
+        public static object PageConvertToImage(PdfDocument doc, Page page, int dpi) //, ImageType imageType) // BufferedImage
         {
             throw new NotImplementedException();
             //PDFRenderer renderer = new PDFRenderer(doc);
@@ -417,10 +416,10 @@ namespace Tabula
         /// <param name="fromIndex">low endpoint (inclusive) of the subList</param>
         /// <param name="toIndex">high endpoint (exclusive) of the subList</param>
         /// <returns></returns>
-        public static List<T> subList<T>(this List<T> list, int fromIndex, int toIndex)
+        public static List<T> SubList<T>(this List<T> list, int fromIndex, int toIndex)
         {
-            int count = toIndex - fromIndex; // - 1;
-            return list.GetRange(fromIndex, count);
+            //int count = toIndex - fromIndex; // - 1;
+            return list.GetRange(fromIndex, toIndex - fromIndex);
         }
     }
 }

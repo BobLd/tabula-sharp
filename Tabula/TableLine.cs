@@ -10,20 +10,20 @@ namespace Tabula
 
     public class TableLine : TableRectangle
     {
-        List<TextChunk> textChunks = new List<TextChunk>();
+        private List<TextChunk> textChunks = new List<TextChunk>();
         public static readonly char[] WHITE_SPACE_CHARS = { ' ', '\t', '\r', '\n', '\f' };
 
-        public List<TextChunk> getTextElements()
+        public List<TextChunk> GetTextElements()
         {
             return textChunks;
         }
 
-        public void setTextElements(List<TextChunk> textChunks)
+        public void SetTextElements(List<TextChunk> textChunks)
         {
             this.textChunks = textChunks;
         }
 
-        public void addTextChunk(int i, TextChunk textChunk)
+        public void AddTextChunk(int i, TextChunk textChunk)
         {
             if (i < 0)
             {
@@ -41,20 +41,20 @@ namespace Tabula
             }
             else
             {
-                this.textChunks[i] = this.textChunks[i].merge(textChunk);
+                this.textChunks[i] = this.textChunks[i].Merge(textChunk);
             }
-            this.merge(textChunk);
+            this.Merge(textChunk);
         }
 
-        public void addTextChunk(TextChunk textChunk)
+        public void AddTextChunk(TextChunk textChunk)
         {
             if (this.textChunks.Count == 0)
             {
-                this.setRect(textChunk.BoundingBox);
+                this.SetRect(textChunk.BoundingBox);
             }
             else
             {
-                this.merge(textChunk);
+                this.Merge(textChunk);
             }
             this.textChunks.Add(textChunk);
         }
@@ -67,21 +67,21 @@ namespace Tabula
             sb.Append(",chunks=");
             foreach (TextChunk te in this.textChunks)
             {
-                sb.Append("'" + te.getText() + "', ");
+                sb.Append("'" + te.GetText() + "', ");
             }
             sb.Append(']');
             return sb.ToString();
         }
 
-        internal static TableLine removeRepeatedCharacters(TableLine line, char c, int minRunLength)
+        internal static TableLine RemoveRepeatedCharacters(TableLine line, char c, int minRunLength)
         {
             TableLine rv = new TableLine();
 
-            foreach (TextChunk t in line.getTextElements())
+            foreach (TextChunk t in line.GetTextElements())
             {
-                foreach (TextChunk r in t.squeeze(c, minRunLength))
+                foreach (TextChunk r in t.Squeeze(c, minRunLength))
                 {
-                    rv.addTextChunk(r);
+                    rv.AddTextChunk(r);
                 }
             }
 

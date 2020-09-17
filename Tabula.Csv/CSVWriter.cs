@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Tabula.Writers
 {
-    public class CSVWriter : Writer
+    public class CSVWriter : IWriter
     {
         //private CSVFormat format;
         public readonly string delimiter;
@@ -16,12 +16,12 @@ namespace Tabula.Writers
             this.delimiter = delimiter;
         }
 
-        public void write(StreamWriter sw, Table table)
+        public void Write(StreamWriter sw, Table table)
         {
-            write(sw, new Table[] { table });
+            Write(sw, new Table[] { table });
         }
 
-        public void write(StreamWriter sw, IReadOnlyList<Table> tables)
+        public void Write(StreamWriter sw, IReadOnlyList<Table> tables)
         {
             var csv = new CsvWriter(sw, CultureInfo.InvariantCulture);
 
@@ -30,15 +30,15 @@ namespace Tabula.Writers
 
             foreach (Table table in tables)
             {
-                foreach (var row in table.getRows())
+                foreach (var row in table.GetRows())
                 {
-                    List<string> cells = new List<string>(row.Count);
-                    bool isfirst = true;
+                    //List<string> cells = new List<string>(row.Count);
+                    //bool isfirst = true;
                     foreach (RectangularTextContainer tc in row)
                     {
                         //cells.Add(tc.getText());
-                        csv.WriteField(tc.getText()); //, (string.IsNullOrEmpty(tc.getText()) && isfirst) || tc.getText().Contains(delimiter));
-                        isfirst = false;
+                        csv.WriteField(tc.GetText()); //, (string.IsNullOrEmpty(tc.getText()) && isfirst) || tc.getText().Contains(delimiter));
+                        //isfirst = false;
                     }
                     //csv.WriteField(cells);
                     csv.NextRecord();
@@ -46,17 +46,17 @@ namespace Tabula.Writers
             }
         }
 
-        public void write(StringBuilder sb, Table table)
+        public void Write(StringBuilder sb, Table table)
         {
-            write(sb, new Table[] { table });
+            Write(sb, new Table[] { table });
         }
 
-        public void write(StringBuilder sb, IReadOnlyList<Table> tables)
+        public void Write(StringBuilder sb, IReadOnlyList<Table> tables)
         {
             using (var stream = new MemoryStream())
             using (var sw = new StreamWriter(stream) { AutoFlush = true })
             {
-                new CSVWriter().write(sw, tables);
+                new CSVWriter().Write(sw, tables);
 
                 var reader = new StreamReader(stream);
                 stream.Position = 0;

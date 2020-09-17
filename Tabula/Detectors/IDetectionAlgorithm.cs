@@ -7,8 +7,8 @@ namespace Tabula.Detectors
      * ** tabula/detectors/DetectionAlgorithm.java **
      * Created by matt on 2015-12-14.
      */
-    public interface DetectionAlgorithm
+    public interface IDetectionAlgorithm
     {
-        List<TableRectangle> detect(PageArea page);
+        List<TableRectangle> Detect(PageArea page);
     }
 }

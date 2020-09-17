@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Tabula;
-using UglyToad.PdfPig;
 using UglyToad.PdfPig.Core;
 using Xunit;
 
@@ -24,58 +21,59 @@ namespace Tabula.Tests
         };
 
         [Fact]
-        public void testBoundsOfTwoRulings()
+        public void TestBoundsOfTwoRulings()
         {
-            TableRectangle r = new TableRectangle(Utils.bounds(RULINGS)); //RULINGS.ToList();
-            Assert.Equal(0, r.getMinX(), 0);
-            Assert.Equal(0, r.getMinY(), 0);
-            Assert.Equal(3, r.getWidth(), 0);
-            Assert.Equal(3, r.getHeight(), 0);
+            TableRectangle r = new TableRectangle(Utils.Bounds(RULINGS)); //RULINGS.ToList();
+            Assert.Equal(0, r.GetMinX(), 0);
+            Assert.Equal(0, r.GetMinY(), 0);
+            Assert.Equal(3, r.GetWidth(), 0);
+            Assert.Equal(3, r.GetHeight(), 0);
         }
 
         [Fact]
-        public void testBoundsOfOneEmptyRectangleAndAnotherNonEmpty()
+        public void TestBoundsOfOneEmptyRectangleAndAnotherNonEmpty()
         {
-            TableRectangle r = Utils.bounds(RECTANGLES.ToList());
+            TableRectangle r = Utils.Bounds(RECTANGLES.ToList());
             Assert.Equal(r, RECTANGLES[1]);
         }
 
         [Fact]
-        public void testBoundsOfOneRectangle()
+        public void TestBoundsOfOneRectangle()
         {
-            List<TableRectangle> shapes = new List<TableRectangle>();
-            shapes.Add(new TableRectangle(new PdfRectangle(0, 0, 20, 40)));
-            TableRectangle r = Utils.bounds(shapes);
+            List<TableRectangle> shapes = new List<TableRectangle>
+            {
+                new TableRectangle(new PdfRectangle(0, 0, 20, 40))
+            };
+            TableRectangle r = Utils.Bounds(shapes);
             Assert.Equal(r, shapes[0]);
         }
 
         [Fact]
-        public void testParsePagesOption()
+        public void TestParsePagesOption()
         {
-            List<int> rv = Utils.parsePagesOption("1");
+            List<int> rv = Utils.ParsePagesOption("1");
             Assert.Equal(new int[] { 1 }, rv.ToArray());
 
-            rv = Utils.parsePagesOption("1-4");
+            rv = Utils.ParsePagesOption("1-4");
             Assert.Equal(new int[] { 1, 2, 3, 4 }, rv.ToArray());
 
-            rv = Utils.parsePagesOption("1-4,20-24");
+            rv = Utils.ParsePagesOption("1-4,20-24");
             Assert.Equal(new int[] { 1, 2, 3, 4, 20, 21, 22, 23, 24 }, rv.ToArray());
 
-            rv = Utils.parsePagesOption("all");
+            rv = Utils.ParsePagesOption("all");
             Assert.Null(rv);
-
         }
 
-        [Fact]  //@Test(expected= ParseException.class)
-        public void testExceptionInParsePages() //throws ParseException
+        [Fact]
+        public void TestExceptionInParsePages()
         {
-            Assert.Throws<FormatException>(() => Utils.parsePagesOption("1-4,24-22"));
+            Assert.Throws<FormatException>(() => Utils.ParsePagesOption("1-4,24-22"));
         }
 
-        [Fact] //@Test(expected= ParseException.class)
-        public void testAnotherExceptionInParsePages()// throws ParseException
+        [Fact]
+        public void TestAnotherExceptionInParsePages()
         {
-            Assert.Throws<FormatException>(() => Utils.parsePagesOption("quuxor"));
+            Assert.Throws<FormatException>(() => Utils.ParsePagesOption("quuxor"));
         }
 
         /*
@@ -131,7 +129,7 @@ namespace Tabula.Tests
         */
 
         [Fact(Skip = "Image conversion not available")]
-        public void testJPEG2000DoesNotRaise()
+        public void TestJPEG2000DoesNotRaise()
         {
             /*
             using (PdfDocument pdf_document = PdfDocument.Open("Resources/jpeg2000.pdf"))

@@ -5,16 +5,15 @@ namespace Tabula.Tests
 {
     public class TestRectangleSpatialIndex
 	{
-
 		[Fact]
-		public void testIntersects()
+		public void TestIntersects()
 		{
 			TableRectangle r = new TableRectangle(new PdfRectangle());
 
 			RectangleSpatialIndex<TableRectangle> rSpatialIndex = new RectangleSpatialIndex<TableRectangle>();
-			rSpatialIndex.add(r);
+			rSpatialIndex.Add(r);
 
-			Assert.True(rSpatialIndex.intersects(r).Count > 0);
+			Assert.True(rSpatialIndex.Intersects(r).Count > 0);
 		}
 	}
 }

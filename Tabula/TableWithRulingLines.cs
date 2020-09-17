@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Tabula.Extractors;
 using UglyToad.PdfPig.Core;
 
@@ -13,24 +11,24 @@ namespace Tabula
         {
             public int Compare(Cell arg0, Cell arg1)
             {
-                return -arg0.getTop().CompareTo(arg1.getTop()); // bobld multiply by -1 to sort from top to bottom (reading order)
+                return -arg0.GetTop().CompareTo(arg1.GetTop()); // bobld multiply by -1 to sort from top to bottom (reading order)
             }
         }
 
         private readonly List<Ruling> verticalRulings;
         private readonly List<Ruling> horizontalRulings;
-        readonly RectangleSpatialIndex<Cell> si = new RectangleSpatialIndex<Cell>();
+        private readonly RectangleSpatialIndex<Cell> si = new RectangleSpatialIndex<Cell>();
 
-        public TableWithRulingLines(TableRectangle area, List<Cell> cells, List<Ruling> horizontalRulings, List<Ruling> verticalRulings, ExtractionAlgorithm extractionAlgorithm)
+        public TableWithRulingLines(TableRectangle area, List<Cell> cells, List<Ruling> horizontalRulings, List<Ruling> verticalRulings, IExtractionAlgorithm extractionAlgorithm)
             : base(extractionAlgorithm)
         {
-            this.setRect(area);
+            this.SetRect(area);
             this.verticalRulings = verticalRulings;
             this.horizontalRulings = horizontalRulings;
-            this.addCells(cells);
+            this.AddCells(cells);
         }
 
-        private void addCells(List<Cell> cells)
+        private void AddCells(List<Cell> cells)
         {
             if (cells.Count == 0)
             {
@@ -39,10 +37,10 @@ namespace Tabula
 
             foreach (Cell ce in cells)
             {
-                si.add(ce);
+                si.Add(ce);
             }
 
-            List<List<Cell>> rowsOfCells = TableWithRulingLines.rowsOfCells(cells);
+            List<List<Cell>> rowsOfCells = TableWithRulingLines.RowsOfCells(cells);
             for (int i = 0; i < rowsOfCells.Count; i++)
             {
                 List<Cell> row = rowsOfCells[i];
@@ -52,15 +50,15 @@ namespace Tabula
                 Cell cell = rowCells.Current;
 
                 // BobLd: careaful here!!
-                List<List<Cell>> others = TableWithRulingLines.rowsOfCells(
-                        si.contains(
+                List<List<Cell>> others = TableWithRulingLines.RowsOfCells(
+                        si.Contains(
                                 //new TableRectangle(cell.getBottom(), //top
                                 //                   si.getBounds().getLeft(), // left
                                 //                   cell.getLeft() - si.getBounds().getLeft(),//width
                                 //                   si.getBounds().getBottom() - cell.getBottom()) // height
 
                                 // BobLd: really not sure here
-                                new PdfRectangle(si.getBounds().getLeft(), si.getBounds().getBottom(), cell.getLeft(), cell.getBottom())
+                                new PdfRectangle(si.GetBounds().GetLeft(), si.GetBounds().GetBottom(), cell.GetLeft(), cell.GetBottom())
                                 ));
                 int startColumn = 0;
                 foreach (List<Cell> r in others)
@@ -68,15 +66,15 @@ namespace Tabula
                     startColumn = Math.Max(startColumn, r.Count);
                 }
 
-                this.add(cell, i, startColumn++);
+                this.Add(cell, i, startColumn++);
                 while (rowCells.MoveNext())
                 {
-                    this.add(rowCells.Current, i, startColumn++);
+                    this.Add(rowCells.Current, i, startColumn++);
                 }
             }
         }
 
-        private static List<List<Cell>> rowsOfCells(List<Cell> cells)
+        private static List<List<Cell>> RowsOfCells(List<Cell> cells)
         {
             Cell c;
             double lastTop;
@@ -88,14 +86,14 @@ namespace Tabula
                 return rv;
             }
 
-            Utils.sort(cells, new CellComparator());
+            Utils.Sort(cells, new CellComparator());
 
             var iter = cells.GetEnumerator();
 
             iter.MoveNext();
             c = iter.Current;
 
-            lastTop = c.getTop();
+            lastTop = c.GetTop();
             lastRow = new List<Cell>();
             lastRow.Add(c);
             rv.Add(lastRow);
@@ -103,13 +101,13 @@ namespace Tabula
             while (iter.MoveNext())
             {
                 c = iter.Current;
-                if (!Utils.feq(c.getTop(), lastTop))
+                if (!Utils.Feq(c.GetTop(), lastTop))
                 {
                     lastRow = new List<Cell>();
                     rv.Add(lastRow);
                 }
                 lastRow.Add(c);
-                lastTop = c.getTop();
+                lastTop = c.GetTop();
             }
             return rv;
         }

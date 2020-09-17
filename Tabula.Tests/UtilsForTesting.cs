@@ -12,17 +12,17 @@ namespace Tabula.Tests
     {
         public static readonly FontDetails HELVETICA_BOLD = new FontDetails("HELVETICA_BOLD", true, 0, false);
 
-        public static PageArea getAreaFromFirstPage(string path, PdfRectangle pdfRectangle)
+        public static PageArea GetAreaFromFirstPage(string path, PdfRectangle pdfRectangle)
         {
-            return getAreaFromPage(path, 1, pdfRectangle);
+            return GetAreaFromPage(path, 1, pdfRectangle);
         }
 
-        public static PageArea getAreaFromPage(string path, int page, PdfRectangle pdfRectangle)
+        public static PageArea GetAreaFromPage(string path, int page, PdfRectangle pdfRectangle)
         {
-            return getPage(path, page).getArea(pdfRectangle);
+            return GetPage(path, page).GetArea(pdfRectangle);
         }
 
-        public static PageArea getPage(string path, int pageNumber)
+        public static PageArea GetPage(string path, int pageNumber)
         {
             ObjectExtractor oe = null;
             try
@@ -31,19 +31,19 @@ namespace Tabula.Tests
                 using (PdfDocument document = PdfDocument.Open(path, new ParsingOptions() { ClipPaths = true }))
                 {
                     oe = new ObjectExtractor(document);
-                    page = oe.extract(pageNumber);
+                    page = oe.Extract(pageNumber);
                 }
                 return page;
             }
             finally
             {
-                oe?.close();
+                oe?.Close();
             }
         }
 
-        public static string[][] tableToArrayOfRows(Table table)
+        public static string[][] TableToArrayOfRows(Table table)
         {
-            var tableRows = table.getRows();
+            var tableRows = table.GetRows();
 
             int maxColCount = 0;
 
@@ -56,7 +56,7 @@ namespace Tabula.Tests
                 }
             }
 
-            Assert.Equal(maxColCount, table.getColCount());
+            Assert.Equal(maxColCount, table.GetColCount());
 
             string[][] rv = new string[tableRows.Count][];
 
@@ -66,14 +66,14 @@ namespace Tabula.Tests
                 rv[i] = new string[maxColCount];
                 for (int j = 0; j < row.Count; j++)
                 {
-                    rv[i][j] = table.getCell(i, j).getText();
+                    rv[i][j] = table.GetCell(i, j).GetText();
                 }
             }
 
             return rv;
         }
 
-        public static string loadJson(string path)
+        public static string LoadJson(string path)
         {
             return File.ReadAllText(path, Encoding.UTF8);
 
@@ -93,7 +93,7 @@ namespace Tabula.Tests
             */
         }
 
-        public static string loadCsv(string path)
+        public static string LoadCsv(string path)
         {
             return File.ReadAllText(path, Encoding.UTF8).Replace("\r\n", "\n"); // "(?<!\r)\n"
 
@@ -110,7 +110,7 @@ namespace Tabula.Tests
             */
         }
 
-        public static string[][] loadCsvLines(string path)
+        public static string[][] LoadCsvLines(string path)
         {
             return File.ReadAllLines(path, Encoding.UTF8).Select(x => x.Split(',')).ToArray();
         }

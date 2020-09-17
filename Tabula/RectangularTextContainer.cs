@@ -5,8 +5,8 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
-	//https://github.com/tabulapdf/tabula-java/blob/ebc83ac2bb1a1cbe54ab8081d70f3c9fe81886ea/src/main/java/technology/tabula/RectangularTextContainer.java
-	public abstract class RectangularTextContainer : TableRectangle
+    //https://github.com/tabulapdf/tabula-java/blob/ebc83ac2bb1a1cbe54ab8081d70f3c9fe81886ea/src/main/java/technology/tabula/RectangularTextContainer.java
+    public abstract class RectangularTextContainer : TableRectangle
 	{
 		public RectangularTextContainer(PdfRectangle pdfRectangle) : base(pdfRectangle)
 		{
@@ -19,21 +19,21 @@ namespace Tabula
 			throw new ArgumentOutOfRangeException();
 		}
 
-		public abstract string getText();
+		public abstract string GetText();
 
-		public abstract string getText(bool useLineReturns);
+		public abstract string GetText(bool useLineReturns);
 
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
 			string s = base.ToString();
 			sb.Append(s, 0, s.Length - 1);
-			sb.Append($",text={(this.getText() == null ? "null" : "\"" + this.getText() + "\"")}]");
+			sb.Append($",text={(this.GetText() == null ? "null" : "\"" + this.GetText() + "\"")}]");
 			return sb.ToString();
 		}
 	}
 
-	public abstract class RectangularTextContainer<T> : RectangularTextContainer where T : HasText
+	public abstract class RectangularTextContainer<T> : RectangularTextContainer where T : IHasText
 	{
 		public RectangularTextContainer(PdfRectangle pdfRectangle)
 			: base(pdfRectangle)
@@ -46,20 +46,20 @@ namespace Tabula
 			throw new ArgumentOutOfRangeException();
 		}
 
-		public RectangularTextContainer<T> merge(RectangularTextContainer<T> other)
+		public RectangularTextContainer<T> Merge(RectangularTextContainer<T> other)
 		{
 			if (this.CompareTo(other) < 0)
 			{
-				this.getTextElements().AddRange(other.getTextElements());// .AddAll(other.getTextElements());
+				this.GetTextElements().AddRange(other.GetTextElements());// .AddAll(other.getTextElements());
 			}
 			else
 			{
-				this.getTextElements().InsertRange(0, other.getTextElements());  //this.getTextElements().AddAll(0, other.getTextElements());
+				this.GetTextElements().InsertRange(0, other.GetTextElements());  //this.getTextElements().AddAll(0, other.getTextElements());
 			}
-			base.merge(other);
+			base.Merge(other);
 			return this;
 		}
 
-		public abstract List<T> getTextElements();
+		public abstract List<T> GetTextElements();
 	}
 }

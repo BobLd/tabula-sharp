@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
@@ -17,7 +16,7 @@ namespace Tabula.Detectors
      * Anssi Nurminen's master's thesis:
      * http://dspace.cc.tut.fi/dpub/bitstream/handle/123456789/21520/Nurminen.pdf?sequence=3
      */
-    public class NurminenDetectionAlgorithm : DetectionAlgorithm
+    public class NurminenDetectionAlgorithm : IDetectionAlgorithm
     {
         private static int GRAYSCALE_INTENSITY_THRESHOLD = 25;
         private static int HORIZONTAL_EDGE_WIDTH_MINIMUM = 50;
@@ -81,7 +80,7 @@ namespace Tabula.Detectors
             }
         }
 
-        public List<TableRectangle> detect(PageArea page)
+        public List<TableRectangle> Detect(PageArea page)
         {
             throw new NotImplementedException();
 
@@ -339,18 +338,18 @@ namespace Tabula.Detectors
                 }
 
                 // o1 is "equal" to o2 if o2 contains all of o1
-                if (o2.contains(o1))
+                if (o2.Contains(o1))
                 {
                     return 0;
                 }
 
-                if (o1.contains(o2))
+                if (o1.Contains(o2))
                 {
                     return 0;
                 }
 
                 // otherwise see if these tables are "mostly" the same
-                double overlap = o1.overlapRatio(o2);
+                double overlap = o1.OverlapRatio(o2);
                 if (overlap >= IDENTICAL_TABLE_OVERLAP_RATIO)
                 {
                     return 0;
@@ -387,7 +386,7 @@ namespace Tabula.Detectors
                     // check to make sure this text row is within a line or so of the other lines already added
                     // if it's not, we should stop the table here
                     double tableLineThreshold = (totalRowSpacing / tableSpaceCount) * 2.5;
-                    double lineDistance = textRow.getTop() - prevRow.getTop();
+                    double lineDistance = textRow.GetTop() - prevRow.GetTop();
 
                     if (lineDistance > tableLineThreshold)
                     {
@@ -406,7 +405,7 @@ namespace Tabula.Detectors
 
                 foreach (TextEdge edge in relevantEdges)
                 {
-                    if (textRow.intersectsLine(edge.line))
+                    if (textRow.IntersectsLine(edge.line))
                     {
                         numRelevantEdges++;
                     }
@@ -419,20 +418,20 @@ namespace Tabula.Detectors
                     if (prevRow != null && firstTableRow != null)
                     {
                         tableSpaceCount++;
-                        totalRowSpacing += (textRow.getTop() - prevRow.getTop());
+                        totalRowSpacing += (textRow.GetTop() - prevRow.GetTop());
                     }
 
                     // row is part of a table
-                    if (table.getArea() == 0)
+                    if (table.GetArea() == 0)
                     {
                         firstTableRow = textRow;
-                        table.setRect(textRow);
+                        table.SetRect(textRow);
                     }
                     else
                     {
-                        table.setLeft(Math.Min(table.getLeft(), textRow.getLeft()));
-                        table.setBottom(Math.Min(table.getBottom(), textRow.getBottom())); // max
-                        table.setRight(Math.Max(table.getRight(), textRow.getRight()));
+                        table.SetLeft(Math.Min(table.GetLeft(), textRow.GetLeft()));
+                        table.SetBottom(Math.Min(table.GetBottom(), textRow.GetBottom())); // max
+                        table.SetRight(Math.Max(table.GetRight(), textRow.GetRight()));
                     }
                 }
                 else
@@ -449,7 +448,7 @@ namespace Tabula.Detectors
             }
 
             // if we don't have a table now, we won't after the next step either
-            if (table.getArea() == 0)
+            if (table.GetArea() == 0)
             {
                 return null;
             }
@@ -468,7 +467,7 @@ namespace Tabula.Detectors
             }
             else
             {
-                avgRowHeight = lastTableRow.height;
+                avgRowHeight = lastTableRow.Height;
             }
 
             double rowHeightThreshold = avgRowHeight * 1.5;
@@ -477,18 +476,18 @@ namespace Tabula.Detectors
             foreach (Ruling ruling in horizontalRulings) // Line2D.Float 
             {
 
-                if (ruling.getY1() < table.getBottom())
+                if (ruling.GetY1() < table.GetBottom())
                 {
                     continue;
                 }
 
-                double distanceFromTable = ruling.getY1() - table.getBottom();
+                double distanceFromTable = ruling.GetY1() - table.GetBottom();
                 if (distanceFromTable <= rowHeightThreshold)
                 {
                     // use this ruling to help define the table
-                    table.setBottom(Math.Min(table.getBottom(), ruling.getY1())); // max
-                    table.setLeft(Math.Min(table.getLeft(), ruling.getX1()));
-                    table.setRight(Math.Max(table.getRight(), ruling.getX2()));
+                    table.SetBottom(Math.Min(table.GetBottom(), ruling.GetY1())); // max
+                    table.SetLeft(Math.Min(table.GetLeft(), ruling.GetX1()));
+                    table.SetRight(Math.Max(table.GetRight(), ruling.GetX2()));
                 }
                 else
                 {
@@ -505,17 +504,17 @@ namespace Tabula.Detectors
             {
                 Ruling ruling = horizontalRulings[i];//.get(i); Line2D.Float
 
-                if (ruling.getY1() > table.getTop()) // bobld or <??
+                if (ruling.GetY1() > table.GetTop()) // bobld or <??
                 {
                     continue;
                 }
 
-                double distanceFromTable = table.getTop() - ruling.getY1();
+                double distanceFromTable = table.GetTop() - ruling.GetY1();
                 if (distanceFromTable <= rowHeightThreshold)
                 {
-                    table.setTop((float)Math.Max(table.getTop(), ruling.getY1()));      //min
-                    table.setLeft((float)Math.Min(table.getLeft(), ruling.getX1()));
-                    table.setRight((float)Math.Max(table.getRight(), ruling.getX2()));
+                    table.SetTop((float)Math.Max(table.GetTop(), ruling.GetY1()));      //min
+                    table.SetLeft((float)Math.Min(table.GetLeft(), ruling.GetX1()));
+                    table.SetRight((float)Math.Max(table.GetRight(), ruling.GetX2()));
                 }
                 else
                 {
@@ -524,10 +523,10 @@ namespace Tabula.Detectors
             }
 
             // add a bit of padding since the halved horizontal lines are a little fuzzy anyways
-            table.setTop((float)Math.Floor(table.getTop()) - TABLE_PADDING_AMOUNT);
-            table.setBottom((float)Math.Ceiling(table.getBottom()) + TABLE_PADDING_AMOUNT);
-            table.setLeft((float)Math.Floor(table.getLeft()) - TABLE_PADDING_AMOUNT);
-            table.setRight((float)Math.Ceiling(table.getRight()) + TABLE_PADDING_AMOUNT);
+            table.SetTop((float)Math.Floor(table.GetTop()) - TABLE_PADDING_AMOUNT);
+            table.SetBottom((float)Math.Ceiling(table.GetBottom()) + TABLE_PADDING_AMOUNT);
+            table.SetLeft((float)Math.Floor(table.GetLeft()) - TABLE_PADDING_AMOUNT);
+            table.SetRight((float)Math.Ceiling(table.GetRight()) + TABLE_PADDING_AMOUNT);
 
             return table;
         }
@@ -611,10 +610,10 @@ namespace Tabula.Detectors
 
             foreach (TableLine textRow in lines)
             {
-                foreach (TextChunk text in textRow.getTextElements())
+                foreach (TextChunk text in textRow.GetTextElements())
                 {
-                    int left = (int)Math.Floor(text.getLeft()); // new Integer(
-                    int right = (int)Math.Floor(text.getRight()); //new Integer(
+                    int left = (int)Math.Floor(text.GetLeft()); // new Integer(
+                    int right = (int)Math.Floor(text.GetRight()); //new Integer(
                     int mid = left + ((right - left) / 2);//new Integer(
 
                     // first put this chunk into any edge buckets it belongs to
@@ -658,7 +657,7 @@ namespace Tabula.Detectors
                                 TextChunk first = edgeChunks[0];//.get(0);
                                 TextChunk last = edgeChunks[edgeChunks.Count - 1];//.get(edgeChunks.size() - 1);
 
-                                TextEdge edge = new TextEdge(key, first.getTop(), key, last.getBottom());
+                                TextEdge edge = new TextEdge(key, first.GetTop(), key, last.GetBottom());
                                 edge.intersectingTextRowCount = Math.Min(edgeChunks.Count, lines.Count);
 
                                 leftTextEdges.Add(edge);
@@ -681,7 +680,7 @@ namespace Tabula.Detectors
                                 TextChunk first = edgeChunks[0];//.get(0);
                                 TextChunk last = edgeChunks[edgeChunks.Count - 1]; //.get(edgeChunks.size() - 1);
 
-                                TextEdge edge = new TextEdge(key, first.getTop(), key, last.getBottom());
+                                TextEdge edge = new TextEdge(key, first.GetTop(), key, last.GetBottom());
                                 edge.intersectingTextRowCount = Math.Min(edgeChunks.Count, lines.Count);
 
                                 midTextEdges.Add(edge);
@@ -704,7 +703,7 @@ namespace Tabula.Detectors
                                 TextChunk first = edgeChunks[0];//.get(0);
                                 TextChunk last = edgeChunks[edgeChunks.Count - 1]; //.get(edgeChunks.size() - 1);
 
-                                TextEdge edge = new TextEdge(key, first.getTop(), key, last.getBottom());
+                                TextEdge edge = new TextEdge(key, first.GetTop(), key, last.GetBottom());
                                 edge.intersectingTextRowCount = Math.Min(edgeChunks.Count, lines.Count);
 
                                 rightTextEdges.Add(edge);
@@ -724,7 +723,7 @@ namespace Tabula.Detectors
                     TextChunk first = edgeChunks[0]; //.get(0);
                     TextChunk last = edgeChunks[edgeChunks.Count - 1]; //.get(edgeChunks.size() - 1);
 
-                    TextEdge edge = new TextEdge(key, first.getTop(), key, last.getBottom());
+                    TextEdge edge = new TextEdge(key, first.GetTop(), key, last.GetBottom());
                     edge.intersectingTextRowCount = Math.Min(edgeChunks.Count, lines.Count);
 
                     leftTextEdges.Add(edge);
@@ -739,7 +738,7 @@ namespace Tabula.Detectors
                     TextChunk first = edgeChunks[0]; //.get(0);
                     TextChunk last = edgeChunks[edgeChunks.Count - 1];//.get(edgeChunks.size() - 1);
 
-                    TextEdge edge = new TextEdge(key, first.getTop(), key, last.getBottom());
+                    TextEdge edge = new TextEdge(key, first.GetTop(), key, last.GetBottom());
                     edge.intersectingTextRowCount = Math.Min(edgeChunks.Count, lines.Count);
 
                     midTextEdges.Add(edge);
@@ -754,7 +753,7 @@ namespace Tabula.Detectors
                     TextChunk first = edgeChunks[0];//.get(0);
                     TextChunk last = edgeChunks[edgeChunks.Count - 1]; // .get(edgeChunks.size() - 1);
 
-                    TextEdge edge = new TextEdge(key, first.getTop(), key, last.getBottom());
+                    TextEdge edge = new TextEdge(key, first.GetTop(), key, last.GetBottom());
                     edge.intersectingTextRowCount = Math.Min(edgeChunks.Count, lines.Count);
 
                     rightTextEdges.Add(edge);
@@ -778,8 +777,8 @@ namespace Tabula.Detectors
                     if (breakCellCheck) break; // simulates 'break cellCheck;'
                     foreach (TableRectangle groupCell in cellGroup)
                     {
-                        PdfPoint[] groupCellCorners = groupCell.getPoints();
-                        PdfPoint[] candidateCorners = cell.getPoints();
+                        PdfPoint[] groupCellCorners = groupCell.GetPoints();
+                        PdfPoint[] candidateCorners = cell.GetPoints();
 
                         for (int i = 0; i < candidateCorners.Length; i++)
                         {
@@ -824,10 +823,10 @@ namespace Tabula.Detectors
 
                 foreach (TableRectangle cell in cellGroup)
                 {
-                    if (cell.getTop() > top) top = cell.getTop(); // (cell.getTop() < top)
-                    if (cell.getLeft() < left) left = cell.getLeft();
-                    if (cell.getBottom() < bottom) bottom = cell.getBottom(); // (cell.getBottom() > bottom)
-                    if (cell.getRight() > right) right = cell.getRight();
+                    if (cell.GetTop() > top) top = cell.GetTop(); // (cell.getTop() < top)
+                    if (cell.GetLeft() < left) left = cell.GetLeft();
+                    if (cell.GetBottom() < bottom) bottom = cell.GetBottom(); // (cell.getBottom() > bottom)
+                    if (cell.GetRight() > right) right = cell.GetRight();
                 }
 
                 tableAreas.Add(new TableRectangle(top, left, right - left, bottom - top));

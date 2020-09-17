@@ -13,26 +13,25 @@ namespace Tabula.Tests
     {
         private static String EXPECTED_CSV_WRITER_OUTPUT = "\"ABDALA de MATARAZZO, Norma Amanda\",Frente Cívico por Santiago,Santiago del Estero,AFIRMATIVO";
 
-        private Table getTable()
+        private Table GetTable()
         {
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/argentina_diputados_voting_record.pdf", new PdfRectangle(12.75, 55.0, 561, 567)); // 269.875f, 12.75f, 790.5f, 561f);
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/argentina_diputados_voting_record.pdf", new PdfRectangle(12.75, 55.0, 561, 567)); // 269.875f, 12.75f, 790.5f, 561f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-            Table table = bea.extract(page)[0];
-            return table;
+            return bea.Extract(page)[0];
         }
 
-        private List<Table> getTables()
+        private List<Table> GetTables()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/twotables.pdf", 1);
+            PageArea page = UtilsForTesting.GetPage("Resources/twotables.pdf", 1);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            return sea.extract(page);
+            return sea.Extract(page);
         }
 
         [Fact]
-        public void testCSVWriter()
+        public void TestCSVWriter()
         {
-            string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/argentina_diputados_voting_record.csv");
-            Table table = this.getTable();
+            string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/argentina_diputados_voting_record.csv");
+            Table table = this.GetTable();
             /*
             StringBuilder sb = new StringBuilder();
             (new CSVWriter()).write(sb, table);
@@ -45,7 +44,7 @@ namespace Tabula.Tests
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
             {
-                (new CSVWriter()).write(sb, table);
+                (new CSVWriter()).Write(sb, table);
 
                 var reader = new StreamReader(stream);
                 stream.Position = 0;
@@ -58,7 +57,7 @@ namespace Tabula.Tests
 
         // TODO Add assertions
         [Fact] //(Skip = "Need to implement TSVWriter")]
-        public void testTSVWriter()
+        public void TestTSVWriter()
         {
             /*
             Table table = this.getTable();
@@ -70,26 +69,25 @@ namespace Tabula.Tests
             //assertEquals(lines[0], EXPECTED_CSV_WRITER_OUTPUT);
             */
 
-            Table table = this.getTable();
+            Table table = this.GetTable();
             StringBuilder sb = new StringBuilder();
-            (new TSVWriter()).write(sb, table);
+            (new TSVWriter()).Write(sb, table);
             String s = sb.ToString();
             //System.out.println(s);
             String[] lines = s.Replace("\r\n", "\n").Replace("\n", "\r\n").Split("\r\n");
             Assert.Equal(lines[0], EXPECTED_CSV_WRITER_OUTPUT);
         }
 
-
         [Fact]
-        public void testJSONWriter()
+        public void TestJSONWriter()
         {
-            string expectedJson = UtilsForTesting.loadJson("Resources/json/argentina_diputados_voting_record_new.json"); // argentina_diputados_voting_record.json
-            Table table = this.getTable();
+            string expectedJson = UtilsForTesting.LoadJson("Resources/json/argentina_diputados_voting_record_new.json"); // argentina_diputados_voting_record.json
+            Table table = this.GetTable();
 
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
             {
-                (new JSONWriter()).write(sb, table);
+                (new JSONWriter()).Write(sb, table);
 
                 var reader = new StreamReader(stream);
                 stream.Position = 0;
@@ -99,35 +97,34 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact(Skip = "fails as of v0.6")] // [Fact] //(Skip = "SpreadsheetExtractionAlgorithm not implemented")]
-        public void testJSONSerializeInfinity()
+        [Fact(Skip = "fails as of v0.9.1a")] // [Fact] //(Skip = "SpreadsheetExtractionAlgorithm not implemented")]
+        public void TestJSONSerializeInfinity()
         {
-            String expectedJson = UtilsForTesting.loadJson("Resources/json/schools.json");
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/schools.pdf", new PdfRectangle(double.NaN, double.NaN, double.NaN, double.NaN)); // 53.74f, 16.97f, 548.74f, 762.3f);
+            String expectedJson = UtilsForTesting.LoadJson("Resources/json/schools.json");
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/schools.pdf", new PdfRectangle(double.NaN, double.NaN, double.NaN, double.NaN)); // 53.74f, 16.97f, 548.74f, 762.3f);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            Table table = sea.extract(page)[0]; //.get(0);
+            Table table = sea.Extract(page)[0]; //.get(0);
 
             StringBuilder sb = new StringBuilder();
-            (new JSONWriter()).write(sb, table);
+            (new JSONWriter()).Write(sb, table);
             string s = sb.ToString();
             Assert.Equal(expectedJson, s);
         }
 
-        [Fact(Skip = "fails as of v0.6")] //[Fact] //(Skip = "SpreadsheetExtractionAlgorithm not implemented + get correct area.")]
-        public void testCSVSerializeInfinity()
+        [Fact(Skip = "fails as of v0.9.1a")]
+        public void TestCSVSerializeInfinity()
         {
-
-            String expectedCsv = UtilsForTesting.loadCsv("Resources/csv/schools.csv");
+            string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/schools.csv");
             // top,    left,   bottom,  right              // page height = 612
             // 53.74f, 16.97f, 548.74f, 762.3f)
 
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/schools.pdf", new PdfRectangle(16.97, 612 - 548.74, 762.3, 612 - 53.74-1)); // remove 1 because add an empty line at the top if not
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/schools.pdf", new PdfRectangle(16.97, 612 - 548.74, 762.3, 612 - 53.74-1)); // remove 1 because add an empty line at the top if not
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            Table table = sea.extract(page)[0];
+            Table table = sea.Extract(page)[0];
 
             StringBuilder sb = new StringBuilder();
-            (new CSVWriter()).write(sb, table);
-            String s = sb.ToString();
+            (new CSVWriter()).Write(sb, table);
+            string s = sb.ToString();
             Assert.Equal(expectedCsv.Trim(), s.Replace("\r\n", "\n"));
 
             /*
@@ -143,14 +140,14 @@ namespace Tabula.Tests
             */
         }
 
-        [Fact(Skip = "fails as of v0.6")] // [Fact] //(Skip = "SpreadsheetExtractionAlgorithm not implemented")]
-        public void testJSONSerializeTwoTables()
+        [Fact(Skip = "fails as of v0.9.1a")] // [Fact] //(Skip = "SpreadsheetExtractionAlgorithm not implemented")]
+        public void TestJSONSerializeTwoTables()
         {
-            string expectedJson = UtilsForTesting.loadJson("Resources/json/twotables.json");
-            List<Table> tables = this.getTables();
+            string expectedJson = UtilsForTesting.LoadJson("Resources/json/twotables.json");
+            List<Table> tables = this.GetTables();
 
             StringBuilder sb = new StringBuilder();
-            (new JSONWriter()).write(sb, tables);
+            (new JSONWriter()).Write(sb, tables);
             String s = sb.ToString();
             Assert.Equal(expectedJson, s);
 
@@ -177,11 +174,11 @@ namespace Tabula.Tests
             */
         }
 
-        [Fact(Skip = "fails as of v0.6")] //[Fact]//(Skip = "SpreadsheetExtractionAlgorithm not implemented.")]
-        public void testCSVSerializeTwoTables()
+        [Fact(Skip = "fails as of v0.9.1a")] //[Fact]//(Skip = "SpreadsheetExtractionAlgorithm not implemented.")]
+        public void TestCSVSerializeTwoTables()
         {
-            String expectedCsv = UtilsForTesting.loadCsv("Resources/csv/twotables.csv");
-            List<Table> tables = this.getTables();
+            String expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/twotables.csv");
+            List<Table> tables = this.GetTables();
 
             /*
             StringBuilder sb = new StringBuilder();
@@ -193,7 +190,7 @@ namespace Tabula.Tests
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
             {
-                (new CSVWriter()).write(sb, tables);
+                (new CSVWriter()).Write(sb, tables);
                 var reader = new StreamReader(stream);
                 stream.Position = 0;
                 var s = reader.ReadToEnd().Trim(); // trim to remove last new line
@@ -201,16 +198,16 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact(Skip = "fails as of v0.6")] //[Fact] //(Skip = "SpreadsheetExtractionAlgorithm not implemented + get correct area.")]
-        public void testCSVMultilineRow()
+        [Fact(Skip = "fails as of v0.9.1a")] //[Fact] //(Skip = "SpreadsheetExtractionAlgorithm not implemented + get correct area.")]
+        public void TestCSVMultilineRow()
         {
-            String expectedCsv = UtilsForTesting.loadCsv("Resources/csv/frx_2012_disclosure.csv");
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/frx_2012_disclosure.pdf", new PdfRectangle(double.NaN, double.NaN, double.NaN, double.NaN)); // 53.0f, 49.0f, 735.0f, 550.0f);
+            String expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/frx_2012_disclosure.csv");
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/frx_2012_disclosure.pdf", new PdfRectangle(double.NaN, double.NaN, double.NaN, double.NaN)); // 53.0f, 49.0f, 735.0f, 550.0f);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            Table table = sea.extract(page)[0];
+            Table table = sea.Extract(page)[0];
 
             StringBuilder sb = new StringBuilder();
-            (new CSVWriter()).write(sb, table);
+            (new CSVWriter()).Write(sb, table);
             String s = sb.ToString();
             Assert.Equal(expectedCsv, s);
 

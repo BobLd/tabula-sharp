@@ -6,7 +6,7 @@ namespace Tabula.Tests
     public class TestsUnicodeExtensions
     {
         [Fact]
-        public void testUnicode13IntValues()
+        public void TestUnicode13IntValues()
         {
             foreach (var line in File.ReadAllLines("Resources/UnicodeData_13.0.txt"))
             {
@@ -14,7 +14,7 @@ namespace Tabula.Tests
 
                 int int32 = int.Parse(properties[0], System.Globalization.NumberStyles.AllowHexSpecifier);
                 string expected = properties[4];
-                Assert.Equal(expected, UnicodeExtensions.getDirectionality(int32));
+                Assert.Equal(expected, UnicodeExtensions.GetDirectionality(int32));
             }
         }
     }

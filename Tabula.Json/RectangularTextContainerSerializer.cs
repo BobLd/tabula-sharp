@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Tabula.Json
 {
@@ -17,11 +16,11 @@ namespace Tabula.Json
 
             JObject result = new JObject
             {
-                { "top", src.getTop() },
-                { "left", src.getLeft() },
-                { "width", src.getWidth() },
-                { "height", src.getHeight() },
-                { "text", src.getText() }
+                { "top", src.GetTop() },
+                { "left", src.GetLeft() },
+                { "width", src.GetWidth() },
+                { "height", src.GetHeight() },
+                { "text", src.GetText() }
             };
             result.WriteTo(writer);
         }

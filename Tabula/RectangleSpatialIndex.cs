@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.Geometry;
 
@@ -13,21 +12,32 @@ namespace Tabula
         //private STRtree si = new STRtree();
         private List<T> rectangles = new List<T>();
 
-        public void add(T te)
+        public void Add(T te)
         {
             rectangles.Add(te);
             //si.insert(new Envelope(te.getLeft(), te.getRight(), te.getBottom(), te.getTop()), te);
         }
 
-        public List<T> contains(PdfRectangle r)
+        /// <summary>
+        /// hack
+        /// </summary>
+        /// <param name="rectangle"></param>
+        /// <returns></returns>
+        private PdfRectangle Expand(PdfRectangle rectangle)
         {
-            return rectangles.Where(tr => r.Contains(tr.BoundingBox)).ToList();
+            return new PdfRectangle(rectangle.Left - 1, rectangle.Bottom - 1, rectangle.Right + 1, rectangle.Top + 1);
         }
 
-        public List<T> contains(TableRectangle r)
+        public List<T> Contains(PdfRectangle r)
         {
+            var expanded = Expand(r);
+            return rectangles.Where(tr => expanded.Contains(tr.BoundingBox, true)).ToList();
+        }
 
-            return rectangles.Where(tr => r.BoundingBox.Contains(tr.BoundingBox)).ToList();
+        public List<T> Contains(TableRectangle r)
+        {
+            var expanded = Expand(r.BoundingBox);
+            return rectangles.Where(tr => expanded.Contains(tr.BoundingBox, true)).ToList();
 
             /*
             List<T> intersection = si.query(new Envelope(r.getLeft(), r.getRight(), r.getTop(), r.getBottom()));
@@ -46,7 +56,7 @@ namespace Tabula
             */
         }
 
-        public List<T> intersects(TableRectangle r)
+        public List<T> Intersects(TableRectangle r)
         {
             return rectangles.Where(tr => IntersectsWithNoBug(r.BoundingBox, tr.BoundingBox)).ToList();
 
@@ -78,9 +88,9 @@ namespace Tabula
         /// Minimum bounding box of all the Rectangles contained on this RectangleSpatialIndex.
         /// </summary>
         /// <returns></returns>
-        public TableRectangle getBounds()
+        public TableRectangle GetBounds()
         {
-            return TableRectangle.boundingBoxOf(rectangles.Cast<TableRectangle>());
+            return TableRectangle.BoundingBoxOf(rectangles.Cast<TableRectangle>());
         }
     }
 }
