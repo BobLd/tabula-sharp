@@ -586,7 +586,7 @@ namespace Tabula.Tests
 
             StringBuilder sb = new StringBuilder();
             (new CSVWriter()).Write(sb, table);
-            String result = sb.ToString();
+            string result = sb.ToString();
             Assert.Equal(expectedCsv.Replace("\n", "\r"), result.Replace("\r\n", "\n").Replace("\n", "\r").Trim());
 
             /*

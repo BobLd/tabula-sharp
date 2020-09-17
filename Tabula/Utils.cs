@@ -247,7 +247,7 @@ namespace Tabula
             string[] ranges = pagesSpec.Split(',');
             for (int i = 0; i < ranges.Length; i++)
             {
-                String[] r = ranges[i].Split('-');
+                string[] r = ranges[i].Split('-');
                 if (r.Length == 0 || !Utils.IsNumeric(r[0]) || (r.Length > 1 && !Utils.IsNumeric(r[1])))
                 {
                     throw new FormatException("Syntax error in page range specification");// ParseException("Syntax error in page range specification");

@@ -417,7 +417,7 @@ namespace Tabula.Tests
         [Fact]
         public void TestTableWithMultilineHeader()
         {
-            String expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/us-020.csv");
+            string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/us-020.csv");
             PageArea page = UtilsForTesting.GetAreaFromPage("Resources/us-020.pdf", 2, new PdfRectangle(35.0, 151, 560, 688.5)); //103.0f, 35.0f, 641.0f, 560.0f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.Extract(page)[0];

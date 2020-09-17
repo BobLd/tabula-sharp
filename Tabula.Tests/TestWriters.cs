@@ -11,7 +11,7 @@ namespace Tabula.Tests
 {
     public class TestWriters
     {
-        private static String EXPECTED_CSV_WRITER_OUTPUT = "\"ABDALA de MATARAZZO, Norma Amanda\",Frente Cívico por Santiago,Santiago del Estero,AFIRMATIVO";
+        private static string EXPECTED_CSV_WRITER_OUTPUT = "\"ABDALA de MATARAZZO, Norma Amanda\",Frente Cívico por Santiago,Santiago del Estero,AFIRMATIVO";
 
         private Table GetTable()
         {
@@ -49,7 +49,7 @@ namespace Tabula.Tests
                 var reader = new StreamReader(stream);
                 stream.Position = 0;
                 var s = reader.ReadToEnd().Trim(); // trim to remove last new line
-                String[] lines = s.Split("\r\n"); // "\\r?\\n"
+                string[] lines = s.Split("\r\n"); // "\\r?\\n"
                 Assert.Equal(EXPECTED_CSV_WRITER_OUTPUT, lines[0]);
                 Assert.Equal(expectedCsv, s.Replace("\r\n", "\n"));
             }
@@ -72,9 +72,9 @@ namespace Tabula.Tests
             Table table = this.GetTable();
             StringBuilder sb = new StringBuilder();
             (new TSVWriter()).Write(sb, table);
-            String s = sb.ToString();
+            string s = sb.ToString();
             //System.out.println(s);
-            String[] lines = s.Replace("\r\n", "\n").Replace("\n", "\r\n").Split("\r\n");
+            string[] lines = s.Replace("\r\n", "\n").Replace("\n", "\r\n").Split("\r\n");
             Assert.Equal(lines[0], EXPECTED_CSV_WRITER_OUTPUT);
         }
 
@@ -100,7 +100,7 @@ namespace Tabula.Tests
         [Fact(Skip = "fails as of v0.9.1a + get correct area.")]
         public void TestJSONSerializeInfinity()
         {
-            String expectedJson = UtilsForTesting.LoadJson("Resources/json/schools.json");
+            string expectedJson = UtilsForTesting.LoadJson("Resources/json/schools.json");
             PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/schools.pdf", new PdfRectangle(double.NaN, double.NaN, double.NaN, double.NaN)); // 53.74f, 16.97f, 548.74f, 762.3f);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
             Table table = sea.Extract(page)[0]; //.get(0);
@@ -148,7 +148,7 @@ namespace Tabula.Tests
 
             StringBuilder sb = new StringBuilder();
             (new JSONWriter()).Write(sb, tables);
-            String s = sb.ToString();
+            string s = sb.ToString();
             Assert.Equal(expectedJson, s);
 
             /*
@@ -177,7 +177,7 @@ namespace Tabula.Tests
         [Fact(Skip = "fails as of v0.9.1a")]
         public void TestCSVSerializeTwoTables()
         {
-            String expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/twotables.csv");
+            string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/twotables.csv");
             List<Table> tables = this.GetTables();
 
             /*
@@ -201,14 +201,14 @@ namespace Tabula.Tests
         [Fact(Skip = "fails as of v0.9.1a + get correct area.")]
         public void TestCSVMultilineRow()
         {
-            String expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/frx_2012_disclosure.csv");
+            string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/frx_2012_disclosure.csv");
             PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/frx_2012_disclosure.pdf", new PdfRectangle(double.NaN, double.NaN, double.NaN, double.NaN)); // 53.0f, 49.0f, 735.0f, 550.0f);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
             Table table = sea.Extract(page)[0];
 
             StringBuilder sb = new StringBuilder();
             (new CSVWriter()).Write(sb, table);
-            String s = sb.ToString();
+            string s = sb.ToString();
             Assert.Equal(expectedCsv, s);
 
             /*
