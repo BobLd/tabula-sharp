@@ -97,7 +97,7 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact(Skip = "fails as of v0.9.1a")] // [Fact] //(Skip = "SpreadsheetExtractionAlgorithm not implemented")]
+        [Fact(Skip = "fails as of v0.9.1a + get correct area.")]
         public void TestJSONSerializeInfinity()
         {
             String expectedJson = UtilsForTesting.LoadJson("Resources/json/schools.json");
@@ -140,7 +140,7 @@ namespace Tabula.Tests
             */
         }
 
-        [Fact(Skip = "fails as of v0.9.1a")] // [Fact] //(Skip = "SpreadsheetExtractionAlgorithm not implemented")]
+        [Fact(Skip = "fails as of v0.9.1a")]
         public void TestJSONSerializeTwoTables()
         {
             string expectedJson = UtilsForTesting.LoadJson("Resources/json/twotables.json");
@@ -174,7 +174,7 @@ namespace Tabula.Tests
             */
         }
 
-        [Fact(Skip = "fails as of v0.9.1a")] //[Fact]//(Skip = "SpreadsheetExtractionAlgorithm not implemented.")]
+        [Fact(Skip = "fails as of v0.9.1a")]
         public void TestCSVSerializeTwoTables()
         {
             String expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/twotables.csv");
@@ -198,7 +198,7 @@ namespace Tabula.Tests
             }
         }
 
-        [Fact(Skip = "fails as of v0.9.1a")] //[Fact] //(Skip = "SpreadsheetExtractionAlgorithm not implemented + get correct area.")]
+        [Fact(Skip = "fails as of v0.9.1a + get correct area.")]
         public void TestCSVMultilineRow()
         {
             String expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/frx_2012_disclosure.csv");
