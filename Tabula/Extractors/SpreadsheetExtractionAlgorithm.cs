@@ -1,25 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UglyToad.PdfPig.Core;
 
 namespace Tabula.Extractors
 {
     //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/extractors/SpreadsheetExtractionAlgorithm.java
-    public class SpreadsheetExtractionAlgorithm : ExtractionAlgorithm
+    /// <summary>
+    /// lattice
+    /// </summary>
+    public class SpreadsheetExtractionAlgorithm : IExtractionAlgorithm
     {
+        /// <summary>
+        /// lattice
+        /// </summary>
+        public SpreadsheetExtractionAlgorithm()
+        {
+        }
+
         private static double MAGIC_HEURISTIC_NUMBER = 0.65;
 
-        public class POINT_COMPARATOR : IComparer<PdfPoint>
+        private class POINT_COMPARATOR : IComparer<PdfPoint>
         {
             public int Compare(PdfPoint arg0, PdfPoint arg1)
             {
                 int rv = 0;
-                double arg0X = Utils.round(arg0.X, 2);
-                double arg0Y = Utils.round(arg0.Y, 2);
-                double arg1X = Utils.round(arg1.X, 2);
-                double arg1Y = Utils.round(arg1.Y, 2);
+                double arg0X = Utils.Round(arg0.X, 2);
+                double arg0Y = Utils.Round(arg0.Y, 2);
+                double arg1X = Utils.Round(arg1.X, 2);
+                double arg1Y = Utils.Round(arg1.Y, 2);
 
                 if (arg0Y < arg1Y) //(arg0Y > arg1Y)
                 {
@@ -42,15 +51,15 @@ namespace Tabula.Extractors
             }
         }
 
-        public class X_FIRST_POINT_COMPARATOR : IComparer<PdfPoint>
+        private class X_FIRST_POINT_COMPARATOR : IComparer<PdfPoint>
         {
             public int Compare(PdfPoint arg0, PdfPoint arg1)
             {
                 int rv = 0;
-                double arg0X = Utils.round(arg0.X, 2);
-                double arg0Y = Utils.round(arg0.Y, 2);
-                double arg1X = Utils.round(arg1.X, 2);
-                double arg1Y = Utils.round(arg1.Y, 2);
+                double arg0X = Utils.Round(arg0.X, 2);
+                double arg0Y = Utils.Round(arg0.Y, 2);
+                double arg1X = Utils.Round(arg1.X, 2);
+                double arg1Y = Utils.Round(arg1.Y, 2);
 
                 if (arg0X > arg1X)
                 {
@@ -72,9 +81,9 @@ namespace Tabula.Extractors
             }
         }
 
-        public List<Table> extract(PageArea page)
+        public List<Table> Extract(PageArea page)
         {
-            return extract(page, page.getRulings());
+            return Extract(page, page.GetRulings());
         }
 
         /// <summary>
@@ -82,8 +91,7 @@ namespace Tabula.Extractors
         /// </summary>
         /// <param name="page"></param>
         /// <param name="rulings"></param>
-        /// <returns></returns>
-        public List<Table> extract(PageArea page, List<Ruling> rulings)
+        public List<Table> Extract(PageArea page, List<Ruling> rulings)
         {
             // split rulings into horizontal and vertical
             List<Ruling> horizontalR = new List<Ruling>();
@@ -91,21 +99,21 @@ namespace Tabula.Extractors
 
             foreach (Ruling r in rulings)
             {
-                if (r.horizontal())
+                if (r.Horizontal())
                 {
                     horizontalR.Add(r);
                 }
-                else if (r.vertical())
+                else if (r.Vertical())
                 {
                     verticalR.Add(r);
                 }
             }
 
-            horizontalR = Ruling.collapseOrientedRulings(horizontalR);
-            verticalR = Ruling.collapseOrientedRulings(verticalR);
+            horizontalR = Ruling.CollapseOrientedRulings(horizontalR);
+            verticalR = Ruling.CollapseOrientedRulings(verticalR);
 
-            List<Cell> cells = findCells(horizontalR, verticalR);
-            List<TableRectangle> spreadsheetAreas = findSpreadsheetsFromCells(cells.Cast<TableRectangle>().ToList());
+            List<Cell> cells = FindCells(horizontalR, verticalR);
+            List<TableRectangle> spreadsheetAreas = FindSpreadsheetsFromCells(cells.Cast<TableRectangle>().ToList());
 
             List<Table> spreadsheets = new List<Table>();
             foreach (TableRectangle area in spreadsheetAreas)
@@ -113,9 +121,14 @@ namespace Tabula.Extractors
                 List<Cell> overlappingCells = new List<Cell>();
                 foreach (Cell c in cells)
                 {
-                    if (c.intersects(area))
+                    if (c.Intersects(area))
                     {
-                        c.setTextElements(TextElement.mergeWords(page.getText(c.BoundingBox)));
+                        var text = page.GetText(c.BoundingBox);
+                        if (text.Count == 0)
+                        {
+                            Console.WriteLine("");
+                        }
+                        c.SetTextElements(TextElement.MergeWords(page.GetText(c.BoundingBox)));
                         overlappingCells.Add(c);
                     }
                 }
@@ -123,7 +136,7 @@ namespace Tabula.Extractors
                 List<Ruling> horizontalOverlappingRulings = new List<Ruling>();
                 foreach (Ruling hr in horizontalR)
                 {
-                    if (area.intersectsLine(hr))
+                    if (area.IntersectsLine(hr))
                     {
                         horizontalOverlappingRulings.Add(hr);
                     }
@@ -132,7 +145,7 @@ namespace Tabula.Extractors
                 List<Ruling> verticalOverlappingRulings = new List<Ruling>();
                 foreach (Ruling vr in verticalR)
                 {
-                    if (area.intersectsLine(vr))
+                    if (area.IntersectsLine(vr))
                     {
                         verticalOverlappingRulings.Add(vr);
                     }
@@ -142,67 +155,66 @@ namespace Tabula.Extractors
                 spreadsheets.Add(t);
             }
 
-            Utils.sort(spreadsheets, new TableRectangle.ILL_DEFINED_ORDER());
+            Utils.Sort(spreadsheets, new TableRectangle.ILL_DEFINED_ORDER());
             return spreadsheets;
         }
 
-        public bool isTabular(PageArea page)
+        public bool IsTabular(PageArea page)
         {
             // if there's no text at all on the page, it's not a table 
             // (we won't be able to do anything with it though)
-            if (page.getText().Count == 0)
+            if (page.GetText().Count == 0)
             {
                 return false;
             }
 
             // get minimal region of page that contains every character (in effect,
             // removes white "margins")
-            PageArea minimalRegion = page.getArea(Utils.bounds(page.getText().Select(t => t.BoundingBox).ToList()));
+            PageArea minimalRegion = page.GetArea(Utils.Bounds(page.GetText().Select(t => t.BoundingBox).ToList()));
 
-            List<Table> tables = new SpreadsheetExtractionAlgorithm().extract(minimalRegion);
+            List<Table> tables = new SpreadsheetExtractionAlgorithm().Extract(minimalRegion);
             if (tables.Count == 0)
             {
                 return false;
             }
             Table table = tables[0];
-            int rowsDefinedByLines = table.getRowCount();
-            int colsDefinedByLines = table.getColCount();
+            int rowsDefinedByLines = table.GetRowCount();
+            int colsDefinedByLines = table.GetColCount();
 
-            tables = new BasicExtractionAlgorithm().extract(minimalRegion);
+            tables = new BasicExtractionAlgorithm().Extract(minimalRegion);
             if (tables.Count == 0)
             {
                 // TODO WHAT DO WE DO HERE?
                 System.Diagnostics.Debug.Write("SpreadsheetExtractionAlgorithm.isTabular(): no table found.");
             }
             table = tables[0];
-            int rowsDefinedWithoutLines = table.getRowCount();
-            int colsDefinedWithoutLines = table.getColCount();
+            int rowsDefinedWithoutLines = table.GetRowCount();
+            int colsDefinedWithoutLines = table.GetColCount();
 
             float ratio = (((float)colsDefinedByLines / colsDefinedWithoutLines) + ((float)rowsDefinedByLines / rowsDefinedWithoutLines)) / 2.0f;
 
             return ratio > MAGIC_HEURISTIC_NUMBER && ratio < (1 / MAGIC_HEURISTIC_NUMBER);
         }
 
-        public static List<Cell> findCells(List<Ruling> horizontalRulingLines, List<Ruling> verticalRulingLines)
+        public static List<Cell> FindCells(List<Ruling> horizontalRulingLines, List<Ruling> verticalRulingLines)
         {
             List<Cell> cellsFound = new List<Cell>();
-            SortedDictionary<PdfPoint, Ruling[]> intersectionPoints = Ruling.findIntersections(horizontalRulingLines, verticalRulingLines);
+            SortedDictionary<PdfPoint, Ruling[]> intersectionPoints = Ruling.FindIntersections(horizontalRulingLines, verticalRulingLines);
             List<PdfPoint> intersectionPointsList = new List<PdfPoint>(intersectionPoints.Keys);
             intersectionPointsList.Sort(new POINT_COMPARATOR());
-            bool doBreak = false;
 
             for (int i = 0; i < intersectionPointsList.Count; i++)
             {
                 PdfPoint topLeft = intersectionPointsList[i];
                 Ruling[] hv = intersectionPoints[topLeft];
-                doBreak = false;
+                bool doBreak = false;
 
                 // CrossingPointsDirectlyBelow( topLeft );
                 List<PdfPoint> xPoints = new List<PdfPoint>();
                 // CrossingPointsDirectlyToTheRight( topLeft );
                 List<PdfPoint> yPoints = new List<PdfPoint>();
 
-                foreach (PdfPoint p in intersectionPointsList.subList(i, intersectionPointsList.Count))
+                foreach (PdfPoint p in intersectionPointsList.SubList(i, intersectionPointsList.Count))
                 {
                     if (p.X == topLeft.X && p.Y < topLeft.Y) //  p.Y > topLeft.Y
                     {
@@ -254,7 +266,7 @@ namespace Tabula.Extractors
             return cellsFound;
         }
 
-        public static List<TableRectangle> findSpreadsheetsFromCells(List<TableRectangle> cells)
+        public static List<TableRectangle> FindSpreadsheetsFromCells(List<TableRectangle> cells)
         {
             // via: http://stackoverflow.com/questions/13746284/merging-multiple-adjacent-rectangles-into-one-polygon
             List<TableRectangle> rectangles = new List<TableRectangle>();
@@ -265,11 +277,11 @@ namespace Tabula.Extractors
 
             cells = new List<TableRectangle>(new HashSet<TableRectangle>(cells));
 
-            Utils.sort(cells, new TableRectangle.ILL_DEFINED_ORDER());
+            Utils.Sort(cells, new TableRectangle.ILL_DEFINED_ORDER());
 
             foreach (TableRectangle cell in cells)
             {
-                foreach (PdfPoint pt in cell.getPoints())
+                foreach (PdfPoint pt in cell.GetPoints())
                 {
                     if (pointSet.Contains(pt))
                     {
@@ -293,7 +305,7 @@ namespace Tabula.Extractors
             while (i < pointSet.Count)
             {
                 float currY = (float)pointsSortY[i].Y;
-                while (i < pointSet.Count && Utils.feq(pointsSortY[i].Y, currY))
+                while (i < pointSet.Count && Utils.Feq(pointsSortY[i].Y, currY))
                 {
                     edgesH[pointsSortY[i]] = pointsSortY[i + 1];
                     edgesH[pointsSortY[i + 1]] = pointsSortY[i];
@@ -305,7 +317,7 @@ namespace Tabula.Extractors
             while (i < pointSet.Count)
             {
                 float currX = (float)pointsSortX[i].X;
-                while (i < pointSet.Count && Utils.feq(pointsSortX[i].X, currX))
+                while (i < pointSet.Count && Utils.Feq(pointsSortX[i].X, currX))
                 {
                     edgesV[pointsSortX[i]] = pointsSortX[i + 1];
                     edgesV[pointsSortX[i + 1]] = pointsSortX[i];
@@ -319,7 +331,7 @@ namespace Tabula.Extractors
             while (edgesH.Count != 0)
             {
                 List<PolygonVertex> polygon = new List<PolygonVertex>();
-                PdfPoint first = edgesH.Keys.First(); ////.keySet().iterator().next();
+                PdfPoint first = edgesH.Keys.First();
                 polygon.Add(new PolygonVertex(first, Direction.HORIZONTAL));
                 edgesH.Remove(first);
 
@@ -389,7 +401,7 @@ namespace Tabula.Extractors
             VERTICAL
         }
 
-        class PolygonVertex
+        private class PolygonVertex
         {
             public PdfPoint point;
             public Direction direction;
@@ -400,7 +412,7 @@ namespace Tabula.Extractors
                 this.point = point;
             }
 
-            public override bool Equals(Object other)
+            public override bool Equals(object other)
             {
                 if (other is PolygonVertex o)
                 {
@@ -424,13 +436,6 @@ namespace Tabula.Extractors
             {
                 return $"{this.GetType().Name}[point={this.point},direction={this.direction}]";
             }
-
-            /*
-            public String toString()
-            {
-                return $"{this.GetType().Name}[point={this.point},direction={this.direction}]";
-            }
-            */
         }
     }
 }

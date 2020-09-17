@@ -72,16 +72,16 @@ namespace Tabula
             this.spatial_index = index;
         }
 
-        public PageArea getArea(PdfRectangle area)
+        public PageArea GetArea(PdfRectangle area)
         {
-            List<TextElement> t = getText(area);
+            List<TextElement> t = GetText(area);
             double min_char_width = 7;
             double min_char_height = 7;
 
             if (t.Count > 0)
             {
-                min_char_width = t.Min(x => x.width);
-                min_char_height = t.Min(x => x.height);
+                min_char_width = t.Min(x => x.Width);
+                min_char_height = t.Min(x => x.Height);
             }
 
             PageArea rv = new PageArea(area,
@@ -90,78 +90,70 @@ namespace Tabula
                                        pdPage,
                                        pdDoc,
                                        t,
-                                       Ruling.cropRulingsToArea(getRulings(), area),
+                                       Ruling.CropRulingsToArea(GetRulings(), area),
                                        min_char_width,
                                        min_char_height,
                                        spatial_index);
 
-            rv.addRuling(new Ruling(
-                new PdfPoint(rv.getLeft(), rv.getTop()),
-                new PdfPoint(rv.getRight(), rv.getTop())));
+            rv.AddRuling(new Ruling(
+                new PdfPoint(rv.GetLeft(), rv.GetTop()),
+                new PdfPoint(rv.GetRight(), rv.GetTop())));
 
-            rv.addRuling(new Ruling(
-                new PdfPoint(rv.getRight(), rv.getBottom()),    // getTop
-                new PdfPoint(rv.getRight(), rv.getTop())));     // getBottom
+            rv.AddRuling(new Ruling(
+                new PdfPoint(rv.GetRight(), rv.GetBottom()),    // getTop
+                new PdfPoint(rv.GetRight(), rv.GetTop())));     // getBottom
 
-            rv.addRuling(new Ruling(
-                new PdfPoint(rv.getRight(), rv.getBottom()),
-                new PdfPoint(rv.getLeft(), rv.getBottom())));
+            rv.AddRuling(new Ruling(
+                new PdfPoint(rv.GetRight(), rv.GetBottom()),
+                new PdfPoint(rv.GetLeft(), rv.GetBottom())));
 
-            rv.addRuling(new Ruling(
-                new PdfPoint(rv.getLeft(), rv.getBottom()),
-                new PdfPoint(rv.getLeft(), rv.getTop())));
+            rv.AddRuling(new Ruling(
+                new PdfPoint(rv.GetLeft(), rv.GetBottom()),
+                new PdfPoint(rv.GetLeft(), rv.GetTop())));
 
             return rv;
         }
 
-        public PageArea getArea(double top, double left, double bottom, double right)
+        public PageArea GetArea(double top, double left, double bottom, double right)
         {
             //TableRectangle area = new TableRectangle(top, left, right - left, bottom - top);
             PdfRectangle area = new PdfRectangle(left, bottom, right, top);
             var normzed = area.Normalise();
-            return this.getArea(area);
+            return this.GetArea(area);
         }
 
-        public List<TextElement> getText()
+        public List<TextElement> GetText()
         {
             return texts;
         }
 
-        public List<TextElement> getText(PdfRectangle area)
+        public List<TextElement> GetText(PdfRectangle area)
         {
-            return this.spatial_index.contains(area);
+            return this.spatial_index.Contains(area);
         }
 
-        /*
-        [Obsolete("use {@linkplain #getText(Rectangle)} instead")]
-        public List<TextElement> getText(float top, float left, float bottom, float right)
-        {
-            return this.getText(new TableRectangle(top, left, right - left, bottom - top));
-        }
-        */
-
-        public int getRotation()
+        public int GetRotation()
         {
             return rotation;
         }
 
-        public int getPageNumber()
+        public int GetPageNumber()
         {
             return pageNumber;
         }
 
         [Obsolete("use getText() instead.")]
-        public List<TextElement> getTexts()
+        public List<TextElement> GetTexts()
         {
             return texts;
         }
 
-        public TableRectangle getTextBounds()
+        public TableRectangle GetTextBounds()
         {
-            List<TextElement> texts = this.getText();
+            List<TextElement> texts = this.GetText();
             if (texts.Count > 0)
             {
-                return Utils.bounds(texts);
+                return Utils.Bounds(texts);
             }
             else
             {
@@ -169,7 +161,7 @@ namespace Tabula
             }
         }
 
-        public List<Ruling> getRulings()
+        public List<Ruling> GetRulings()
         {
             if (this.cleanRulings != null)
             {
@@ -183,27 +175,27 @@ namespace Tabula
                 return new List<Ruling>();
             }
 
-            Utils.snapPoints(this.rulings, this.minCharWidth, this.minCharHeight);
+            Utils.SnapPoints(this.rulings, this.minCharWidth, this.minCharHeight);
 
             List<Ruling> vrs = new List<Ruling>();
             foreach (Ruling vr in this.rulings)
             {
-                if (vr.vertical())
+                if (vr.Vertical())
                 {
                     vrs.Add(vr);
                 }
             }
-            this.verticalRulingLines = Ruling.collapseOrientedRulings(vrs);
+            this.verticalRulingLines = Ruling.CollapseOrientedRulings(vrs);
 
             List<Ruling> hrs = new List<Ruling>();
             foreach (Ruling hr in this.rulings)
             {
-                if (hr.horizontal())
+                if (hr.Horizontal())
                 {
                     hrs.Add(hr);
                 }
             }
-            this.horizontalRulingLines = Ruling.collapseOrientedRulings(hrs);
+            this.horizontalRulingLines = Ruling.CollapseOrientedRulings(hrs);
 
             this.cleanRulings = new List<Ruling>(this.verticalRulingLines);
             this.cleanRulings.AddRange(this.horizontalRulingLines);
@@ -211,29 +203,29 @@ namespace Tabula
             return this.cleanRulings;
         }
 
-        public List<Ruling> getVerticalRulings()
+        public List<Ruling> GetVerticalRulings()
         {
             if (this.verticalRulingLines != null)
             {
                 return this.verticalRulingLines;
             }
-            this.getRulings();
+            this.GetRulings();
             return this.verticalRulingLines;
         }
 
-        public List<Ruling> getHorizontalRulings()
+        public List<Ruling> GetHorizontalRulings()
         {
             if (this.horizontalRulingLines != null)
             {
                 return this.horizontalRulingLines;
             }
-            this.getRulings();
+            this.GetRulings();
             return this.horizontalRulingLines;
         }
 
-        public void addRuling(Ruling r)
+        public void AddRuling(Ruling r)
         {
-            if (r.oblique())
+            if (r.Oblique())
             {
                 throw new InvalidOperationException("Can't add an oblique ruling");
             }
@@ -244,41 +236,41 @@ namespace Tabula
             this.cleanRulings = null;
         }
 
-        public List<Ruling> getUnprocessedRulings()
+        public List<Ruling> GetUnprocessedRulings()
         {
             return this.rulings;
         }
 
         [Obsolete("no replacement")]
-        public double getMinCharWidth()
+        public double GetMinCharWidth()
         {
             return minCharWidth;
         }
 
         [Obsolete("no replacement")]
-        public double getMinCharHeight()
+        public double GetMinCharHeight()
         {
             return minCharHeight;
         }
 
-        public Page getPDPage()
+        public Page GetPDPage()
         {
             return pdPage;
         }
 
-        public PdfDocument getPDDoc()
+        public PdfDocument GetPDDoc()
         {
             return pdDoc;
         }
 
         [Obsolete("no replacement")]
-        public RectangleSpatialIndex<TextElement> getSpatialIndex()
+        public RectangleSpatialIndex<TextElement> GetSpatialIndex()
         {
             return this.spatial_index;
         }
 
         [Obsolete("no replacement")]
-        public bool hasText()
+        public bool HasText()
         {
             return this.texts.Count > 0;
         }

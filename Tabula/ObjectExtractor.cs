@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
@@ -9,8 +8,14 @@ using static UglyToad.PdfPig.Core.PdfSubpath;
 
 namespace Tabula
 {
+    /**
+     * ** tabula/ObjectExtractor.java **
+     * ** tabula/ObjectExtractorStreamEngine.java **
+     */
     public class ObjectExtractor
     {
+        private const int rounding = 6;
+
         private PdfDocument pdfDocument;
 
         public ObjectExtractor(PdfDocument pdfDocument)
@@ -22,14 +27,14 @@ namespace Tabula
         {
             public int Compare(PdfPoint o1, PdfPoint o2)
             {
-                double o1X = Utils.round(o1.X, 2);
-                double o1Y = Utils.round(o1.Y, 2);
-                double o2X = Utils.round(o2.X, 2);
-                double o2Y = Utils.round(o2.Y, 2);
+                double o1X = Utils.Round(o1.X, 2);
+                double o1Y = Utils.Round(o1.Y, 2);
+                double o2X = Utils.Round(o2.X, 2);
+                double o2Y = Utils.Round(o2.Y, 2);
 
-                if (o1Y > o2Y)
+                if (o1Y > o2Y) // bobld: do not inverse - makes tests fais 
                     return 1;
-                if (o1Y < o2Y)
+                if (o1Y < o2Y) // bobld: do not inverse - makes tests fais 
                     return -1;
                 if (o1X > o2X)
                     return 1;
@@ -41,12 +46,10 @@ namespace Tabula
 
         private PdfPoint RoundPdfPoint(PdfPoint pdfPoint, int decimalPlace)
         {
-            return new PdfPoint(Utils.round(pdfPoint.X, decimalPlace), Utils.round(pdfPoint.Y, decimalPlace));
+            return new PdfPoint(Utils.Round(pdfPoint.X, decimalPlace), Utils.Round(pdfPoint.Y, decimalPlace));
         }
 
-        const int rounding = 6;
-
-        public PageArea extractPage(int pageNumber)// throws IOException
+        public PageArea ExtractPage(int pageNumber)
         {
             if (pageNumber > this.pdfDocument.NumberOfPages || pageNumber < 1)
             {
@@ -80,7 +83,7 @@ namespace Tabula
 
                     // TODO: how to implement color filter?
 
-                    PdfPoint? start_pos = RoundPdfPoint(first.Location, rounding); //new PdfPoint(Utils.round(first.Location.X, 2), Utils.round(first.Location.Y, 2));
+                    PdfPoint? start_pos = RoundPdfPoint(first.Location, rounding);
                     PdfPoint? last_move = start_pos;
                     PdfPoint? end_pos = null;
                     PdfLine line;
@@ -100,7 +103,7 @@ namespace Tabula
 
                             // already clipped
                             Ruling r = new Ruling(line.Point1, line.Point2);
-                            if (r.length() > 0.01)
+                            if (r.Length() > 0.01)
                             {
                                 rulings.Add(r);
                             }
@@ -126,7 +129,7 @@ namespace Tabula
 
                             // already clipped
                             Ruling r = new Ruling(line.Point1, line.Point2); //.intersect(this.currentClippingPath());
-                            if (r.length() > 0.01)
+                            if (r.Length() > 0.01)
                             {
                                 rulings.Add(r);
                             }
@@ -138,8 +141,8 @@ namespace Tabula
             /****************************************************************************/
 
             TextStripper pdfTextStripper = new TextStripper(this.pdfDocument, pageNumber);
-            pdfTextStripper.process();
-            Utils.sort(pdfTextStripper.textElements, new TableRectangle.ILL_DEFINED_ORDER());
+            pdfTextStripper.Process();
+            Utils.Sort(pdfTextStripper.textElements, new TableRectangle.ILL_DEFINED_ORDER());
 
             /*
              double w, h;
@@ -168,24 +171,24 @@ namespace Tabula
                 pdfTextStripper.spatialIndex);
         }
 
-        public PageIterator extract(IEnumerable<int> pages)
+        public PageIterator Extract(IEnumerable<int> pages)
         {
             return new PageIterator(this, pages);
         }
 
-        public PageIterator extract()
+        public PageIterator Extract()
         {
-            return extract(Utils.range(1, this.pdfDocument.NumberOfPages + 1));
+            return Extract(Utils.Range(1, this.pdfDocument.NumberOfPages + 1));
         }
 
-        public PageArea extract(int pageNumber)
+        public PageArea Extract(int pageNumber)
         {
-            return extract(Utils.range(pageNumber, pageNumber + 1)).next();
+            return Extract(Utils.Range(pageNumber, pageNumber + 1)).Next();
         }
 
-        public void close()
+        public void Close()
         {
-            this.pdfDocument.Dispose(); // .close();
+            this.pdfDocument.Dispose();
         }
     }
 }

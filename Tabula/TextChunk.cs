@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
     // https://github.com/tabulapdf/tabula-java/blob/ebc83ac2bb1a1cbe54ab8081d70f3c9fe81886ea/src/main/java/technology/tabula/TextChunk.java#L11
-    public class TextChunk : RectangularTextContainer<TextElement>, HasText
+    public class TextChunk : RectangularTextContainer<TextElement>, IHasText
     {
-        public Word word;
-
         public static TextChunk EMPTY => new TextChunk();
 
         public List<TextElement> textElements = new List<TextElement>();
@@ -27,14 +24,14 @@ namespace Tabula
 
         public TextChunk(TextElement textElement) : base(textElement.BoundingBox)
         {
-            this.add(textElement);
+            this.Add(textElement);
         }
 
         public TextChunk(List<TextElement> textElements) : this(textElements[0])
         {
             for (int i = 1; i < textElements.Count; i++)
             {
-                this.add(textElements[i]);
+                this.Add(textElements[i]);
             }
         }
 
@@ -86,9 +83,9 @@ namespace Tabula
         /// </summary>
         /// <param name="isLtrDominant"></param>
         /// <returns></returns>
-        public TextChunk groupByDirectionality(bool isLtrDominant)
+        public TextChunk GroupByDirectionality(bool isLtrDominant)
         {
-            if (this.getTextElements().Count == 0)
+            if (this.GetTextElements().Count == 0)
             {
                 throw new ArgumentException();
             }
@@ -97,29 +94,28 @@ namespace Tabula
             List<TextElement> buff = new List<TextElement>();
             DirectionalityOptions buffDirectionality = DirectionalityOptions.NONE; // the directionality of the characters in buff;
 
-            foreach (TextElement te in this.getTextElements())
+            foreach (TextElement te in this.GetTextElements())
             {
                 //TODO: we need to loop over the textelement characters
                 //      because it is possible for a textelement to contain multiple characters?
-
 
                 // System.out.println(te.getText() + " is " + Character.getDirectionality(te.getText().charAt(0) ) + " " + directionalities.get(Character.getDirectionality(te.getText().charAt(0) )));
                 if (buff.Count == 0)
                 {
                     buff.Add(te);
-                    buffDirectionality = directionalities[te.getText()[0].getDirectionality()];
+                    buffDirectionality = directionalities[te.GetText()[0].GetDirectionality()];
                 }
                 else
                 {
                     if (buffDirectionality == DirectionalityOptions.NONE)
                     {
-                        buffDirectionality = directionalities[te.getText()[0].getDirectionality()];
+                        buffDirectionality = directionalities[te.GetText()[0].GetDirectionality()];
                     }
-                    DirectionalityOptions teDirectionality = directionalities[te.getText()[0].getDirectionality()];
+                    DirectionalityOptions teDirectionality = directionalities[te.GetText()[0].GetDirectionality()];
 
                     if (teDirectionality == buffDirectionality || teDirectionality == DirectionalityOptions.NONE)
                     {
-                        if (te.getText()[0].getDirectionality() == "WS" && (buffDirectionality == (isLtrDominant ? DirectionalityOptions.RTL : DirectionalityOptions.LTR)))
+                        if (te.GetText()[0].GetDirectionality() == "WS" && (buffDirectionality == (isLtrDominant ? DirectionalityOptions.RTL : DirectionalityOptions.LTR)))
                         {
                             buff.Insert(0, te);
                         }
@@ -138,12 +134,12 @@ namespace Tabula
                         chunks.Add(buff);
 
                         // and start a new one
-                        buffDirectionality = directionalities[te.getText()[0].getDirectionality()];
-                        buff = new List<TextElement>();
-                        buff.Add(te);
+                        buffDirectionality = directionalities[te.GetText()[0].GetDirectionality()];
+                        buff = new List<TextElement> { te };
                     }
                 }
             }
+
             if (buffDirectionality == DirectionalityOptions.RTL)
             {
                 buff.Reverse();
@@ -155,6 +151,7 @@ namespace Tabula
             {
                 chunks.Reverse();
             }
+
             foreach (List<TextElement> group in chunks)
             {
                 everything.AddRange(group);
@@ -165,16 +162,16 @@ namespace Tabula
         /// <summary>
         /// 1 is LtR, 0 is neutral, -1 is RtL.
         /// </summary>
-        public override int isLtrDominant()
+        public override int IsLtrDominant()
         {
             int ltrCnt = 0;
             int rtlCnt = 0;
-            for (int i = 0; i < this.getTextElements().Count; i++)
+            for (int i = 0; i < this.GetTextElements().Count; i++)
             {
-                string elementText = this.getTextElements()[i].getText();
+                string elementText = this.GetTextElements()[i].GetText();
                 for (int j = 0; j < elementText.Length; j++)
                 {
-                    var dir = elementText[j].getDirectionality();
+                    var dir = elementText[j].GetDirectionality();
                     if ((dir == "L") || (dir == "LRE") || (dir == "LRO"))
                     {
                         ltrCnt++;
@@ -188,32 +185,32 @@ namespace Tabula
             return ltrCnt.CompareTo(rtlCnt);
         }
 
-        public TextChunk merge(TextChunk other)
+        public TextChunk Merge(TextChunk other)
         {
-            base.merge(other); // super.merge(other);
+            base.Merge(other); // super.merge(other);
             return this;
         }
 
-        public void add(TextElement textElement)
+        public void Add(TextElement textElement)
         {
             this.textElements.Add(textElement);
-            this.merge(textElement);
+            this.Merge(textElement);
         }
 
-        public void add(List<TextElement> elements)
+        public void Add(List<TextElement> elements)
         {
             foreach (TextElement te in elements)
             {
-                this.add(te);
+                this.Add(te);
             }
         }
 
-        public override List<TextElement> getTextElements()
+        public override List<TextElement> GetTextElements()
         {
             return textElements;
         }
 
-        public override string getText()
+        public override string GetText()
         {
             if (this.textElements.Count == 0)
             {
@@ -223,13 +220,13 @@ namespace Tabula
             StringBuilder sb = new StringBuilder();
             foreach (TextElement te in this.textElements)
             {
-                sb.Append(te.getText());
+                sb.Append(te.GetText());
             }
 
             return sb.ToString().Normalize(NormalizationForm.FormKC).Trim();
         }
 
-        public override string getText(bool useLineReturns)
+        public override string GetText(bool useLineReturns)
         {
             // TODO Auto-generated method stub
             return null;
@@ -240,14 +237,14 @@ namespace Tabula
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public bool isSameChar(char c)
+        public bool IsSameChar(char c)
         {
-            return isSameChar(new char[] { c });
+            return IsSameChar(new char[] { c });
         }
 
-        public bool isSameChar(char[] c)
+        public bool IsSameChar(char[] c)
         {
-            string s = this.getText();
+            string s = this.GetText();
             List<char> chars = c.ToList();
             for (int i = 0; i < s.Length; i++)
             {
@@ -263,20 +260,20 @@ namespace Tabula
         /// Splits a TextChunk in two, at the position of the i-th TextElement
         /// </summary>
         /// <param name="i"></param>
-        public TextChunk[] splitAt(int i)
+        public TextChunk[] SplitAt(int i)
         {
-            if (i < 1 || i >= this.getTextElements().Count)
+            if (i < 1 || i >= this.GetTextElements().Count)
             {
                 throw new ArgumentException();
             }
 
             TextChunk[] rv = new TextChunk[]
             {
-                new TextChunk(this.getTextElements().subList(0, i)),
-                new TextChunk(this.getTextElements().subList(i, this.getTextElements().Count))
+                new TextChunk(this.GetTextElements().SubList(0, i)),
+                new TextChunk(this.GetTextElements().SubList(i, this.GetTextElements().Count))
             };
 
-            System.Diagnostics.Debug.Assert(this.getTextElements().Count == (rv[0].getTextElements().Count + rv[1].getTextElements().Count));
+            System.Diagnostics.Debug.Assert(this.GetTextElements().Count == (rv[0].GetTextElements().Count + rv[1].GetTextElements().Count));
 
             return rv;
         }
@@ -290,17 +287,17 @@ namespace Tabula
         /// </summary>
         /// <param name="c"></param>
         /// <param name="minRunLength"></param>
-        public List<TextChunk> squeeze(char c, int minRunLength)
+        public List<TextChunk> Squeeze(char c, int minRunLength)
         {
             char? currentChar, lastChar = null;
             int subSequenceLength = 0, subSequenceStart = 0;
             TextChunk[] t;
             List<TextChunk> rv = new List<TextChunk>();
 
-            for (int i = 0; i < this.getTextElements().Count; i++)
+            for (int i = 0; i < this.GetTextElements().Count; i++)
             {
-                TextElement textElement = this.getTextElements()[i];
-                string text = textElement.getText();
+                TextElement textElement = this.GetTextElements()[i];
+                string text = textElement.GetText();
                 if (text.Length > 1)
                 {
                     currentChar = text.Trim()[0];
@@ -316,21 +313,19 @@ namespace Tabula
                 }
                 else
                 {
-                    if (((lastChar != null && !lastChar.Equals(currentChar)) || i + 1 == this.getTextElements().Count) && subSequenceLength >= minRunLength)
+                    if (((lastChar != null && !lastChar.Equals(currentChar)) || i + 1 == this.GetTextElements().Count) && subSequenceLength >= minRunLength)
                     {
-
-                        if (subSequenceStart == 0 && subSequenceLength <= this.getTextElements().Count - 1)
+                        if (subSequenceStart == 0 && subSequenceLength <= this.GetTextElements().Count - 1)
                         {
-                            t = this.splitAt(subSequenceLength);
+                            t = this.SplitAt(subSequenceLength);
                         }
                         else
                         {
-                            t = this.splitAt(subSequenceStart);
+                            t = this.SplitAt(subSequenceStart);
                             rv.Add(t[0]);
                         }
-                        rv.AddRange(t[1].squeeze(c, minRunLength)); // Lo and behold, recursion.
+                        rv.AddRange(t[1].Squeeze(c, minRunLength)); // Lo and behold, recursion.
                         break;
-
                     }
                     subSequenceLength = 1;
                     subSequenceStart = i;
@@ -343,7 +338,7 @@ namespace Tabula
                 // no splits occurred, hence this.squeeze() == [this]
                 if (subSequenceLength >= minRunLength && subSequenceLength < this.textElements.Count)
                 {
-                    TextChunk[] chunks = this.splitAt(subSequenceStart);
+                    TextChunk[] chunks = this.SplitAt(subSequenceStart);
                     rv.Add(chunks[0]);
                 }
                 else
@@ -359,8 +354,7 @@ namespace Tabula
         {
             const int prime = 31;
             int result = base.GetHashCode();
-            result = prime * result + ((textElements?.GetHashCode()) ?? 0);
-            return result;
+            return prime * result + ((textElements?.GetHashCode()) ?? 0);
         }
 
         public override bool Equals(object obj)
@@ -399,7 +393,7 @@ namespace Tabula
             */
         }
 
-        public static bool allSameChar(List<TextChunk> textChunks)
+        public static bool AllSameChar(List<TextChunk> textChunks)
         {
             /* the previous, far more elegant version of this method failed when there was an empty TextChunk in textChunks.
              * so I rewrote it in an ugly way. but it works!
@@ -413,27 +407,27 @@ namespace Tabula
             char first = '\u0000';
             foreach (TextChunk tc in textChunks)
             {
-                if (tc.getText().Length == 0)
+                if (tc.GetText().Length == 0)
                 {
                     continue;
                 }
 
                 if (first == '\u0000')
                 {
-                    first = tc.getText()[0];
+                    first = tc.GetText()[0];
                 }
                 else
                 {
                     hasHadAtLeastOneNonEmptyTextChunk = true;
-                    if (!tc.isSameChar(first)) return false;
+                    if (!tc.IsSameChar(first)) return false;
                 }
             }
             return hasHadAtLeastOneNonEmptyTextChunk;
         }
 
-        public static List<TableLine> groupByLines(List<TextChunk> textChunks)
+        public static List<TableLine> GroupByLines(List<TextChunk> textChunks)
         {
-            Utils.sort(textChunks); // added by bld: force re-sorting
+            Utils.Sort(textChunks); // added by bld: force re-sorting
 
             List<TableLine> lines = new List<TableLine>();
 
@@ -442,29 +436,29 @@ namespace Tabula
                 return lines;
             }
 
-            double bbwidth = TableRectangle.boundingBoxOf(textChunks).width;
+            double bbwidth = TableRectangle.BoundingBoxOf(textChunks).Width;
 
             TableLine l = new TableLine();
-            l.addTextChunk(textChunks[0]);
+            l.AddTextChunk(textChunks[0]);
             textChunks.RemoveAt(0);
             lines.Add(l);
 
             TableLine last = lines[lines.Count - 1];
             foreach (TextChunk te in textChunks)
             {
-                if (last.verticalOverlapRatio(te) < 0.1)
+                if (last.VerticalOverlapRatio(te) < 0.1)
                 {
-                    if (last.width / bbwidth > 0.9 && TextChunk.allSameChar(last.getTextElements()))
+                    if (last.Width / bbwidth > 0.9 && TextChunk.AllSameChar(last.GetTextElements()))
                     {
                         lines.RemoveAt(lines.Count - 1);
                     }
                     lines.Add(new TableLine());
                     last = lines[lines.Count - 1];
                 }
-                last.addTextChunk(te);
+                last.AddTextChunk(te);
             }
 
-            if (last.width / bbwidth > 0.9 && TextChunk.allSameChar(last.getTextElements()))
+            if (last.Width / bbwidth > 0.9 && TextChunk.AllSameChar(last.GetTextElements()))
             {
                 lines.RemoveAt(lines.Count - 1);
             }
@@ -473,7 +467,7 @@ namespace Tabula
 
             foreach (TableLine line in lines)
             {
-                rv.Add(TableLine.removeRepeatedCharacters(line, ' ', 3));
+                rv.Add(TableLine.RemoveRepeatedCharacters(line, ' ', 3));
             }
 
             return rv;

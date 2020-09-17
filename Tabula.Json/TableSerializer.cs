@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Tabula.Json
 {
@@ -17,16 +16,16 @@ namespace Tabula.Json
 
             JObject result = new JObject
             {
-                { "extraction_method", src.getExtractionMethod() },
-                { "top", src.getTop() },
-                { "left", src.getLeft() },
-                { "width", src.getWidth() },
-                { "height", src.getHeight() },
-                { "right", src.getRight() },
-                { "bottom", src.getBottom() }
+                { "extraction_method", src.GetExtractionMethod() },
+                { "top", src.GetTop() },
+                { "left", src.GetLeft() },
+                { "width", src.GetWidth() },
+                { "height", src.GetHeight() },
+                { "right", src.GetRight() },
+                { "bottom", src.GetBottom() }
             };
 
-            var data = JArray.FromObject(src.getRows(), serializer);
+            var data = JArray.FromObject(src.GetRows(), serializer);
             //JArray data = new JArray();
             //result.Add("data", data = new JArray());
             /*

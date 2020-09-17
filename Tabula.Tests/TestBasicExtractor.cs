@@ -16,7 +16,7 @@ namespace Tabula.Tests
         private static readonly string[][] EU_002_EXPECTED = new[]
         {
             new[] {"",                                              "",                "Involvement of pupils in", ""},
-            new[] {"",                                              "Preperation and", "Production of",            "Presentation an"},
+            new[] {"",                                              "Preperation and", "Production of",            "Presentation and"}, // 'Presentation an' -> 'Presentation and' thanks to RectangleSpatialIndex.Expand()
             new[] {"",                                              "planing",         "materials",                "evaluation"},
             new[] {"Knowledge and awareness of different cultures", "0,2885",          "0,3974",                   "0,3904"},
             new[] {"Foreign language competence",                   "0,3057",          "0,4184",                   "0,3899"},
@@ -124,25 +124,25 @@ namespace Tabula.Tests
         private static readonly string[][] EXPECTED_EMPTY_TABLE = { /* actually empty! */ };
 
         [Fact]
-        public void testRemoveSequentialSpaces()
+        public void TestRemoveSequentialSpaces()
         {
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/m27.pdf", new PdfRectangle(28.28, 532 - (103.04 - 79.2), 732.6, 532)); // 79.2f, 28.28f, 103.04f, 732.6f);
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/m27.pdf", new PdfRectangle(28.28, 532 - (103.04 - 79.2), 732.6, 532)); // 79.2f, 28.28f, 103.04f, 732.6f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-            Table table = bea.extract(page)[0];
-            var firstRow = table.getRows()[0];
+            Table table = bea.Extract(page)[0];
+            var firstRow = table.GetRows()[0];
 
-            Assert.Equal("ALLEGIANT AIR", firstRow[1].getText());
-            Assert.Equal("ALLEGIANT AIR LLC", firstRow[2].getText());
+            Assert.Equal("ALLEGIANT AIR", firstRow[1].GetText());
+            Assert.Equal("ALLEGIANT AIR LLC", firstRow[2].GetText());
         }
 
         [Fact]
-        public void testColumnRecognition()
+        public void TestColumnRecognition()
         {
-            PageArea page = UtilsForTesting.getAreaFromFirstPage(ARGENTINA_DIPUTADOS_VOTING_RECORD_PDF, new PdfRectangle(12.75, 55, 557, 567)); // 269.875f, 12.75f, 790.5f, 561f);
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage(ARGENTINA_DIPUTADOS_VOTING_RECORD_PDF, new PdfRectangle(12.75, 55, 557, 567)); // 269.875f, 12.75f, 790.5f, 561f);
 
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-            Table table = bea.extract(page)[0];
-            var results = UtilsForTesting.tableToArrayOfRows(table);
+            Table table = bea.Extract(page)[0];
+            var results = UtilsForTesting.TableToArrayOfRows(table);
 
             Assert.Equal(ARGENTINA_DIPUTADOS_VOTING_RECORD_EXPECTED.Length, results.Length);
 
@@ -161,7 +161,7 @@ namespace Tabula.Tests
         }
 
         [Fact]
-        public void testVerticalRulingsPreventMergingOfColumns()
+        public void TestVerticalRulingsPreventMergingOfColumns()
         {
             List<Ruling> rulings = new List<Ruling>();
             double[] rulingsVerticalPositions = { 147, 256, 310, 375, 431, 504 };
@@ -170,25 +170,25 @@ namespace Tabula.Tests
                 rulings.Add(new Ruling(new PdfPoint(rulingsVerticalPositions[i], 40.43), new PdfPoint(rulingsVerticalPositions[i], 755)));
             }
 
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/campaign_donors.pdf", new PdfRectangle(40.43, 755 - (398.76 - 255.57), 557.35, 755)); //255.57f, 40.43f, 398.76f, 557.35f);
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/campaign_donors.pdf", new PdfRectangle(40.43, 755 - (398.76 - 255.57), 557.35, 755)); //255.57f, 40.43f, 398.76f, 557.35f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(rulings);
-            Table table = bea.extract(page)[0];
-            var sixthRow = table.getRows()[5];
+            Table table = bea.Extract(page)[0];
+            var sixthRow = table.GetRows()[5];
 
-            Assert.Equal("VALSANGIACOMO BLANC", sixthRow[0].getText());
-            Assert.Equal("OFERNANDO JORGE", sixthRow[1].getText());
+            Assert.Equal("VALSANGIACOMO BLANC", sixthRow[0].GetText());
+            Assert.Equal("OFERNANDO JORGE", sixthRow[1].GetText());
         }
 
         [Fact]
-        public void testExtractColumnsCorrectly()
+        public void TestExtractColumnsCorrectly()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                PageArea page = UtilsForTesting.getAreaFromPage(EU_002_PDF, 1, new PdfRectangle(70.0, 725 - (233 - 115), 510.0, 725)); // 115.0f, 70.0f, 233.0f, 510.0f);
+                PageArea page = UtilsForTesting.GetAreaFromPage(EU_002_PDF, 1, new PdfRectangle(70.0, 725 - (233 - 115), 510.0, 725)); // 115.0f, 70.0f, 233.0f, 510.0f);
                 BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-                Table table = bea.extract(page)[0];
+                Table table = bea.Extract(page)[0];
 
-                var actualArray = UtilsForTesting.tableToArrayOfRows(table);
+                var actualArray = UtilsForTesting.TableToArrayOfRows(table);
                 Assert.Equal(EU_002_EXPECTED.Length, actualArray.Length);
 
                 for (int i = 0; i < EU_002_EXPECTED.Length; i++)
@@ -213,15 +213,15 @@ namespace Tabula.Tests
         }
 
         [Fact]
-        public void testExtractColumnsCorrectly2()
+        public void TestExtractColumnsCorrectly2()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                PageArea page = UtilsForTesting.getPage(EU_017_PDF, 3);
-                BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.getVerticalRulings());
-                Table table = bea.extract(page.getArea(new PdfRectangle(148.44, 543 - (711.875 - 299.625), 452.32, 543)))[0]; //299.625f, 148.44f, 711.875f, 452.32f))[0];
+                PageArea page = UtilsForTesting.GetPage(EU_017_PDF, 3);
+                BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.GetVerticalRulings());
+                Table table = bea.Extract(page.GetArea(new PdfRectangle(148.44, 543 - (711.875 - 299.625), 452.32, 543)))[0]; //299.625f, 148.44f, 711.875f, 452.32f))[0];
 
-                var result = UtilsForTesting.tableToArrayOfRows(table);
+                var result = UtilsForTesting.TableToArrayOfRows(table);
 
                 Assert.Equal(EU_017_EXPECTED.Length, result.Length);
                 for (int i = 0; i < EU_017_EXPECTED.Length; i++)
@@ -246,12 +246,12 @@ namespace Tabula.Tests
         }
 
         [Fact]
-        public void testExtractColumnsCorrectly3()
+        public void TestExtractColumnsCorrectly3()
         {
-            PageArea page = UtilsForTesting.getAreaFromFirstPage(FRX_2012_DISCLOSURE_PDF, new PdfRectangle(48.09, 563, 551.89, 685.5)); // 106.01f, 48.09f, 227.31f, 551.89f);
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage(FRX_2012_DISCLOSURE_PDF, new PdfRectangle(48.09, 563, 551.89, 685.5)); // 106.01f, 48.09f, 227.31f, 551.89f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-            Table table = bea.extract(page)[0];
-            var result = UtilsForTesting.tableToArrayOfRows(table);
+            Table table = bea.Extract(page)[0];
+            var result = UtilsForTesting.TableToArrayOfRows(table);
 
             Assert.Equal(FRX_2012_DISCLOSURE_EXPECTED.Length, result.Length);
             for (int i = 0; i < FRX_2012_DISCLOSURE_EXPECTED.Length; i++)
@@ -269,99 +269,99 @@ namespace Tabula.Tests
         }
 
         [Fact]
-        public void testCheckSqueezeDoesntBreak()
+        public void TestCheckSqueezeDoesntBreak()
         {
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/12s0324.pdf", new PdfRectangle(17.25, 342, 410.25, 560.5)); // 99.0f, 17.25f, 316.5f, 410.25f);
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/12s0324.pdf", new PdfRectangle(17.25, 342, 410.25, 560.5)); // 99.0f, 17.25f, 316.5f, 410.25f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-            Table table = bea.extract(page)[0];
-            var rows = table.getRows();
+            Table table = bea.Extract(page)[0];
+            var rows = table.GetRows();
             var firstRow = rows[0];
-            var firstRowFirstCell = firstRow[0].getText();
+            var firstRowFirstCell = firstRow[0].GetText();
             var lastRow = rows[rows.Count - 1];
-            var lastRowLastCell = lastRow[lastRow.Count - 1].getText();
+            var lastRowLastCell = lastRow[lastRow.Count - 1].GetText();
 
             Assert.Equal("Violent crime  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .", firstRowFirstCell);
             Assert.Equal("(X)", lastRowLastCell);
         }
 
         [Fact()]
-        public void testNaturalOrderOfRectangles()
+        public void TestNaturalOrderOfRectangles()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/us-017.pdf", 2).getArea(new PdfRectangle(90, 97, 532, 352)); //446.0f, 97.0f, 685.0f, 520.0f);
-            BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.getVerticalRulings());
-            Table table = bea.extract(page)[0];
+            PageArea page = UtilsForTesting.GetPage("Resources/us-017.pdf", 2).GetArea(new PdfRectangle(90, 97, 532, 352)); //446.0f, 97.0f, 685.0f, 520.0f);
+            BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.GetVerticalRulings());
+            Table table = bea.Extract(page)[0];
 
-            List<RectangularTextContainer> cells = new List<RectangularTextContainer>(table.cells.Values);
-            foreach (RectangularTextContainer rectangularTextContainer in cells)
+            List<Cell> cells = table.Cells; //new List<RectangularTextContainer>(table.cells.Values);
+            foreach (var rectangularTextContainer in cells)
             {
-                Debug.Print(rectangularTextContainer.getText());
+                Debug.Print(rectangularTextContainer.GetText());
             }
 
             //Column headers
-            Assert.Equal("Project", cells[0].getText());
-            Assert.Equal("Agency", cells[1].getText());
-            Assert.Equal("Institution", cells[2].getText());
+            Assert.Equal("Project", cells[0].GetText());
+            Assert.Equal("Agency", cells[1].GetText());
+            Assert.Equal("Institution", cells[2].GetText());
 
             //First row
-            Assert.Equal("Nanotechnology and its publics", cells[3].getText());
-            Assert.Equal("NSF", cells[4].getText());
-            Assert.Equal("Pennsylvania State University", cells[5].getText());
+            Assert.Equal("Nanotechnology and its publics", cells[3].GetText());
+            Assert.Equal("NSF", cells[4].GetText());
+            Assert.Equal("Pennsylvania State University", cells[5].GetText());
 
             //Second row
-            Assert.Equal("Public information and deliberation in nanoscience and", cells[6].getText());
-            Assert.Equal("North Carolina State", cells[7].getText());
-            Assert.Equal("Interagency", cells[8].getText());
-            Assert.Equal("nanotechnology policy (SGER)", cells[9].getText());
-            Assert.Equal("University", cells[10].getText());
+            Assert.Equal("Public information and deliberation in nanoscience and", cells[6].GetText());
+            Assert.Equal("North Carolina State", cells[7].GetText());
+            Assert.Equal("Interagency", cells[8].GetText());
+            Assert.Equal("nanotechnology policy (SGER)", cells[9].GetText());
+            Assert.Equal("University", cells[10].GetText());
 
             //Third row
-            Assert.Equal("Social and ethical research and education in agrifood", cells[11].getText());
-            Assert.Equal("NSF", cells[12].getText());
-            Assert.Equal("Michigan State University", cells[13].getText());
-            Assert.Equal("nanotechnology (NIRT)", cells[14].getText());
+            Assert.Equal("Social and ethical research and education in agrifood", cells[11].GetText());
+            Assert.Equal("NSF", cells[12].GetText());
+            Assert.Equal("Michigan State University", cells[13].GetText());
+            Assert.Equal("nanotechnology (NIRT)", cells[14].GetText());
 
             //Fourth row
-            Assert.Equal("From laboratory to society: developing an informed", cells[15].getText());
-            Assert.Equal("NSF", cells[16].getText());
-            Assert.Equal("University of South Carolina", cells[17].getText());
-            Assert.Equal("approach to nanoscale science and engineering (NIRT)", cells[18].getText());
+            Assert.Equal("From laboratory to society: developing an informed", cells[15].GetText());
+            Assert.Equal("NSF", cells[16].GetText());
+            Assert.Equal("University of South Carolina", cells[17].GetText());
+            Assert.Equal("approach to nanoscale science and engineering (NIRT)", cells[18].GetText());
 
             //Fifth row
-            Assert.Equal("Database and innovation timeline for nanotechnology", cells[19].getText());
-            Assert.Equal("NSF", cells[20].getText());
-            Assert.Equal("UCLA", cells[21].getText());
+            Assert.Equal("Database and innovation timeline for nanotechnology", cells[19].GetText());
+            Assert.Equal("NSF", cells[20].GetText());
+            Assert.Equal("UCLA", cells[21].GetText());
 
             //Sixth row
-            Assert.Equal("Social and ethical dimensions of nanotechnology", cells[22].getText());
-            Assert.Equal("NSF", cells[23].getText());
-            Assert.Equal("University of Virginia", cells[24].getText());
+            Assert.Equal("Social and ethical dimensions of nanotechnology", cells[22].GetText());
+            Assert.Equal("NSF", cells[23].GetText());
+            Assert.Equal("University of Virginia", cells[24].GetText());
 
             //Seventh row
-            Assert.Equal("Undergraduate exploration of nanoscience,", cells[25].getText());
-            Assert.Equal("Michigan Technological", cells[26].getText());
-            Assert.Equal("NSF", cells[27].getText());
-            Assert.Equal("applications and societal implications (NUE)", cells[28].getText());
-            Assert.Equal("University", cells[29].getText());
+            Assert.Equal("Undergraduate exploration of nanoscience,", cells[25].GetText());
+            Assert.Equal("Michigan Technological", cells[26].GetText());
+            Assert.Equal("NSF", cells[27].GetText());
+            Assert.Equal("applications and societal implications (NUE)", cells[28].GetText());
+            Assert.Equal("University", cells[29].GetText());
 
             //Eighth row
-            Assert.Equal("Ethics and belief inside the development of", cells[30].getText());
-            Assert.Equal("NSF", cells[31].getText());
-            Assert.Equal("University of Virginia", cells[32].getText());
-            Assert.Equal("nanotechnology (CAREER)", cells[33].getText());
+            Assert.Equal("Ethics and belief inside the development of", cells[30].GetText());
+            Assert.Equal("NSF", cells[31].GetText());
+            Assert.Equal("University of Virginia", cells[32].GetText());
+            Assert.Equal("nanotechnology (CAREER)", cells[33].GetText());
 
             //Ninth row
-            Assert.Equal("All centers, NNIN and NCN have a societal", cells[34].getText());
-            Assert.Equal("NSF, DOE,", cells[35].getText());
-            Assert.Equal("All nanotechnology centers", cells[36].getText());
-            Assert.Equal("implications components", cells[37].getText());
-            Assert.Equal("DOD, and NIH", cells[38].getText());
-            Assert.Equal("and networks", cells[39].getText());
+            Assert.Equal("All centers, NNIN and NCN have a societal", cells[34].GetText());
+            Assert.Equal("NSF, DOE,", cells[35].GetText());
+            Assert.Equal("All nanotechnology centers", cells[36].GetText());
+            Assert.Equal("implications components", cells[37].GetText());
+            Assert.Equal("DOD, and NIH", cells[38].GetText());
+            Assert.Equal("and networks", cells[39].GetText());
         }
 
         [Fact]
-        public void testNaturalOrderOfRectanglesOneMoreTime()
+        public void TestNaturalOrderOfRectanglesOneMoreTime()
         {
-            var parse = UtilsForTesting.loadCsvLines("Resources/csv/TestBasicExtractor-RECTANGLE_TEST_NATURAL_ORDER.csv");
+            var parse = UtilsForTesting.LoadCsvLines("Resources/csv/TestBasicExtractor-RECTANGLE_TEST_NATURAL_ORDER.csv");
             List<TableRectangle> rectangles = new List<TableRectangle>();
 
             foreach (var record in parse)
@@ -374,7 +374,7 @@ namespace Tabula.Tests
                 rectangles.Add(new TableRectangle(new PdfRectangle(left, top, left + w, top + h)));
             }
 
-            Utils.sort(rectangles, new TableRectangle.ILL_DEFINED_ORDER());
+            Utils.Sort(rectangles, new TableRectangle.ILL_DEFINED_ORDER());
 
             for (int i = 0; i < rectangles.Count - 1; i++)
             {
@@ -385,17 +385,17 @@ namespace Tabula.Tests
         }
 
         [Fact]
-        public void testRealLifeRTL2()
+        public void TestRealLifeRTL2()
         {
-            string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/indictb1h_14.csv");
-            PageArea page = UtilsForTesting.getAreaFromPage("Resources/indictb1h_14.pdf", 1, new PdfRectangle(120.0, 842 - 622.82, 459.9, 842 - 120.0)); // 205.0f, 120.0f, 622.82f, 459.9f);
+            string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/indictb1h_14.csv");
+            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/indictb1h_14.pdf", 1, new PdfRectangle(120.0, 842 - 622.82, 459.9, 842 - 120.0)); // 205.0f, 120.0f, 622.82f, 459.9f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-            Table table = bea.extract(page)[0];
+            Table table = bea.Extract(page)[0];
 
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
             {
-                (new CSVWriter()).write(sb, table);
+                (new CSVWriter()).Write(sb, table);
 
                 var reader = new StreamReader(stream);
                 stream.Position = 0;
@@ -406,26 +406,26 @@ namespace Tabula.Tests
         }
 
         [Fact]
-        public void testEmptyRegion()
+        public void TestEmptyRegion()
         {
-            PageArea page = UtilsForTesting.getAreaFromPage("Resources/indictb1h_14.pdf", 1, new PdfRectangle(0, 700, 100.9, 800));  //0, 0, 80.82f, 100.9f); // an empty area
+            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/indictb1h_14.pdf", 1, new PdfRectangle(0, 700, 100.9, 800));  //0, 0, 80.82f, 100.9f); // an empty area
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-            Table table = bea.extract(page)[0];
-            Assert.Equal(EXPECTED_EMPTY_TABLE, UtilsForTesting.tableToArrayOfRows(table));
+            Table table = bea.Extract(page)[0];
+            Assert.Equal(EXPECTED_EMPTY_TABLE, UtilsForTesting.TableToArrayOfRows(table));
         }
 
         [Fact]
-        public void testTableWithMultilineHeader()
+        public void TestTableWithMultilineHeader()
         {
-            String expectedCsv = UtilsForTesting.loadCsv("Resources/csv/us-020.csv");
-            PageArea page = UtilsForTesting.getAreaFromPage("Resources/us-020.pdf", 2, new PdfRectangle(35.0, 151, 560, 688.5)); //103.0f, 35.0f, 641.0f, 560.0f);
+            string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/us-020.csv");
+            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/us-020.pdf", 2, new PdfRectangle(35.0, 151, 560, 688.5)); //103.0f, 35.0f, 641.0f, 560.0f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-            Table table = bea.extract(page)[0];
+            Table table = bea.Extract(page)[0];
 
             using (var stream = new MemoryStream())
             using (var sb = new StreamWriter(stream) { AutoFlush = true })
             {
-                (new CSVWriter()).write(sb, table);
+                (new CSVWriter()).Write(sb, table);
 
                 var reader = new StreamReader(stream);
                 stream.Position = 0;

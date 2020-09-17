@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Tabula
 {
@@ -22,7 +21,7 @@ namespace Tabula
             {
                 try
                 {
-                    return oe.extractPage(pageIndexIterator.Current);
+                    return oe.ExtractPage(pageIndexIterator.Current);
                 }
                 catch (Exception ex)
                 {
@@ -33,7 +32,7 @@ namespace Tabula
 
         object IEnumerator.Current => Current;
 
-        public PageArea next()
+        public PageArea Next()
         {
             if (MoveNext())
             {
@@ -47,7 +46,7 @@ namespace Tabula
 
         public void Dispose()
         {
-            this.oe.close();
+            this.oe.Close();
             this.pageIndexIterator.Dispose();
         }
 

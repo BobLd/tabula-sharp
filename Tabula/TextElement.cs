@@ -8,9 +8,9 @@ using UglyToad.PdfPig.PdfFonts;
 
 namespace Tabula
 {
-    public class TextElement : TableRectangle, HasText
+    public class TextElement : TableRectangle, IHasText
     {
-        internal Letter letter;
+        internal Letter letter; // do we really use it
 
         private string text;
         private FontDetails font; // PDFont
@@ -50,27 +50,27 @@ namespace Tabula
             throw new ArgumentOutOfRangeException();
         }
 
-        public string getText()
+        public string GetText()
         {
             return text;
         }
 
-        public double getDirection()
+        public double GetDirection()
         {
             return dir;
         }
 
-        public double getWidthOfSpace()
+        public double GetWidthOfSpace()
         {
             return widthOfSpace;
         }
 
-        public FontDetails getFont()
+        public FontDetails GetFont()
         {
             return font;
         }
 
-        public double getFontSize()
+        public double GetFontSize()
         {
             return fontSize;
         }
@@ -80,7 +80,7 @@ namespace Tabula
             StringBuilder sb = new StringBuilder();
             string s = base.ToString();
             sb.Append(s.Substring(0, s.Length - 1));
-            sb.Append($",text={this.getText()}]");
+            sb.Append($",text={this.GetText()}]");
             return sb.ToString();
         }
 
@@ -133,9 +133,9 @@ namespace Tabula
             return BitConverter.ToInt32(BitConverter.GetBytes(widthOfSpace), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.widthOfSpace), 0);  //return java.lang.Float.floatToIntBits(widthOfSpace) == java.lang.Float.floatToIntBits(other.widthOfSpace);
         }
 
-        public static List<TextChunk> mergeWords(List<TextElement> textElements)
+        public static List<TextChunk> MergeWords(List<TextElement> textElements)
         {
-            return mergeWords(textElements, new List<Ruling>());
+            return MergeWords(textElements, new List<Ruling>());
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Tabula
         /// <param name="textElements"></param>
         /// <param name="verticalRulings"></param>
         /// <returns></returns>
-        public static List<TextChunk> mergeWords(List<TextElement> textElements, List<Ruling> verticalRulings)
+        public static List<TextChunk> MergeWords(List<TextElement> textElements, List<Ruling> verticalRulings)
         {
             List<TextChunk> textChunks = new List<TextChunk>();
 
@@ -173,11 +173,11 @@ namespace Tabula
 
             TextChunk firstTC = textChunks[0];
 
-            double previousAveCharWidth = firstTC.width;
-            double endOfLastTextX = firstTC.getRight();
-            double maxYForLine = firstTC.getTop(); //.getBottom();
-            double maxHeightForLine = firstTC.height;
-            double minYTopForLine = firstTC.getBottom();//.getTop();
+            double previousAveCharWidth = firstTC.Width;
+            double endOfLastTextX = firstTC.GetRight();
+            double maxYForLine = firstTC.GetTop(); //.getBottom();
+            double maxHeightForLine = firstTC.Height;
+            double minYTopForLine = firstTC.GetBottom();//.getTop();
             double lastWordSpacing = -1;
             double wordSpacing, deltaSpace, averageCharWidth, deltaCharWidth;
             double expectedStartOfNextWordX, dist;
@@ -185,26 +185,26 @@ namespace Tabula
             TextChunk currentChunk;
             bool sameLine, acrossVerticalRuling;
 
-            foreach (TextElement chr in textElements.Skip(0)) //copyOfTextElements)
+            foreach (TextElement chr in textElements.Skip(1)) //copyOfTextElements)
             {
                 currentChunk = textChunks[textChunks.Count - 1];
                 prevChar = currentChunk.textElements[currentChunk.textElements.Count - 1];
 
                 // if same char AND overlapped, skip
-                if (chr.getText().Equals(prevChar.getText()) && (prevChar.overlapRatio(chr) > 0.5))
+                if (chr.GetText().Equals(prevChar.GetText()) && (prevChar.OverlapRatio(chr) > 0.5))
                 {
                     continue;
                 }
 
                 // if chr is a space that overlaps with prevChar, skip
-                if (chr.getText().Equals(" ") && Utils.feq(prevChar.getLeft(), chr.getLeft()) && Utils.feq(prevChar.getBottom(), chr.getBottom())) // getTop() getTop()
+                if (chr.GetText().Equals(" ") && Utils.Feq(prevChar.GetLeft(), chr.GetLeft()) && Utils.Feq(prevChar.GetBottom(), chr.GetBottom())) // getTop() getTop()
                 {
                     continue;
                 }
 
                 // Resets the average character width when we see a change in font
                 // or a change in the font size
-                if ((chr.getFont() != prevChar.getFont()) || !Utils.feq(chr.getFontSize(), prevChar.getFontSize()))
+                if ((chr.GetFont() != prevChar.GetFont()) || !Utils.Feq(chr.GetFontSize(), prevChar.GetFontSize()))
                 {
                     previousAveCharWidth = -1;
                 }
@@ -213,8 +213,8 @@ namespace Tabula
                 acrossVerticalRuling = false;
                 foreach (Ruling r in verticalRulings)
                 {
-                    if (verticallyOverlapsRuling(prevChar, r) && verticallyOverlapsRuling(chr, r) && prevChar.x < r.getPosition() && chr.x > r.getPosition() ||
-                        (prevChar.x > r.getPosition() && chr.x < r.getPosition()))
+                    if (VerticallyOverlapsRuling(prevChar, r) && VerticallyOverlapsRuling(chr, r) && prevChar.X < r.GetPosition() && chr.X > r.GetPosition() ||
+                        (prevChar.X > r.GetPosition() && chr.X < r.GetPosition()))
                     {
                         acrossVerticalRuling = true;
                         break;
@@ -223,7 +223,7 @@ namespace Tabula
 
                 // Estimate the expected width of the space based on the
                 // space character with some margin.
-                wordSpacing = chr.getWidthOfSpace();
+                wordSpacing = chr.GetWidthOfSpace();
                 deltaSpace = 0;
                 if (double.IsNaN(wordSpacing) || wordSpacing == 0)
                 {
@@ -245,11 +245,11 @@ namespace Tabula
                 // .3 worked well.
                 if (previousAveCharWidth < 0)
                 {
-                    averageCharWidth = chr.width / chr.getText().Length;
+                    averageCharWidth = chr.Width / chr.GetText().Length;
                 }
                 else
                 {
-                    averageCharWidth = (previousAveCharWidth + (chr.width / chr.getText().Length)) / 2.0f;
+                    averageCharWidth = (previousAveCharWidth + (chr.Width / chr.GetText().Length)) / 2.0f;
                 }
                 deltaCharWidth = averageCharWidth * AVERAGE_CHAR_TOLERANCE;
 
@@ -264,7 +264,7 @@ namespace Tabula
 
                 // new line?
                 sameLine = true;
-                if (!Utils.overlap(chr.getTop(), chr.height, maxYForLine, maxHeightForLine)) // getBottom()
+                if (!Utils.Overlap(chr.GetTop(), chr.Height, maxYForLine, maxHeightForLine)) // getBottom()
                 {
                     endOfLastTextX = -1;
                     expectedStartOfNextWordX = -double.MaxValue;
@@ -274,30 +274,30 @@ namespace Tabula
                     sameLine = false;
                 }
 
-                endOfLastTextX = chr.getRight();
+                endOfLastTextX = chr.GetRight();
 
                 // should we add a space?
-                if (!acrossVerticalRuling && sameLine && expectedStartOfNextWordX < chr.getLeft() && !prevChar.getText().EndsWith(" "))
+                if (!acrossVerticalRuling && sameLine && expectedStartOfNextWordX < chr.GetLeft() && !prevChar.GetText().EndsWith(" "))
                 {
                     sp = new TextElement(
                         new PdfRectangle(prevChar.BoundingBox.BottomLeft, new PdfPoint(expectedStartOfNextWordX, prevChar.BoundingBox.TopRight.Y)),
-                            prevChar.getFont(),
-                            prevChar.getFontSize(),
+                            prevChar.GetFont(),
+                            prevChar.GetFontSize(),
                             " ",
-                            prevChar.getWidthOfSpace(), 0);
+                            prevChar.GetWidthOfSpace(), 0);
 
-                    currentChunk.add(sp);
+                    currentChunk.Add(sp);
                 }
                 else
                 {
                     sp = null;
                 }
 
-                maxYForLine = Math.Max(chr.getTop(), maxYForLine); // getBottom()
-                maxHeightForLine = Math.Max(maxHeightForLine, chr.height);
-                minYTopForLine = Math.Min(minYTopForLine, chr.getBottom()); // .getTop()
+                maxYForLine = Math.Max(chr.GetTop(), maxYForLine); // getBottom()
+                maxHeightForLine = Math.Max(maxHeightForLine, chr.Height);
+                minYTopForLine = Math.Min(minYTopForLine, chr.GetBottom()); // .getTop()
 
-                dist = chr.getLeft() - (sp != null ? sp.getRight() : prevChar.getRight());
+                dist = chr.GetLeft() - (sp != null ? sp.GetRight() : prevChar.GetRight());
 
                 // added by BobLd
                 // handle cases where order of character is not good, implement quicksort???
@@ -307,9 +307,9 @@ namespace Tabula
                 }
                 // end added
 
-                if (!acrossVerticalRuling && sameLine && (dist < 0 ? currentChunk.verticallyOverlaps(chr) : dist < wordSpacing))
+                if (!acrossVerticalRuling && sameLine && (dist < 0 ? currentChunk.VerticallyOverlaps(chr) : dist < wordSpacing))
                 {
-                    currentChunk.add(chr);
+                    currentChunk.Add(chr);
                 }
                 else
                 {
@@ -318,7 +318,7 @@ namespace Tabula
                 }
 
                 lastWordSpacing = wordSpacing;
-                previousAveCharWidth = sp != null ? (averageCharWidth + sp.width) / 2.0f : averageCharWidth;
+                previousAveCharWidth = sp != null ? (averageCharWidth + sp.Width) / 2.0f : averageCharWidth;
             }
 
             List<TextChunk> textChunksSeparatedByDirectionality = new List<TextChunk>();
@@ -326,17 +326,17 @@ namespace Tabula
             foreach (TextChunk chunk in textChunks)
             {
                 // choose the dominant direction
-                bool isLtrDominant = chunk.isLtrDominant() != -1; // treat neutral as LTR
-                TextChunk dirChunk = chunk.groupByDirectionality(isLtrDominant);
+                bool isLtrDominant = chunk.IsLtrDominant() != -1; // treat neutral as LTR
+                TextChunk dirChunk = chunk.GroupByDirectionality(isLtrDominant);
                 textChunksSeparatedByDirectionality.Add(dirChunk);
             }
 
             return textChunksSeparatedByDirectionality;
         }
 
-        private static bool verticallyOverlapsRuling(TextElement te, Ruling r)
+        private static bool VerticallyOverlapsRuling(TextElement te, Ruling r)
         {
-            return Math.Max(0, Math.Min(te.getTop(), r.getY2()) - Math.Max(te.getBottom(), r.getY1())) > 0; // .getBottom() .getTop()
+            return Math.Max(0, Math.Min(te.GetTop(), r.GetY2()) - Math.Max(te.GetBottom(), r.GetY1())) > 0; // .getBottom() .getTop()
         }
     }
 }

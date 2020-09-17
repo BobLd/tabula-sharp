@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Tabula
 {
     public static class UnicodeExtensions
     {
-        public static string getDirectionality(this char c)
+        public static string GetDirectionality(this char c)
         {
             var val = char.ConvertToUtf32(c.ToString(), 0);
-            return getDirectionality(val);
+            return GetDirectionality(val);
         }
 
-        public static string getDirectionality(int val)
+        public static string GetDirectionality(int val)
         {
             if (val < 0)
             {

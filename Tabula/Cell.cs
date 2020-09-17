@@ -5,48 +5,48 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
-    // https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Cell.java
+    /**
+    * ** tabula/Cell.java **
+    */
     public class Cell : RectangularTextContainer<TextChunk>
     {
         public static Cell EMPTY => new Cell(new PdfRectangle());
-
-        public Cell(TextChunk chunk) : this(chunk.BoundingBox)
-        {
-            setTextElements(new List<TextChunk>() { chunk });
-        }
-
-        public Cell(PdfRectangle pdfRectangle) : base(pdfRectangle)
-        {
-            this.setPlaceholder(false);
-            this.setSpanning(false);
-            this.setTextElements(new List<TextChunk>());
-        }
-
-        [Obsolete("")]
-        public Cell(double top, double left, double width, double height) : base(top, left, width, height)
-        {
-            this.setPlaceholder(false);
-            this.setSpanning(false);
-            this.setTextElements(new List<TextChunk>());
-            throw new ArgumentOutOfRangeException();
-        }
-
-        public Cell(PdfPoint topLeft, PdfPoint bottomRight)
-            : this (new PdfRectangle(topLeft.X, bottomRight.Y, bottomRight.X, topLeft.Y))
-            //: base(topLeft.Y, topLeft.X, (bottomRight.X - topLeft.X), (bottomRight.Y - topLeft.Y))
-        {
-            //super((float)topLeft.getY(), (float)topLeft.getX(), (float)(bottomRight.getX() - topLeft.getX()), (float)(bottomRight.getY() - topLeft.getY()));
-            this.setPlaceholder(false);
-            this.setSpanning(false);
-            this.setTextElements(new List<TextChunk>());
-            //throw new ArgumentOutOfRangeException();
-        }
 
         private bool spanning;
         private bool placeholder;
         private List<TextChunk> textElements;
 
-        public override string getText(bool useLineReturns)
+        public Cell(TextChunk chunk) : this(chunk.BoundingBox)
+        {
+            SetTextElements(new List<TextChunk>() { chunk });
+        }
+
+        public Cell(PdfRectangle pdfRectangle) : base(pdfRectangle)
+        {
+            this.SetPlaceholder(false);
+            this.SetSpanning(false);
+            this.SetTextElements(new List<TextChunk>());
+        }
+
+        [Obsolete("Use Cell(PdfPoint, PdfPoint) or Cell(PdfRectangle) instead.")]
+        public Cell(double top, double left, double width, double height) : base(top, left, width, height)
+        {
+            this.SetPlaceholder(false);
+            this.SetSpanning(false);
+            this.SetTextElements(new List<TextChunk>());
+            throw new ArgumentOutOfRangeException();
+        }
+
+        public Cell(PdfPoint topLeft, PdfPoint bottomRight)
+            : this (new PdfRectangle(topLeft.X, bottomRight.Y, bottomRight.X, topLeft.Y))
+        {
+            this.SetPlaceholder(false);
+            this.SetSpanning(false);
+            this.SetTextElements(new List<TextChunk>());
+            //throw new ArgumentOutOfRangeException();
+        }
+
+        public override string GetText(bool useLineReturns)
         {
             if (this.textElements.Count == 0)
             {
@@ -54,53 +54,58 @@ namespace Tabula
             }
 
             StringBuilder sb = new StringBuilder();
-            Utils.sort(this.textElements, new ILL_DEFINED_ORDER());
-            double curTop = this.textElements[0].getBottom();
+            Utils.Sort(this.textElements, new ILL_DEFINED_ORDER());
+            double curTop = this.textElements[0].GetBottom();
             foreach (TextChunk tc in this.textElements)
             {
-                if (useLineReturns && tc.getBottom() < curTop) //.getTop() < curTop)
+                if (useLineReturns && tc.GetBottom() < curTop) //.getTop() < curTop)
                 {
                     sb.Append('\r');
                 }
-                sb.Append(tc.getText());
-                curTop = tc.getBottom();
+                sb.Append(tc.GetText());
+                curTop = tc.GetBottom();
             }
             return sb.ToString().Trim();
         }
 
-        public override string getText()
+        public override string GetText()
         {
-            return getText(true);
+            return GetText(true);
         }
 
-        public bool isSpanning()
+        public bool IsSpanning()
         {
             return spanning;
         }
 
-        public void setSpanning(bool spanning)
+        public void SetSpanning(bool spanning)
         {
             this.spanning = spanning;
         }
 
-        public bool isPlaceholder()
+        public bool IsPlaceholder()
         {
             return placeholder;
         }
 
-        public void setPlaceholder(bool placeholder)
+        public void SetPlaceholder(bool placeholder)
         {
             this.placeholder = placeholder;
         }
 
-        public override List<TextChunk> getTextElements()
+        public override List<TextChunk> GetTextElements()
         {
             return textElements;
         }
 
-        public void setTextElements(List<TextChunk> textElements)
+        public void SetTextElements(List<TextChunk> textElements)
         {
             this.textElements = textElements;
+        }
+
+        public override string ToString()
+        {
+            return GetText();
         }
     }
 }

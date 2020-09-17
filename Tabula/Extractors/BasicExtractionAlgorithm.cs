@@ -1,71 +1,63 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Tabula.Extractors
 {
-    public class BasicExtractionAlgorithm : ExtractionAlgorithm
+    /// <summary>
+    /// stream
+    /// </summary>
+    public class BasicExtractionAlgorithm : IExtractionAlgorithm
     {
         private List<Ruling> verticalRulings = null;
 
+        /// <summary>
+        /// stream
+        /// </summary>
         public BasicExtractionAlgorithm()
         {
         }
 
+        /// <summary>
+        /// stream
+        /// </summary>
         public BasicExtractionAlgorithm(List<Ruling> verticalRulings)
         {
             this.verticalRulings = verticalRulings;
         }
 
-        public List<Table> extract(PageArea page, List<float> verticalRulingPositions)
+        public List<Table> Extract(PageArea page, List<float> verticalRulingPositions)
         {
             List<Ruling> verticalRulings = new List<Ruling>(verticalRulingPositions.Count);
             foreach (float p in verticalRulingPositions)
             {
-                verticalRulings.Add(new Ruling(page.getHeight(), p, 0.0f, page.getHeight())); // wrong here???
+                verticalRulings.Add(new Ruling(page.GetHeight(), p, 0.0f, page.GetHeight())); // wrong here???
             }
             this.verticalRulings = verticalRulings;
-            return this.extract(page);
+            return this.Extract(page);
         }
 
-        private class VerticalRulingComparer : IComparer<Ruling>
+        public List<Table> Extract(PageArea page)
         {
-            public int Compare(Ruling arg0, Ruling arg1)
-            {
-                return arg0.getLeft().CompareTo(arg1.getLeft());
-            }
-        }
-
-        private class TextChunkComparer : IComparer<TextChunk>
-        {
-            public int Compare(TextChunk o1, TextChunk o2)
-            {
-                return o1.getLeft().CompareTo(o2.getLeft());
-            }
-        }
-
-        public List<Table> extract(PageArea page)
-        {
-            List<TextElement> textElements = page.getText();
+            List<TextElement> textElements = page.GetText();
 
             if (textElements.Count == 0)
             {
-                return new Table[] { Table.empty() }.ToList();
+                return new Table[] { Table.Empty() }.ToList();
             }
 
-            List<TextChunk> textChunks = this.verticalRulings == null ? TextElement.mergeWords(page.getText()) : TextElement.mergeWords(page.getText(), this.verticalRulings);
-            List<TableLine> lines = TextChunk.groupByLines(textChunks);
+            List<TextChunk> textChunks = this.verticalRulings == null ? TextElement.MergeWords(page.GetText()) : TextElement.MergeWords(page.GetText(), this.verticalRulings);
+            List<TableLine> lines = TextChunk.GroupByLines(textChunks);
 
             List<double> columns;
             if (this.verticalRulings != null)
             {
                 // added by bobld: clipping verticalRulings because testExtractColumnsCorrectly2() fails
-                var clippedVerticalRulings = Ruling.cropRulingsToArea(this.verticalRulings, page.BoundingBox);
+                var clippedVerticalRulings = Ruling.CropRulingsToArea(this.verticalRulings, page.BoundingBox);
                 clippedVerticalRulings.Sort(new VerticalRulingComparer());
                 columns = new List<double>(clippedVerticalRulings.Count);
                 foreach (Ruling vr in clippedVerticalRulings)
                 {
-                    columns.Add(vr.getLeft());
+                    columns.Add(vr.GetLeft());
                 }
 
                 /*
@@ -79,23 +71,26 @@ namespace Tabula.Extractors
             }
             else
             {
-                columns = columnPositions(lines);
+                columns = ColumnPositions(lines);
             }
-            columns = columns.Distinct().ToList(); // added by bobld: remove duplicates because testExtractColumnsCorrectly2() fails, why do we need it here and not in the java version
+
+            // added by bobld: remove duplicates because testExtractColumnsCorrectly2() fails, 
+            // why do we need it here and not in the java version??
+            columns = columns.Distinct().ToList();
 
             Table table = new Table(this);
-            table.setRect(page.BoundingBox);
+            table.SetRect(page.BoundingBox);
 
             for (int i = 0; i < lines.Count; i++)
             {
                 TableLine line = lines[i];
-                List<TextChunk> elements = line.getTextElements();
+                List<TextChunk> elements = line.GetTextElements();
 
                 elements.Sort(new TextChunkComparer());
 
                 foreach (TextChunk tc in elements)
                 {
-                    if (tc.isSameChar(TableLine.WHITE_SPACE_CHARS))
+                    if (tc.IsSameChar(TableLine.WHITE_SPACE_CHARS))
                     {
                         continue;
                     }
@@ -104,14 +99,14 @@ namespace Tabula.Extractors
                     bool found = false;
                     for (; j < columns.Count; j++)
                     {
-                        if (tc.getLeft() <= columns[j])
+                        if (tc.GetLeft() <= columns[j])
                         {
                             found = true;
                             break;
                         }
                     }
 
-                    table.add(new Cell(tc), i, found ? j : columns.Count);
+                    table.Add(new Cell(tc), i, found ? j : columns.Count);
                 }
             }
 
@@ -123,26 +118,31 @@ namespace Tabula.Extractors
             return "stream";
         }
 
-        public static List<double> columnPositions(List<TableLine> lines)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lines">Must be an array of lines sorted by their +top+ attribute.</param>
+        /// <returns>a list of column boundaries (x axis).</returns>
+        public static List<double> ColumnPositions(List<TableLine> lines)
         {
             List<TableRectangle> regions = new List<TableRectangle>();
-            foreach (TextChunk tc in lines[0].getTextElements())
+            foreach (TextChunk tc in lines[0].GetTextElements())
             {
-                if (tc.isSameChar(TableLine.WHITE_SPACE_CHARS))
+                if (tc.IsSameChar(TableLine.WHITE_SPACE_CHARS))
                 {
                     continue;
                 }
                 TableRectangle r = new TableRectangle();
-                r.setRect(tc);
+                r.SetRect(tc);
                 regions.Add(r);
             }
 
-            foreach (TableLine l in lines.subList(1, lines.Count))
+            foreach (TableLine l in lines.SubList(1, lines.Count))
             {
                 List<TextChunk> lineTextElements = new List<TextChunk>();
-                foreach (TextChunk tc in l.getTextElements())
+                foreach (TextChunk tc in l.GetTextElements())
                 {
-                    if (!tc.isSameChar(TableLine.WHITE_SPACE_CHARS))
+                    if (!tc.IsSameChar(TableLine.WHITE_SPACE_CHARS))
                     {
                         lineTextElements.Add(tc);
                     }
@@ -153,7 +153,7 @@ namespace Tabula.Extractors
                     List<TextChunk> overlaps = new List<TextChunk>();
                     foreach (TextChunk te in lineTextElements)
                     {
-                        if (cr.horizontallyOverlaps(te))
+                        if (cr.HorizontallyOverlaps(te))
                         {
                             overlaps.Add(te);
                         }
@@ -161,10 +161,9 @@ namespace Tabula.Extractors
 
                     foreach (TextChunk te in overlaps)
                     {
-                        cr.merge(te);
+                        cr.Merge(te);
                     }
 
-                    //lineTextElements.removeAll(overlaps);
                     foreach (var rem in overlaps)
                     {
                         lineTextElements.Remove(rem);
@@ -188,20 +187,20 @@ namespace Tabula.Extractors
                     // need to check here if the remaining te in lineTextElements do overlap among themselves
                     // might happen with multiline cell
                     TableRectangle r = new TableRectangle();
-                    r.setRect(lineTextElements[0]);
-                    foreach (var rem in lineTextElements.subList(1, lineTextElements.Count))
+                    r.SetRect(lineTextElements[0]);
+                    foreach (var rem in lineTextElements.SubList(1, lineTextElements.Count))
                     {
-                        if (r.horizontallyOverlaps(rem))
+                        if (r.HorizontallyOverlaps(rem))
                         {
                             // they overlap!
                             // so this is multiline cell
-                            r.merge(rem);
+                            r.Merge(rem);
                         }
                         else
                         {
                             regions.Add(r); // do not overlap (anymore), so add it 
                             r = new TableRectangle();
-                            r.setRect(rem);
+                            r.SetRect(rem);
                             //regions.Add(r);
                         }
                     }
@@ -213,12 +212,30 @@ namespace Tabula.Extractors
             List<double> rv = new List<double>();
             foreach (TableRectangle r in regions)
             {
-                rv.Add(r.getRight());
+                rv.Add(r.GetRight());
             }
 
             rv.Sort(); //Collections.sort(rv);
 
             return rv;
         }
+
+        #region Comparers
+        private class VerticalRulingComparer : IComparer<Ruling>
+        {
+            public int Compare(Ruling arg0, Ruling arg1)
+            {
+                return arg0.GetLeft().CompareTo(arg1.GetLeft());
+            }
+        }
+
+        private class TextChunkComparer : IComparer<TextChunk>
+        {
+            public int Compare(TextChunk o1, TextChunk o2)
+            {
+                return o1.GetLeft().CompareTo(o2.GetLeft());
+            }
+        }
+        #endregion
     }
 }

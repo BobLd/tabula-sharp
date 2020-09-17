@@ -128,7 +128,7 @@ namespace Tabula.Tests
             new Ruling(new PdfPoint(51.796964,  792 - 309.0), new PdfPoint(560.20312,       792 - 309.0)),
             new Ruling(new PdfPoint(51.796982,  792 - 333.0), new PdfPoint(560.20312,       792 - 333.0)),
             new Ruling(new PdfPoint(51.797,     792 - 366.0), new PdfPoint(560.20312,       792 - 366.0)),
-            
+
             // vertical lines
             new Ruling(new PdfPoint(52.0,       792 - 366.0), new PdfPoint(51.797,      792 - 181.0)),
             new Ruling(new PdfPoint(208.62891,  792 - 366.0), new PdfPoint(208.62891,   792 - 181.0)),
@@ -137,12 +137,12 @@ namespace Tabula.Tests
         };
 
         [Fact]
-        public void testLinesToCells()
+        public void TestLinesToCells()
         {
-            List<Cell> cells = SpreadsheetExtractionAlgorithm.findCells(HORIZONTAL_RULING_LINES.ToList(), VERTICAL_RULING_LINES.ToList());
-            Utils.sort(cells, new TableRectangle.ILL_DEFINED_ORDER());
+            List<Cell> cells = SpreadsheetExtractionAlgorithm.FindCells(HORIZONTAL_RULING_LINES.ToList(), VERTICAL_RULING_LINES.ToList());
+            Utils.Sort(cells, new TableRectangle.ILL_DEFINED_ORDER());
             List<Cell> expected = EXPECTED_CELLS.ToList();
-            Utils.sort(expected, new TableRectangle.ILL_DEFINED_ORDER());
+            Utils.Sort(expected, new TableRectangle.ILL_DEFINED_ORDER());
 
             Assert.Equal(expected.Count, cells.Count);
 
@@ -155,30 +155,30 @@ namespace Tabula.Tests
         }
 
         [Fact]
-        public void testDetectSingleCell()
+        public void TestDetectSingleCell()
         {
-            List<Cell> cells = SpreadsheetExtractionAlgorithm.findCells(SINGLE_CELL_RULINGS[0].ToList(), SINGLE_CELL_RULINGS[1].ToList());
+            List<Cell> cells = SpreadsheetExtractionAlgorithm.FindCells(SINGLE_CELL_RULINGS[0].ToList(), SINGLE_CELL_RULINGS[1].ToList());
             Assert.Single(cells);
             Cell cell = cells[0];
-            Assert.True(Utils.feq(151.65355, cell.getLeft()));
-            Assert.True(Utils.feq(185.6693, cell.getBottom())); // .getTop()
-            Assert.True(Utils.feq(229.08083, cell.getWidth()));
-            Assert.True(Utils.feq(128.97636, cell.getHeight()));
+            Assert.True(Utils.Feq(151.65355, cell.GetLeft()));
+            Assert.True(Utils.Feq(185.6693, cell.GetBottom())); // .getTop()
+            Assert.True(Utils.Feq(229.08083, cell.GetWidth()));
+            Assert.True(Utils.Feq(128.97636, cell.GetHeight()));
         }
 
         [Fact]
-        public void testDetectTwoSingleCells()
+        public void TestDetectTwoSingleCells()
         {
-            List<Cell> cells = SpreadsheetExtractionAlgorithm.findCells(TWO_SINGLE_CELL_RULINGS[0].ToList(), TWO_SINGLE_CELL_RULINGS[1].ToList());
+            List<Cell> cells = SpreadsheetExtractionAlgorithm.FindCells(TWO_SINGLE_CELL_RULINGS[0].ToList(), TWO_SINGLE_CELL_RULINGS[1].ToList());
             Assert.Equal(2, cells.Count);
             // should not overlap
-            Assert.False(cells[0].intersects(cells[1]));
+            Assert.False(cells[0].Intersects(cells[1]));
         }
 
         [Fact]//(Skip = "TODO")]
-        public void testFindSpreadsheetsFromCells()
+        public void TestFindSpreadsheetsFromCells()
         {
-            var parse = UtilsForTesting.loadCsvLines("Resources/csv/TestSpreadsheetExtractor-CELLS.csv");
+            var parse = UtilsForTesting.LoadCsvLines("Resources/csv/TestSpreadsheetExtractor-CELLS.csv");
             List<Cell> cells = new List<Cell>();
             foreach (var record in parse)
             {
@@ -190,9 +190,9 @@ namespace Tabula.Tests
             }
 
             List<TableRectangle> expected = EXPECTED_RECTANGLES.ToList();
-            Utils.sort(expected, new TableRectangle.ILL_DEFINED_ORDER());
-            List<TableRectangle> foundRectangles = SpreadsheetExtractionAlgorithm.findSpreadsheetsFromCells(cells.Cast<TableRectangle>().ToList());
-            Utils.sort(foundRectangles, new TableRectangle.ILL_DEFINED_ORDER());
+            Utils.Sort(expected, new TableRectangle.ILL_DEFINED_ORDER());
+            List<TableRectangle> foundRectangles = SpreadsheetExtractionAlgorithm.FindSpreadsheetsFromCells(cells.Cast<TableRectangle>().ToList());
+            Utils.Sort(foundRectangles, new TableRectangle.ILL_DEFINED_ORDER());
 
             Assert.Equal(foundRectangles, expected);
         }
@@ -207,18 +207,18 @@ namespace Tabula.Tests
         */
 
         [Fact]
-        public void testSpanningCells()
+        public void TestSpanningCells()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/spanning_cells.pdf", 1);
-            string expectedJson = UtilsForTesting.loadJson("Resources/json/spanning_cells.json");
+            PageArea page = UtilsForTesting.GetPage("Resources/spanning_cells.pdf", 1);
+            string expectedJson = UtilsForTesting.LoadJson("Resources/json/spanning_cells.json");
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = se.extract(page);
+            List<Table> tables = se.Extract(page);
             Assert.Equal(2, tables.Count);
 
             var expectedJObject = (JArray)JsonConvert.DeserializeObject(expectedJson);
 
             StringBuilder sb = new StringBuilder();
-            (new JSONWriter()).write(sb, tables);
+            (new JSONWriter()).Write(sb, tables);
             var actualJObject = (JArray)JsonConvert.DeserializeObject(sb.ToString());
 
             double pageHeight = 842;
@@ -259,89 +259,87 @@ namespace Tabula.Tests
                     }
                 }
             }
-
-
             //Assert.Equal(expectedJson, sb.ToString());
         }
 
         [Fact]
-        public void testSpanningCellsToCsv()
+        public void TestSpanningCellsToCsv()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/spanning_cells.pdf", 1);
-            string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/spanning_cells.csv");
+            PageArea page = UtilsForTesting.GetPage("Resources/spanning_cells.pdf", 1);
+            string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/spanning_cells.csv");
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = se.extract(page);
+            List<Table> tables = se.Extract(page);
             Assert.Equal(2, tables.Count);
 
             StringBuilder sb = new StringBuilder();
-            (new CSVWriter()).write(sb, tables);
+            (new CSVWriter()).Write(sb, tables);
             Assert.Equal(expectedCsv, sb.ToString().Replace("\r\n", "\n").Trim());
         }
 
         [Fact]
-        public void testIncompleteGrid()
+        public void TestIncompleteGrid()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/china.pdf", 1);
+            PageArea page = UtilsForTesting.GetPage("Resources/china.pdf", 1);
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = se.extract(page);
+            List<Table> tables = se.Extract(page);
             Assert.Equal(2, tables.Count);
         }
 
         [Fact]
-        public void testNaturalOrderOfRectanglesDoesNotBreakContract()
+        public void TestNaturalOrderOfRectanglesDoesNotBreakContract()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/us-017.pdf", 2);
+            PageArea page = UtilsForTesting.GetPage("Resources/us-017.pdf", 2);
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = se.extract(page);
+            List<Table> tables = se.Extract(page);
 
             string expected = "Project,Agency,Institution\r\nNanotechnology and its publics,NSF,Pennsylvania State University\r\n\"Public information and deliberation in nanoscience and\rnanotechnology policy (SGER)\",Interagency,\"North Carolina State\rUniversity\"\r\n\"Social and ethical research and education in agrifood\rnanotechnology (NIRT)\",NSF,Michigan State University\r\n\"From laboratory to society: developing an informed\rapproach to nanoscale science and engineering (NIRT)\",NSF,University of South Carolina\r\nDatabase and innovation timeline for nanotechnology,NSF,UCLA\r\nSocial and ethical dimensions of nanotechnology,NSF,University of Virginia\r\n\"Undergraduate exploration of nanoscience,\rapplications and societal implications (NUE)\",NSF,\"Michigan Technological\rUniversity\"\r\n\"Ethics and belief inside the development of\rnanotechnology (CAREER)\",NSF,University of Virginia\r\n\"All centers, NNIN and NCN have a societal\rimplications components\",\"NSF, DOE,\rDOD, and NIH\",\"All nanotechnology centers\rand networks\""; // \r\n
 
             StringBuilder sb = new StringBuilder();
-            (new CSVWriter()).write(sb, tables[0]);
+            (new CSVWriter()).Write(sb, tables[0]);
             string result = sb.ToString().Trim();
             Assert.Equal(expected.Replace("\r\n", "\r"), result.Replace("\r\n", "\n").Replace("\n", "\r"));
         }
 
         [Fact]
-        public void testMergeLinesCloseToEachOther()
+        public void TestMergeLinesCloseToEachOther()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/20.pdf", 1);
-            List<Ruling> rulings = page.getVerticalRulings();
+            PageArea page = UtilsForTesting.GetPage("Resources/20.pdf", 1);
+            List<Ruling> rulings = page.GetVerticalRulings();
             Assert.Equal(6, rulings.Count);
 
             double[] expectedRulings = new double[] { 105.554812, 107.522417, 160.568521, 377.172662, 434.963828, 488.229949 };
 
-            var lefts = rulings.Select(x => x.getLeft()).ToArray();
+            var lefts = rulings.Select(x => x.GetLeft()).ToArray();
             for (int i = 0; i < rulings.Count; i++)
             {
-                Assert.Equal(expectedRulings[i], rulings[i].getLeft(), 2);
+                Assert.Equal(expectedRulings[i], rulings[i].GetLeft(), 2);
             }
         }
 
-        [Fact(Skip = "fails as of v0.8a")]
-        public void testSpreadsheetWithNoBoundingFrameShouldBeSpreadsheet()
+        [Fact(Skip = "fails as of v0.9.1a")]
+        public void TestSpreadsheetWithNoBoundingFrameShouldBeSpreadsheet()
         {
-            PageArea page = UtilsForTesting.getAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1, new PdfRectangle(58.9, 842 - 654.7, 536.12, 842 - 150.56)); // 842 - 150.56)); // 150.56f, 58.9f, 654.7f, 536.12f);
-            string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/spreadsheet_no_bounding_frame.csv");
+            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/spreadsheet_no_bounding_frame.pdf", 1, new PdfRectangle(58.9, 842 - 654.7, 536.12, 842 - 150.56)); // 842 - 150.56)); // 150.56f, 58.9f, 654.7f, 536.12f);
+            string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/spreadsheet_no_bounding_frame.csv");
 
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            bool isTabular = se.isTabular(page);
+            bool isTabular = se.IsTabular(page);
             Assert.True(isTabular);
-            List<Table> tables = se.extract(page);
+            List<Table> tables = se.Extract(page);
 
             StringBuilder sb = new StringBuilder();
-            (new CSVWriter()).write(sb, tables[0]);
+            (new CSVWriter()).Write(sb, tables[0]);
             Assert.Equal(expectedCsv, sb.ToString());
         }
 
         [Fact(Skip = "TO DO")]
-        public void testExtractSpreadsheetWithinAnArea()
+        public void TestExtractSpreadsheetWithinAnArea()
         {
-            PageArea page = UtilsForTesting.getAreaFromPage("Resources/puertos1.pdf", 1, new PdfRectangle(30.32142857142857, 793 - 554.8821428571429, 546.7964285714286, 793 - 273.9035714285714)); // 273.9035714285714f, 30.32142857142857f, 554.8821428571429f, 546.7964285714286f);
+            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/puertos1.pdf", 1, new PdfRectangle(30.32142857142857, 793 - 554.8821428571429, 546.7964285714286, 793 - 273.9035714285714)); // 273.9035714285714f, 30.32142857142857f, 554.8821428571429f, 546.7964285714286f);
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = se.extract(page);
+            List<Table> tables = se.Extract(page);
             Table table = tables[0];
-            Assert.Equal(15, table.getRows().Count);
+            Assert.Equal(15, table.GetRows().Count);
 
             const string expected = "\"\",TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM\n" +
                     "Peces vivos,1,25,1,23,2,38,1,37,2,67,2,89,1\n" +
@@ -377,7 +375,7 @@ namespace Tabula.Tests
 
             // TODO add better assertions
             StringBuilder sb = new StringBuilder();
-            (new CSVWriter()).write(sb, tables[0]);
+            (new CSVWriter()).Write(sb, tables[0]);
             string result = sb.ToString();
 
             //List<CSVRecord> parsedExpected = org.apache.commons.csv.CSVParser.parse(expected, CSVFormat.EXCEL).getRecords();
@@ -395,11 +393,11 @@ namespace Tabula.Tests
         }
 
         [Fact]
-        public void testAlmostIntersectingRulingsShouldIntersect()
+        public void TestAlmostIntersectingRulingsShouldIntersect()
         {
             Ruling v = new Ruling(new PdfPoint(555.960876f, 271.569641f), new PdfPoint(555.960876f, 786.899902f));
             Ruling h = new Ruling(new PdfPoint(25.620499f, 786.899902f), new PdfPoint(555.960754f, 786.899902f));
-            SortedDictionary<PdfPoint, Ruling[]> m = Ruling.findIntersections(new Ruling[] { h }.ToList(), new Ruling[] { v }.ToList());
+            SortedDictionary<PdfPoint, Ruling[]> m = Ruling.FindIntersections(new Ruling[] { h }.ToList(), new Ruling[] { v }.ToList());
             Assert.Single(m.Values);
         }
 
@@ -414,106 +412,106 @@ namespace Tabula.Tests
         }
         */
 
-        [Fact(Skip = "fails as of v0.8a")]
-        public void testShouldDetectASingleSpreadsheet()
+        [Fact(Skip = "fails as of v0.9.1a")]
+        public void TestShouldDetectASingleSpreadsheet()
         {
-            PageArea page = UtilsForTesting.getAreaFromPage("Resources/offense.pdf", 1, new PdfRectangle(16.44, 792 - 680.85, 597.84, 792 - 16.44)); // 68.08f, 16.44f, 680.85f, 597.84f);
+            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/offense.pdf", 1, new PdfRectangle(16.44, 792 - 680.85, 597.84, 792 - 16.44)); // 68.08f, 16.44f, 680.85f, 597.84f);
             SpreadsheetExtractionAlgorithm bea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = bea.extract(page);
+            List<Table> tables = bea.Extract(page);
             Assert.Single(tables);
         }
 
         [Fact]
-        public void testExtractTableWithExternallyDefinedRulings()
+        public void TestExtractTableWithExternallyDefinedRulings()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/us-007.pdf", 1);
+            PageArea page = UtilsForTesting.GetPage("Resources/us-007.pdf", 1);
             SpreadsheetExtractionAlgorithm bea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = bea.extract(page, EXTERNALLY_DEFINED_RULINGS.ToList());
-            Assert.Single(tables);
-            Table table = tables[0];
-            Assert.Equal(18, table.cells.Count);
-
-            var rows = table.getRows();
-
-            Assert.Equal("Payroll Period", rows[0][0].getText());
-            Assert.Equal("One Withholding\rAllowance", rows[0][1].getText());
-            Assert.Equal("Weekly", rows[1][0].getText());
-            Assert.Equal("$71.15", rows[1][1].getText());
-            Assert.Equal("Biweekly", rows[2][0].getText());
-            Assert.Equal("142.31", rows[2][1].getText());
-            Assert.Equal("Semimonthly", rows[3][0].getText());
-            Assert.Equal("154.17", rows[3][1].getText());
-            Assert.Equal("Monthly", rows[4][0].getText());
-            Assert.Equal("308.33", rows[4][1].getText());
-            Assert.Equal("Quarterly", rows[5][0].getText());
-            Assert.Equal("925.00", rows[5][1].getText());
-            Assert.Equal("Semiannually", rows[6][0].getText());
-            Assert.Equal("1,850.00", rows[6][1].getText());
-            Assert.Equal("Annually", rows[7][0].getText());
-            Assert.Equal("3,700.00", rows[7][1].getText());
-            Assert.Equal("Daily or Miscellaneous\r(each day of the payroll period)", rows[8][0].getText());
-            Assert.Equal("14.23", rows[8][1].getText());
-        }
-
-        [Fact]
-        public void testAnotherExtractTableWithExternallyDefinedRulings()
-        {
-            PageArea page = UtilsForTesting.getPage("Resources/us-024.pdf", 1);
-            SpreadsheetExtractionAlgorithm bea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = bea.extract(page, EXTERNALLY_DEFINED_RULINGS2.ToList());
+            List<Table> tables = bea.Extract(page, EXTERNALLY_DEFINED_RULINGS.ToList());
             Assert.Single(tables);
             Table table = tables[0];
+            Assert.Equal(18, table.Cells.Count);
 
-            Assert.Equal("Total Supply", table.getRows()[4][0].getText());
-            Assert.Equal("6.6", table.getRows()[6][2].getText());
+            var rows = table.GetRows();
+
+            Assert.Equal("Payroll Period", rows[0][0].GetText());
+            Assert.Equal("One Withholding\rAllowance", rows[0][1].GetText());
+            Assert.Equal("Weekly", rows[1][0].GetText());
+            Assert.Equal("$71.15", rows[1][1].GetText());
+            Assert.Equal("Biweekly", rows[2][0].GetText());
+            Assert.Equal("142.31", rows[2][1].GetText());
+            Assert.Equal("Semimonthly", rows[3][0].GetText());
+            Assert.Equal("154.17", rows[3][1].GetText());
+            Assert.Equal("Monthly", rows[4][0].GetText());
+            Assert.Equal("308.33", rows[4][1].GetText());
+            Assert.Equal("Quarterly", rows[5][0].GetText());
+            Assert.Equal("925.00", rows[5][1].GetText());
+            Assert.Equal("Semiannually", rows[6][0].GetText());
+            Assert.Equal("1,850.00", rows[6][1].GetText());
+            Assert.Equal("Annually", rows[7][0].GetText());
+            Assert.Equal("3,700.00", rows[7][1].GetText());
+            Assert.Equal("Daily or Miscellaneous\r(each day of the payroll period)", rows[8][0].GetText());
+            Assert.Equal("14.23", rows[8][1].GetText());
         }
 
         [Fact]
-        public void testSpreadsheetsSortedByTopAndRight()
+        public void TestAnotherExtractTableWithExternallyDefinedRulings()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/sydney_disclosure_contract.pdf", 1);
+            PageArea page = UtilsForTesting.GetPage("Resources/us-024.pdf", 1);
+            SpreadsheetExtractionAlgorithm bea = new SpreadsheetExtractionAlgorithm();
+            List<Table> tables = bea.Extract(page, EXTERNALLY_DEFINED_RULINGS2.ToList());
+            Assert.Single(tables);
+            Table table = tables[0];
+
+            Assert.Equal("Total Supply", table.GetRows()[4][0].GetText());
+            Assert.Equal("6.6", table.GetRows()[6][2].GetText());
+        }
+
+        [Fact]
+        public void TestSpreadsheetsSortedByTopAndRight()
+        {
+            PageArea page = UtilsForTesting.GetPage("Resources/sydney_disclosure_contract.pdf", 1);
 
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = sea.extract(page);
+            List<Table> tables = sea.Extract(page);
             for (int i = 1; i < tables.Count; i++)
             {
-                Assert.True(tables[i - 1].getTop() >= tables[i].getTop()); // Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
+                Assert.True(tables[i - 1].GetTop() >= tables[i].GetTop()); // Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
             }
         }
 
         [Fact]
-        public void testDontStackOverflowQuicksort()
+        public void TestDontStackOverflowQuicksort()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/failing_sort.pdf", 1);
+            PageArea page = UtilsForTesting.GetPage("Resources/failing_sort.pdf", 1);
 
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = sea.extract(page);
+            List<Table> tables = sea.Extract(page);
             for (int i = 1; i < tables.Count; i++)
             {
-                Assert.True(tables[i - 1].getTop() >= tables[i].getTop()); //Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
+                Assert.True(tables[i - 1].GetTop() >= tables[i].GetTop()); //Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
             }
         }
 
         [Fact(Skip = "RtL text to do later")]
-        public void testRTL()
+        public void TestRTL()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/arabic.pdf", 1);
+            PageArea page = UtilsForTesting.GetPage("Resources/arabic.pdf", 1);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = sea.extract(page);
+            List<Table> tables = sea.Extract(page);
             // Assert.Equal(1, tables.size());
             Table table = tables[0];
 
-            var rows = table.getRows();
+            var rows = table.GetRows();
 
-            Assert.Equal("اسمي سلطان", rows[1][1].getText());
-            Assert.Equal("من اين انت؟", rows[2][1].getText());
-            Assert.Equal("1234", rows[3][0].getText());
-            Assert.Equal("هل انت شباك؟", rows[4][0].getText());
-            Assert.Equal("انا من ولاية كارولينا الشمال", rows[2][0].getText()); // conjoined lam-alif gets missed
-            Assert.Equal("اسمي Jeremy في الانجليزية", rows[4][1].getText()); // conjoined lam-alif gets missed
-            Assert.Equal("عندي 47 قطط", rows[3][1].getText()); // the real right answer is 47.
-            Assert.Equal("Jeremy is جرمي in Arabic", rows[5][0].getText()); // the real right answer is 47.
-            Assert.Equal("مرحباً", rows[1][0].getText()); // really ought to be ً, but this is forgiveable for now
+            Assert.Equal("اسمي سلطان", rows[1][1].GetText());
+            Assert.Equal("من اين انت؟", rows[2][1].GetText());
+            Assert.Equal("1234", rows[3][0].GetText());
+            Assert.Equal("هل انت شباك؟", rows[4][0].GetText());
+            Assert.Equal("انا من ولاية كارولينا الشمال", rows[2][0].GetText()); // conjoined lam-alif gets missed
+            Assert.Equal("اسمي Jeremy في الانجليزية", rows[4][1].GetText()); // conjoined lam-alif gets missed
+            Assert.Equal("عندي 47 قطط", rows[3][1].GetText()); // the real right answer is 47.
+            Assert.Equal("Jeremy is جرمي in Arabic", rows[5][0].GetText()); // the real right answer is 47.
+            Assert.Equal("مرحباً", rows[1][0].GetText()); // really ought to be ً, but this is forgiveable for now
 
             // there is one remaining problems that are not yet addressed
             // - diacritics (e.g. Arabic's tanwinً and probably Hebrew nekudot) are put in the wrong place.
@@ -526,28 +524,28 @@ namespace Tabula.Tests
 
 
         [Fact(Skip = "RtL text to do later")]
-        public void testRealLifeRTL()
+        public void TestRealLifeRTL()
         {
-            PageArea page = UtilsForTesting.getPage("Resources/mednine.pdf", 1);
+            PageArea page = UtilsForTesting.GetPage("Resources/mednine.pdf", 1);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = sea.extract(page);
+            List<Table> tables = sea.Extract(page);
             Assert.Single(tables);
             Table table = tables[0];
-            var rows = table.getRows();
+            var rows = table.GetRows();
 
-            Assert.Equal("الانتخابات التشريعية  2014", rows[0][0].getText()); // the doubled spaces might be a bug in my implementation. // bobld: missing space or worng words order
-            Assert.Equal("ورقة كشف نتائج دائرة مدنين", rows[1][0].getText());
-            Assert.Equal("426", rows[4][0].getText());
-            Assert.Equal("63", rows[4][1].getText());
-            Assert.Equal("43", rows[4][2].getText());
-            Assert.Equal("56", rows[4][3].getText());
-            Assert.Equal("58", rows[4][4].getText());
-            Assert.Equal("49", rows[4][5].getText());
-            Assert.Equal("55", rows[4][6].getText());
-            Assert.Equal("33", rows[4][7].getText());
-            Assert.Equal("32", rows[4][8].getText());
-            Assert.Equal("37", rows[4][9].getText());
-            Assert.Equal("قائمة من أجل تحقيق سلطة الشعب", rows[4][10].getText());
+            Assert.Equal("الانتخابات التشريعية  2014", rows[0][0].GetText()); // the doubled spaces might be a bug in my implementation. // bobld: missing space or worng words order
+            Assert.Equal("ورقة كشف نتائج دائرة مدنين", rows[1][0].GetText());
+            Assert.Equal("426", rows[4][0].GetText());
+            Assert.Equal("63", rows[4][1].GetText());
+            Assert.Equal("43", rows[4][2].GetText());
+            Assert.Equal("56", rows[4][3].GetText());
+            Assert.Equal("58", rows[4][4].GetText());
+            Assert.Equal("49", rows[4][5].GetText());
+            Assert.Equal("55", rows[4][6].GetText());
+            Assert.Equal("33", rows[4][7].GetText());
+            Assert.Equal("32", rows[4][8].GetText());
+            Assert.Equal("37", rows[4][9].GetText());
+            Assert.Equal("قائمة من أجل تحقيق سلطة الشعب", rows[4][10].GetText());
 
             // there is one remaining problems that are not yet addressed
             // - diacritics (e.g. Arabic's tanwinً and probably Hebrew nekudot) are put in the wrong place.
@@ -559,36 +557,36 @@ namespace Tabula.Tests
         }
 
         [Fact]
-        public void testExtractColumnsCorrectly3()
+        public void TestExtractColumnsCorrectly3()
         {
             // top,     left,   bottom,  right
             // 106.01f, 48.09f, 227.31f, 551.89f
             // bottom = 792 - 227.31 = 564.69
             // top =  792 - 106.01 = 685.99
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/frx_2012_disclosure.pdf", new PdfRectangle(48.09, 564.69, 551.89, 684.99)); // changed 685.99 to 684.99 because was adding an empty row at the top
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/frx_2012_disclosure.pdf", new PdfRectangle(48.09, 564.69, 551.89, 684.99)); // changed 685.99 to 684.99 because was adding an empty row at the top
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            Table table = sea.extract(page)[0];
-            var rows = table.getRows();
-            Assert.Equal("REGIONAL PULMONARY & SLEEP\rMEDICINE", table.getRows()[8][1].getText());
+            Table table = sea.Extract(page)[0];
+
+            Assert.Equal("REGIONAL PULMONARY & SLEEP\rMEDICINE", table.GetRows()[8][1].GetText());
         }
 
         [Fact]
-        public void testSpreadsheetExtractionIssue656()
+        public void TestSpreadsheetExtractionIssue656()
         {
             // page height = 482, width 762.3 // 612
             // top,     left,    bottom,   right
             // 56.925f, 24.255f, 549.945f, 786.555f);
-            PageArea page = UtilsForTesting.getAreaFromFirstPage("Resources/Publication_of_award_of_Bids_for_Transport_Sector__August_2016.pdf", new PdfRectangle(24.255, 71, 786.555, 553));
-            string expectedCsv = UtilsForTesting.loadCsv("Resources/csv/Publication_of_award_of_Bids_for_Transport_Sector__August_2016.csv");
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/Publication_of_award_of_Bids_for_Transport_Sector__August_2016.pdf", new PdfRectangle(24.255, 71, 786.555, 553));
+            string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/Publication_of_award_of_Bids_for_Transport_Sector__August_2016.csv");
 
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = sea.extract(page);
+            List<Table> tables = sea.Extract(page);
             Assert.Single(tables);
             Table table = tables[0];
 
             StringBuilder sb = new StringBuilder();
-            (new CSVWriter()).write(sb, table);
-            String result = sb.ToString();
+            (new CSVWriter()).Write(sb, table);
+            string result = sb.ToString();
             Assert.Equal(expectedCsv.Replace("\n", "\r"), result.Replace("\r\n", "\n").Replace("\n", "\r").Trim());
 
             /*

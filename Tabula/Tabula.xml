@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tabula</name>
+    </assembly>
+    <members>
+        <member name="T:Tabula.Cell">
+            ** tabula/Cell.java **
+        </member>
+        <member name="T:Tabula.Detectors.DetectionAlgorithm">
+            ** tabula/detectors/DetectionAlgorithm.java **
+            Created by matt on 2015-12-14.
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Tabula.Detectors.NurminenDetectionAlgorithm" -->
+        <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm.TextEdge">
+            <summary>
+            Helper class that encapsulates a text edge
+            </summary>
+        </member>
+        <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm.TextEdges">
+            <summary>
+            Helper container for all text edges on a page
+            </summary>
+        </member>
+        <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm.RelevantEdges">
+            <summary>
+            Helper container for relevant text edge info
+            </summary>
+        </member>
+        <member name="T:Tabula.Detectors.SpreadsheetDetectionAlgorithm">
+            Created by matt on 2015-12-14.
+            This is the basic spreadsheet table detection algorithm currently implemented in tabula (web).
+            It uses intersecting ruling lines to find tables.
+        </member>
+        <member name="T:Tabula.Extractors.BasicExtractionAlgorithm">
+            <summary>
+            stream
+            </summary>
+        </member>
+        <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.#ctor">
+            <summary>
+            stream
+            </summary>
+        </member>
+        <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.#ctor(System.Collections.Generic.List{Tabula.Ruling})">
+            <summary>
+            stream
+            </summary>
+        </member>
+        <member name="T:Tabula.Extractors.SpreadsheetExtractionAlgorithm">
+            <summary>
+            lattice
+            </summary>
+        </member>
+        <member name="M:Tabula.Extractors.SpreadsheetExtractionAlgorithm.#ctor">
+            <summary>
+            lattice
+            </summary>
+        </member>
+        <member name="M:Tabula.Extractors.SpreadsheetExtractionAlgorithm.extract(Tabula.PageArea,System.Collections.Generic.List{Tabula.Ruling})">
+            <summary>
+            Extract a list of Table from page using rulings as separators
+            </summary>
+            <param name="page"></param>
+            <param name="rulings"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tabula.ObjectExtractor">
+            ** tabula/ObjectExtractor.java **
+            ** tabula/ObjectExtractorStreamEngine.java **
+        </member>
+        <member name="M:Tabula.RectangleSpatialIndex`1.Expand(UglyToad.PdfPig.Core.PdfRectangle)">
+            <summary>
+            hack
+            </summary>
+            <param name="rectangle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.RectangleSpatialIndex`1.IntersectsWithNoBug(UglyToad.PdfPig.Core.PdfRectangle,UglyToad.PdfPig.Core.PdfRectangle)">
+            <summary>
+            TO REMOVE: need to check PdfPig's 'IntersectsWith' for bug with empty rectangles. they should instersect
+            </summary>
+        </member>
+        <member name="M:Tabula.RectangleSpatialIndex`1.getBounds">
+            <summary>
+            Minimum bounding box of all the Rectangles contained on this RectangleSpatialIndex.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.Ruling.#ctor(UglyToad.PdfPig.Core.PdfPoint,UglyToad.PdfPig.Core.PdfPoint)">
+            <summary>
+            Point order matters!
+            </summary>
+            <param name="p1">bottom point.</param>
+            <param name="p2">top point</param>
+        </member>
+        <member name="M:Tabula.Ruling.normalize">
+            <summary>
+            Normalize almost horizontal or almost vertical lines
+            </summary>
+        </member>
+        <member name="M:Tabula.Ruling.getPosition">
+            <summary>
+            attributes that make sense only for non-oblique lines
+            these are used to have a single collapse method (in page, currently)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.Ruling.nearlyIntersects(Tabula.Ruling)">
+            <summary>
+            if the lines we're comparing are colinear or parallel, we expand them by a only 1 pixel,
+            because the expansions are additive
+            (e.g. two vertical lines, at x = 100, with one having y2 of 98 and the other having y1 of 102 would
+            erroneously be said to nearlyIntersect if they were each expanded by 2 (since they'd both terminate at 100).
+            By default the COLINEAR_OR_PARALLEL_PIXEL_EXPAND_AMOUNT is only 1 so the total expansion is 2.
+            A total expansion amount of 2 is empirically verified to work sometimes. It's not a magic number from any
+            source other than a little bit of experience.)
+            </summary>
+            <param name="another"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.Ruling.findIntersections(System.Collections.Generic.List{Tabula.Ruling},System.Collections.Generic.List{Tabula.Ruling})">
+            <summary>
+            log(n) implementation of find_intersections
+            based on http://people.csail.mit.edu/indyk/6.838-old/handouts/lec2.pdf
+            </summary>
+            <param name="horizontals"></param>
+            <param name="verticals"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.Ruling.intersectsLine(Tabula.Ruling)">
+            <summary>
+            True if both horizontal, aligned and overlap (i.e. infinite intersection points).
+            True if both vertical, aligned and overlap (i.e. infinite intersection points).
+            True if not parallel and intersect (i.e. in intersection point).
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.Ruling.clone">
+            <summary>
+            Deep copy.
+            </summary>
+        </member>
+        <member name="T:Tabula.TableRectangle.ILL_DEFINED_ORDER">
+            <summary>
+            Sort top to bottom (as in reading order).
+            Ill-defined comparator, from when Rectangle was Comparable.
+            @see <a href="https://github.com/tabulapdf/tabula-java/issues/116">PR 116</a>
+            </summary>
+        </member>
+        <member name="M:Tabula.TableRectangle.ILL_DEFINED_ORDER.Compare(Tabula.TableRectangle,Tabula.TableRectangle)">
+            <summary>
+            Sort top to bottom (as in reading order).
+            </summary>
+            <param name="o1"></param>
+            <param name="o2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.TableRectangle.isLtrDominant">
+            <summary>
+            1 is LTR, 0 is neutral, -1 is RTL.
+            <para>Need this for fancy sorting in Tabula.TextChunk</para>
+            </summary>
+        </member>
+        <member name="M:Tabula.TableRectangle.getPoints">
+            <summary>
+            Counter-clockwise, starting from bottom left point.
+            </summary>
+        </member>
+        <member name="M:Tabula.TableRectangle.setRect(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Sets the location and size of this Rectangle2D to the specified double values.
+            </summary>
+            <param name="x">the X coordinate of the upper-left corner of this Rectangle2D</param>
+            <param name="y">the Y coordinate of the upper-left corner of this Rectangle2D</param>
+            <param name="w">the width of this Rectangle2D</param>
+            <param name="h">the height of this Rectangle2D</param>
+        </member>
+        <member name="M:Tabula.TextChunk.groupByDirectionality(System.Boolean)">
+            <summary>
+            Splits a TextChunk into N TextChunks, where each chunk is of a single directionality, and
+            then reverse the RTL ones.
+            what we're doing here is *reversing* the Unicode bidi algorithm
+            in the language of that algorithm, each chunk is a(maximal) directional run.
+            We attach whitespace to the beginning of non-RTL
+            </summary>
+            <param name="isLtrDominant"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.TextChunk.isLtrDominant">
+            <summary>
+            1 is LtR, 0 is neutral, -1 is RtL.
+            </summary>
+        </member>
+        <member name="M:Tabula.TextChunk.isSameChar(System.Char)">
+            <summary>
+            Returns true if text contained in this TextChunk is the same repeated character
+            </summary>
+            <param name="c"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.TextChunk.splitAt(System.Int32)">
+            <summary>
+            Splits a TextChunk in two, at the position of the i-th TextElement
+            </summary>
+            <param name="i"></param>
+        </member>
+        <member name="M:Tabula.TextChunk.squeeze(System.Char,System.Int32)">
+            <summary>
+            Removes runs of identical TextElements in this TextChunk
+            <para>For example, if the TextChunk contains this string of characters: "1234xxxxx56xx"
+            and c == 'x' and minRunLength == 4, this method will return a list of TextChunk
+            such that: ["1234", "56xx"]
+            </para>
+            </summary>
+            <param name="c"></param>
+            <param name="minRunLength"></param>
+        </member>
+        <member name="M:Tabula.TextElement.mergeWords(System.Collections.Generic.List{Tabula.TextElement},System.Collections.Generic.List{Tabula.Ruling})">
+            <summary>
+            heuristically merge a list of TextElement into a list of TextChunk
+            ported from PDFBox's PDFTextStripper.writePage, with modifications.
+            Here be dragons
+            </summary>
+            <param name="textElements"></param>
+            <param name="verticalRulings"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tabula.Utils">
+            @author manuel
+        </member>
+        <member name="M:Tabula.Utils.sort``1(System.Collections.Generic.List{``0})">
+            Wrap Collections.sort so we can fallback to a non-stable quicksort if we're
+            running on JDK7+
+        </member>
+        <member name="M:Tabula.Utils.snapPoints(System.Collections.Generic.List{Tabula.Ruling},System.Double,System.Double)">
+            <summary>
+            re-implemented.
+            </summary>
+            <param name="rulings"></param>
+            <param name="xThreshold"></param>
+            <param name="yThreshold"></param>
+        </member>
+        <member name="M:Tabula.Utils.subList``1(System.Collections.Generic.List{``0},System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="fromIndex">low endpoint (inclusive) of the subList</param>
+            <param name="toIndex">high endpoint (exclusive) of the subList</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

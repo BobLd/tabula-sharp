@@ -28,7 +28,7 @@ namespace Tabula
             this.pageNumber = pageNumber;
         }
 
-        public void process()
+        public void Process()
         {
             var page = document.GetPage(pageNumber);
             textElements = new List<TextElement>();
@@ -39,7 +39,7 @@ namespace Tabula
                 string c = letter.Value; //textPosition.getUnicode();
 
                 // if c not printable, return
-                if (!isPrintable(c)) continue;
+                if (!IsPrintable(c)) continue;
 
                 if (c.Equals(NBSP))
                 {
@@ -51,24 +51,24 @@ namespace Tabula
                 TextElement te = new TextElement(GetBbox(letter), letter.Font, letter.PointSize, c, wos, letter.GlyphRectangle.Rotation); // Rotation->The direction of the text(0, 90, 180, or 270)
                 te.letter = letter;
 
-                this.minCharWidth = Math.Min(this.minCharWidth, te.width);
-                this.minCharHeight = Math.Min(this.minCharHeight, te.height);
+                this.minCharWidth = Math.Min(this.minCharWidth, te.Width);
+                this.minCharHeight = Math.Min(this.minCharHeight, te.Height);
 
                 countHeight++;
-                totalHeight += te.height;
+                totalHeight += te.Height;
                 double avgHeight = totalHeight / countHeight;
 
-                if (avgHeight > 0 && te.height >= (avgHeight * AVG_HEIGHT_MULT_THRESHOLD) && (te.getText()?.Trim().Equals("") != false))
+                if (avgHeight > 0 && te.Height >= (avgHeight * AVG_HEIGHT_MULT_THRESHOLD) && (te.GetText()?.Trim().Equals("") != false))
                 {
                     continue;
                 }
 
                 textElements.Add(te);
-                spatialIndex.add(te);
+                spatialIndex.Add(te);
             }
         }
 
-        private bool isPrintable(string s)
+        private bool IsPrintable(string s)
         {
             char c;
             bool printable = false;
@@ -89,7 +89,7 @@ namespace Tabula
 #endif
         }
 
-        static double GetExpectedWhitespaceSize(Letter letter)
+        private static double GetExpectedWhitespaceSize(Letter letter)
         {
             if (letter.Value == " ")
             {
@@ -98,7 +98,7 @@ namespace Tabula
             return WhitespaceSizeStatistics.GetExpectedWhitespaceSize(letter);
         }
 
-        static PdfRectangle GetBbox(Letter letter)
+        private static PdfRectangle GetBbox(Letter letter)
         {
             switch (letter.TextOrientation)
             {
@@ -112,28 +112,31 @@ namespace Tabula
                     {
                         add = -(letter.GlyphRectangle.Height - 1); // force height of space to be 1
                     }
-                    return new PdfRectangle(Utils.round(letter.StartBaseLine.X, 2),
-                                            Utils.round(letter.StartBaseLine.Y, 2),
-                                            Utils.round(letter.StartBaseLine.X + Math.Max(letter.Width, letter.GlyphRectangle.Width), 2),
-                                            Utils.round(letter.GlyphRectangle.TopLeft.Y + add, 2));
+                    return new PdfRectangle(Utils.Round(letter.StartBaseLine.X, 2),
+                                            Utils.Round(letter.StartBaseLine.Y, 2),
+                                            Utils.Round(letter.StartBaseLine.X + Math.Max(letter.Width, letter.GlyphRectangle.Width), 2),
+                                            Utils.Round(letter.GlyphRectangle.TopLeft.Y + add, 2));
 
                 case TextOrientation.Rotate180:
-                    return new PdfRectangle(Utils.round(letter.StartBaseLine.X, 2),
-                                            Utils.round(letter.StartBaseLine.Y, 2),
-                                            Utils.round(letter.StartBaseLine.X - Math.Max(letter.Width, letter.GlyphRectangle.Width), 2),
-                                            Utils.round(letter.GlyphRectangle.TopRight.Y, 2));
+                    // need to force min height = 1 and height of space to be 1
+                    return new PdfRectangle(Utils.Round(letter.StartBaseLine.X, 2),
+                                            Utils.Round(letter.StartBaseLine.Y, 2),
+                                            Utils.Round(letter.StartBaseLine.X - Math.Max(letter.Width, letter.GlyphRectangle.Width), 2),
+                                            Utils.Round(letter.GlyphRectangle.TopRight.Y, 2));
 
                 case TextOrientation.Rotate90:
-                    return new PdfRectangle(new PdfPoint(Utils.round(letter.StartBaseLine.X + letter.GlyphRectangle.Height, 2), Utils.round(letter.GlyphRectangle.BottomLeft.Y, 2)),
-                                            new PdfPoint(Utils.round(letter.StartBaseLine.X + letter.GlyphRectangle.Height, 2), Utils.round(letter.EndBaseLine.Y, 2)),
-                                            new PdfPoint(Utils.round(letter.StartBaseLine.X, 2), Utils.round(letter.GlyphRectangle.BottomLeft.Y, 2)),
-                                            new PdfPoint(Utils.round(letter.StartBaseLine.X, 2), Utils.round(letter.EndBaseLine.Y, 2)));
+                    // need to force min height = 1 and height of space to be 1
+                    return new PdfRectangle(new PdfPoint(Utils.Round(letter.StartBaseLine.X + letter.GlyphRectangle.Height, 2), Utils.Round(letter.GlyphRectangle.BottomLeft.Y, 2)),
+                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X + letter.GlyphRectangle.Height, 2), Utils.Round(letter.EndBaseLine.Y, 2)),
+                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X, 2), Utils.Round(letter.GlyphRectangle.BottomLeft.Y, 2)),
+                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X, 2), Utils.Round(letter.EndBaseLine.Y, 2)));
 
                 case TextOrientation.Rotate270:
-                    return new PdfRectangle(new PdfPoint(Utils.round(letter.StartBaseLine.X - letter.GlyphRectangle.Height, 2), Utils.round(letter.StartBaseLine.Y, 2)),
-                                            new PdfPoint(Utils.round(letter.StartBaseLine.X - letter.GlyphRectangle.Height, 2), Utils.round(letter.GlyphRectangle.BottomRight.Y, 2)),
-                                            new PdfPoint(Utils.round(letter.StartBaseLine.X, 2), Utils.round(letter.StartBaseLine.Y, 2)),
-                                            new PdfPoint(Utils.round(letter.StartBaseLine.X, 2), Utils.round(letter.GlyphRectangle.BottomRight.Y, 2)));
+                    // need to force min height = 1 and height of space to be 1
+                    return new PdfRectangle(new PdfPoint(Utils.Round(letter.StartBaseLine.X - letter.GlyphRectangle.Height, 2), Utils.Round(letter.StartBaseLine.Y, 2)),
+                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X - letter.GlyphRectangle.Height, 2), Utils.Round(letter.GlyphRectangle.BottomRight.Y, 2)),
+                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X, 2), Utils.Round(letter.StartBaseLine.Y, 2)),
+                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X, 2), Utils.Round(letter.GlyphRectangle.BottomRight.Y, 2)));
 
                 case TextOrientation.Other:
                 default:
@@ -144,6 +147,8 @@ namespace Tabula
         // NEED TO IMPLEMENT ROUNDING
         private static PdfRectangle GetBoundingBoxOther(Letter letter)
         {
+            // not very useful, need axis aligned bbox anyway
+            // -> rotate back? or normalise?
             var points = new[]
             {
                 letter.StartBaseLine,
