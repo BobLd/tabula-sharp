@@ -81,39 +81,39 @@ namespace Tabula
 
         public override bool Equals(object obj)
         {
-
-            if (this == obj)
-                return true;
-            if (!base.Equals(obj))
-                return false;
-            if (!this.GetType().Equals(obj.GetType())) // getClass() != obj.getClass())
-                return false;
-            TextElement other = (TextElement)obj;
-            if (BitConverter.ToInt32(BitConverter.GetBytes(Direction), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.Direction), 0)) //if (java.lang.Float.floatToIntBits(dir) != java.lang.Float.floatToIntBits(other.dir))
-                return false;
-            if (Font == null)
+            if (obj is TextElement other)
             {
-                if (other.Font != null)
+                if (BitConverter.ToInt32(BitConverter.GetBytes(Direction), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.Direction), 0))
+                {
                     return false;
-            }
-            else if (!Font.Equals(other.Font))
-            {
-                return false;
-            }
+                }
 
-            if (BitConverter.ToInt32(BitConverter.GetBytes(FontSize), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.FontSize), 0)) //if (java.lang.Float.floatToIntBits(fontSize) != java.lang.Float.floatToIntBits(other.fontSize))
-                return false;
-            if (text == null)
-            {
-                if (other.text != null)
+                if (Font == null)
+                {
+                    if (other.Font != null) return false;
+                }
+                else if (!Font.Equals(other.Font))
+                {
                     return false;
-            }
-            else if (!text.Equals(other.text))
-            {
-                return false;
-            }
+                }
 
-            return BitConverter.ToInt32(BitConverter.GetBytes(WidthOfSpace), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.WidthOfSpace), 0);  //return java.lang.Float.floatToIntBits(widthOfSpace) == java.lang.Float.floatToIntBits(other.widthOfSpace);
+                if (BitConverter.ToInt32(BitConverter.GetBytes(FontSize), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.FontSize), 0))
+                {
+                    return false;
+                }
+
+                if (text == null)
+                {
+                    if (other.text != null) return false;
+                }
+                else if (!text.Equals(other.text))
+                {
+                    return false;
+                }
+
+                return BitConverter.ToInt32(BitConverter.GetBytes(WidthOfSpace), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.WidthOfSpace), 0);
+            }
+            return false;
         }
 
         public static List<TextChunk> MergeWords(List<TextElement> textElements)
