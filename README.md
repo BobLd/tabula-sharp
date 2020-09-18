@@ -20,7 +20,7 @@ using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() {
 	IExtractionAlgorithm ea = new BasicExtractionAlgorithm();
 	List<Table> tables = ea.Extract(page);
 	var table = tables[0];
-	var rows = table.GetRows();
+	var rows = table.Rows;
 }
 ```
 
@@ -34,7 +34,7 @@ using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() {
 	IExtractionAlgorithm ea = new SpreadsheetExtractionAlgorithm();
 	List<Table> tables = ea.Extract(page);
 	var table = tables[0];
-	var rows = table.GetRows();
+	var rows = table.Rows;
 }
 ```
 
