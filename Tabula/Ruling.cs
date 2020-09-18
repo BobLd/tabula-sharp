@@ -430,7 +430,7 @@ namespace Tabula
             //return rv;
         }
 
-        private class TreeMapRulingComparator : IComparer<Ruling>
+        private class TreeMapRulingComparer : IComparer<Ruling>
         {
             public int Compare(Ruling o1, Ruling o2)
             {
@@ -439,7 +439,7 @@ namespace Tabula
             }
         }
 
-        private class TreeMapPdfPointComparator : IComparer<PdfPoint>
+        private class TreeMapPdfPointComparer : IComparer<PdfPoint>
         {
             public int Compare(PdfPoint o1, PdfPoint o2)
             {
@@ -512,7 +512,7 @@ namespace Tabula
             //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java#L312
 
             List<SortObject> sos = new List<SortObject>(); //ArrayList<>();
-            SortedDictionary<Ruling, bool> tree = new SortedDictionary<Ruling, bool>(new TreeMapRulingComparator());
+            SortedDictionary<Ruling, bool> tree = new SortedDictionary<Ruling, bool>(new TreeMapRulingComparer());
             // The SortedDictionary will throw ArgumentException on duplicate keys.
 
             //TreeMap<Ruling, Boolean> tree = new TreeMap<>(new Comparator<Ruling>() 
@@ -524,7 +524,7 @@ namespace Tabula
             //    }
             //});
 
-            SortedDictionary<PdfPoint, Ruling[]> rv = new SortedDictionary<PdfPoint, Ruling[]>(new TreeMapPdfPointComparator());
+            SortedDictionary<PdfPoint, Ruling[]> rv = new SortedDictionary<PdfPoint, Ruling[]>(new TreeMapPdfPointComparer());
             // The SortedDictionary will throw ArgumentException on duplicate keys.
 
             //TreeMap<Point2D, Ruling[]> rv = new TreeMap<>(new Comparator<Point2D>() 

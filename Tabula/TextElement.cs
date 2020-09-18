@@ -10,7 +10,7 @@ namespace Tabula
 {
     public class TextElement : TableRectangle, IHasText
     {
-        internal Letter letter; // do we really use it
+        internal Letter letter; // do we really use it?
 
         private string text;
         private static double AVERAGE_CHAR_TOLERANCE = 0.3;
@@ -24,29 +24,6 @@ namespace Tabula
             this.Font = font;
             this.Direction = dir;
         }
-
-        [Obsolete("Use TextElement(PdfRectangle...) instead.")]
-        public TextElement(double y, double x, double width, double height,
-            FontDetails font, double fontSize, string c, double widthOfSpace) :
-            this(y, x, width, height, font, fontSize, c, widthOfSpace, 0f)
-        {
-            throw new ArgumentOutOfRangeException();
-        }
-
-        [Obsolete("Use TextElement(PdfRectangle...) instead.")]
-        public TextElement(double y, double x, double width,
-            double height, FontDetails font, double fontSize, string c, double widthOfSpace, double dir)
-            : base(x, y, width, height)
-        {
-            //base.setRect(x, y, width, height);
-            this.text = c;
-            this.WidthOfSpace = widthOfSpace;
-            this.FontSize = fontSize;
-            this.Font = font;
-            this.Direction = dir;
-            throw new ArgumentOutOfRangeException();
-        }
-
         public string GetText() => text;
 
         public double Direction { get; }
@@ -71,11 +48,11 @@ namespace Tabula
             const int prime = 31;
             int result = base.GetHashCode();
 
-            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(Direction), 0); //java.lang.Float.floatToIntBits(dir);
+            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(Direction), 0);
             result = prime * result + ((Font == null) ? 0 : Font.GetHashCode());
-            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(FontSize), 0); // java.lang.Float.floatToIntBits(fontSize);
+            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(FontSize), 0);
             result = prime * result + ((text == null) ? 0 : text.GetHashCode());
-            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(WidthOfSpace), 0); //java.lang.Float.floatToIntBits(widthOfSpace);
+            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(WidthOfSpace), 0);
             return result;
         }
 
@@ -129,7 +106,7 @@ namespace Tabula
         /// <param name="textElements"></param>
         /// <param name="verticalRulings"></param>
         /// <returns></returns>
-        public static List<TextChunk> MergeWords(List<TextElement> textElements, IReadOnlyList<Ruling> verticalRulings)
+        public static List<TextChunk> MergeWords(IReadOnlyList<TextElement> textElements, IReadOnlyList<Ruling> verticalRulings)
         {
             List<TextChunk> textChunks = new List<TextChunk>();
 
@@ -137,20 +114,6 @@ namespace Tabula
             {
                 return textChunks;
             }
-
-            /*
-            // it's a problem that this `remove` is side-effecty
-            // other things depend on `textElements` and it can sometimes lead to the first textElement in textElement
-            // not appearing in the final output because it's been removed here.
-            // https://github.com/tabulapdf/tabula-java/issues/78
-            List<TextElement> copyOfTextElements = new List<TextElement>(textElements);
-
-            //remove(0)));
-            var removed = copyOfTextElements[0];
-            copyOfTextElements.RemoveAt(0);
-
-            textChunks.Add(new TextChunk(removed));
-            */
 
             textChunks.Add(new TextChunk(textElements[0]));
 
@@ -168,7 +131,7 @@ namespace Tabula
             TextChunk currentChunk;
             bool sameLine, acrossVerticalRuling;
 
-            foreach (TextElement chr in textElements.Skip(1)) //copyOfTextElements)
+            foreach (TextElement chr in textElements.Skip(1))
             {
                 currentChunk = textChunks[textChunks.Count - 1];
                 prevChar = currentChunk.TextElements[currentChunk.TextElements.Count - 1];

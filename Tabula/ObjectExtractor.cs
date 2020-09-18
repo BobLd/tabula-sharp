@@ -23,7 +23,7 @@ namespace Tabula
             this.pdfDocument = pdfDocument;
         }
 
-        private class PointComparator : IComparer<PdfPoint>
+        private class PointComparer : IComparer<PdfPoint>
         {
             public int Compare(PdfPoint o1, PdfPoint o2)
             {
@@ -87,7 +87,7 @@ namespace Tabula
                     PdfPoint? last_move = start_pos;
                     PdfPoint? end_pos = null;
                     PdfLine line;
-                    PointComparator pc = new PointComparator();
+                    PointComparer pc = new PointComparer();
 
                     foreach (var command in subpath.Commands) //while (!pi.isDone())
                     {

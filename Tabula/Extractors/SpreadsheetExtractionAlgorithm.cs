@@ -20,7 +20,7 @@ namespace Tabula.Extractors
 
         private static double MAGIC_HEURISTIC_NUMBER = 0.65;
 
-        private class POINT_COMPARATOR : IComparer<PdfPoint>
+        private class POINT_COMPARER : IComparer<PdfPoint>
         {
             public int Compare(PdfPoint arg0, PdfPoint arg1)
             {
@@ -51,7 +51,7 @@ namespace Tabula.Extractors
             }
         }
 
-        private class X_FIRST_POINT_COMPARATOR : IComparer<PdfPoint>
+        private class X_FIRST_POINT_COMPARER : IComparer<PdfPoint>
         {
             public int Compare(PdfPoint arg0, PdfPoint arg1)
             {
@@ -201,7 +201,7 @@ namespace Tabula.Extractors
             List<Cell> cellsFound = new List<Cell>();
             SortedDictionary<PdfPoint, Ruling[]> intersectionPoints = Ruling.FindIntersections(horizontalRulingLines, verticalRulingLines);
             List<PdfPoint> intersectionPointsList = new List<PdfPoint>(intersectionPoints.Keys);
-            intersectionPointsList.Sort(new POINT_COMPARATOR());
+            intersectionPointsList.Sort(new POINT_COMPARER());
 
             for (int i = 0; i < intersectionPointsList.Count; i++)
             {
@@ -296,11 +296,11 @@ namespace Tabula.Extractors
 
             // X first sort
             List<PdfPoint> pointsSortX = new List<PdfPoint>(pointSet);
-            pointsSortX.Sort(new X_FIRST_POINT_COMPARATOR());
+            pointsSortX.Sort(new X_FIRST_POINT_COMPARER());
 
             // Y first sort
             List<PdfPoint> pointsSortY = new List<PdfPoint>(pointSet);
-            pointsSortY.Sort(new POINT_COMPARATOR());
+            pointsSortY.Sort(new POINT_COMPARER());
 
             while (i < pointSet.Count)
             {

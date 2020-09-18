@@ -7,7 +7,7 @@ namespace Tabula
 {
     public class TableWithRulingLines : Table
     {
-        private class CellComparator : IComparer<Cell>
+        private class CellComparer : IComparer<Cell>
         {
             public int Compare(Cell arg0, Cell arg1)
             {
@@ -91,7 +91,7 @@ namespace Tabula
                 return rv;
             }
 
-            Utils.Sort(cells, new CellComparator());
+            Utils.Sort(cells, new CellComparer());
 
             var iter = cells.GetEnumerator();
 
