@@ -11,13 +11,14 @@ namespace Tabula
 		public RectangularTextContainer(PdfRectangle pdfRectangle) : base(pdfRectangle)
 		{ }
 
+		/*
 		[Obsolete("Use RectangularTextContainer(PdfRectangle) instead.")]
 		public RectangularTextContainer(double top, double left, double width, double height)
 			: base(top, left, width, height)
 		{
 			throw new ArgumentOutOfRangeException();
 		}
-
+		*/
 		public abstract string GetText();
 
 		public abstract string GetText(bool useLineReturns);

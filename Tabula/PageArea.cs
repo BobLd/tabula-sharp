@@ -97,6 +97,7 @@ namespace Tabula
         /// </summary>
         public IReadOnlyList<Ruling> UnprocessedRulings => this.rulings;
 
+        /*
         [Obsolete("Use PageArea(PdfRectangle, ...) instead.")]
         public PageArea(double top, double left, double width, double height, int rotation, int page_number, Page pdPage, PdfDocument doc)
             : base(top, left, width, height)
@@ -132,6 +133,7 @@ namespace Tabula
             this.spatial_index = index;
             throw new ArgumentException("PageArea()");
         }
+        */
 
         public PageArea(PdfRectangle area, int rotation, int page_number, Page pdPage, PdfDocument doc,
              List<TextElement> characters, List<Ruling> rulings,
