@@ -46,6 +46,7 @@ namespace Tabula
 
             List<List<Cell>> rowsOfCells = TableWithRulingLines.RowsOfCells(cells);
             var siBounds = si.GetBounds();
+
             for (int i = 0; i < rowsOfCells.Count; i++)
             {
                 List<Cell> row = rowsOfCells[i];

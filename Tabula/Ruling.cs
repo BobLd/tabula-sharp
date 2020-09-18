@@ -512,33 +512,11 @@ namespace Tabula
             //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java#L312
 
             List<SortObject> sos = new List<SortObject>(); //ArrayList<>();
-            SortedDictionary<Ruling, bool> tree = new SortedDictionary<Ruling, bool>(new TreeMapRulingComparer());
+            SortedDictionary<Ruling, bool> tree = new SortedDictionary<Ruling, bool>(new TreeMapRulingComparer()); // TreeMap<Ruling, Boolean> tree
             // The SortedDictionary will throw ArgumentException on duplicate keys.
 
-            //TreeMap<Ruling, Boolean> tree = new TreeMap<>(new Comparator<Ruling>() 
-            //{
-            //        @Override
-            //        public int compare(Ruling o1, Ruling o2)
-            //    {
-            //        return java.lang.Double.compare(o1.getTop(), o2.getTo());
-            //    }
-            //});
-
-            SortedDictionary<PdfPoint, Ruling[]> rv = new SortedDictionary<PdfPoint, Ruling[]>(new TreeMapPdfPointComparer());
+            SortedDictionary<PdfPoint, Ruling[]> rv = new SortedDictionary<PdfPoint, Ruling[]>(new TreeMapPdfPointComparer()); // TreeMap<Point2D, Ruling[]> rv
             // The SortedDictionary will throw ArgumentException on duplicate keys.
-
-            //TreeMap<Point2D, Ruling[]> rv = new TreeMap<>(new Comparator<Point2D>() 
-            //{
-            //        @Override
-            //        public int compare(Point2D o1, Point2D o2)
-            //    {
-            //        if (o1.getY() > o2.getY()) return 1;
-            //        if (o1.getY() < o2.getY()) return -1;
-            //        if (o1.getX() > o2.getX()) return 1;
-            //        if (o1.getX() < o2.getX()) return -1;
-            //        return 0;
-            //    }
-            //});
 
             foreach (Ruling h in horizontals)
             {
@@ -561,13 +539,8 @@ namespace Tabula
                         foreach (var h in tree)//.entrySet()) 
                         {
                             PdfPoint? i = h.Key.IntersectionPoint(so.ruling);
-                            if (!i.HasValue)//== null)
-                            {
-                                continue;
-                            }
-                            //rv.put(i,
-                            //       new Ruling[] { h.getKey().expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT),
-                            //              so.ruling.expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT) });
+                            if (!i.HasValue) continue;
+
                             rv[i.Value] = new Ruling[]
                             {
                                 h.Key.Expand(PERPENDICULAR_PIXEL_EXPAND_AMOUNT),
@@ -579,7 +552,7 @@ namespace Tabula
                         tree.Remove(so.ruling);
                         break;
                     case SOType.HLEFT:
-                        tree[so.ruling] = true; //.put(so.ruling, true);
+                        tree[so.ruling] = true;
                         break;
                 }
             }
