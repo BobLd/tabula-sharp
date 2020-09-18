@@ -191,12 +191,12 @@ namespace Tabula.Tests
 
 			one.Merge(two);
 
-			Assert.Equal(20f, one.GetWidth(), 0);
-			Assert.Equal(10f, one.GetHeight(), 0);
-			Assert.Equal(0f, one.GetLeft(), 0);
-			Assert.Equal(10, one.GetTop(), 0);      //0f, one.getTop(), 0);
-			Assert.Equal(0, one.GetBottom(), 0);    //10f, one.getBottom(), 0);
-			Assert.Equal(20f * 10f, one.GetArea(), 0);
+			Assert.Equal(20f, one.Width, 0);
+			Assert.Equal(10f, one.Height, 0);
+			Assert.Equal(0f, one.Left, 0);
+			Assert.Equal(10, one.Top, 0);      //0f, one.getTop(), 0);
+			Assert.Equal(0, one.Bottom, 0);    //10f, one.getBottom(), 0);
+			Assert.Equal(20f * 10f, one.Area, 0);
 		}
 
 		[Fact]
@@ -207,11 +207,11 @@ namespace Tabula.Tests
 
 			one.Merge(two);
 
-			Assert.Equal(15f, one.GetWidth(), 0);
-			Assert.Equal(15f, one.GetHeight(), 0);
-			Assert.Equal(0f, one.GetLeft(), 0);
-			Assert.Equal(0f, one.GetBottom(), 0); // one.getTop()
-			Assert.Equal(15, one.GetTop(), 0);
+			Assert.Equal(15f, one.Width, 0);
+			Assert.Equal(15f, one.Height, 0);
+			Assert.Equal(0f, one.Left, 0);
+			Assert.Equal(0f, one.Bottom, 0); // one.getTop()
+			Assert.Equal(15, one.Top, 0);
 		}
 
 		[Fact]
@@ -221,7 +221,7 @@ namespace Tabula.Tests
 			Assert.Equal(30, one.Width);
 			Assert.Equal(40, one.Height);
 
-			PdfPoint[] points = one.GetPoints();
+			PdfPoint[] points = one.Points;
 
 			PdfPoint[] expectedPoints = new PdfPoint[]
 			{

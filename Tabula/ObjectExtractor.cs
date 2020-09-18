@@ -93,7 +93,7 @@ namespace Tabula
                     {
                         if (command is Line linePath)
                         {
-                            end_pos = RoundPdfPoint(linePath.To, rounding); // linePath.To // round it?
+                            end_pos = RoundPdfPoint(linePath.To, rounding); // round it?
                             if (!start_pos.HasValue || !end_pos.HasValue)
                             {
                                 break;
@@ -103,7 +103,7 @@ namespace Tabula
 
                             // already clipped
                             Ruling r = new Ruling(line.Point1, line.Point2);
-                            if (r.Length() > 0.01)
+                            if (r.Length > 0.01)
                             {
                                 rulings.Add(r);
                             }
@@ -129,7 +129,7 @@ namespace Tabula
 
                             // already clipped
                             Ruling r = new Ruling(line.Point1, line.Point2); //.intersect(this.currentClippingPath());
-                            if (r.Length() > 0.01)
+                            if (r.Length > 0.01)
                             {
                                 rulings.Add(r);
                             }
@@ -143,21 +143,6 @@ namespace Tabula
             TextStripper pdfTextStripper = new TextStripper(this.pdfDocument, pageNumber);
             pdfTextStripper.Process();
             Utils.Sort(pdfTextStripper.textElements, new TableRectangle.ILL_DEFINED_ORDER());
-
-            /*
-             double w, h;
-             int pageRotation = p.Rotation.Value; //.getRotation();
-             if (Math.Abs(pageRotation) == 90 || Math.Abs(pageRotation) == 270)
-             {
-                 w = p.CropBox.Bounds.Height; //.getHeight();
-                 h = p.CropBox.Bounds.Width;  //.getCropBox().getWidth();
-             }
-             else
-             {
-                 w = p.CropBox.Bounds.Width;  // .getCropBox().getWidth();
-                 h = p.CropBox.Bounds.Height; //.getCropBox().getHeight();
-             }
-             */
 
             return new PageArea(p.CropBox.Bounds,
                 p.Rotation.Value,

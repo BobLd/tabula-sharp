@@ -24,10 +24,10 @@ namespace Tabula.Tests
         public void TestBoundsOfTwoRulings()
         {
             TableRectangle r = new TableRectangle(Utils.Bounds(RULINGS)); //RULINGS.ToList();
-            Assert.Equal(0, r.GetMinX(), 0);
-            Assert.Equal(0, r.GetMinY(), 0);
-            Assert.Equal(3, r.GetWidth(), 0);
-            Assert.Equal(3, r.GetHeight(), 0);
+            Assert.Equal(0, r.MinX, 0);
+            Assert.Equal(0, r.MinY, 0);
+            Assert.Equal(3, r.Width, 0);
+            Assert.Equal(3, r.Height, 0);
         }
 
         [Fact]

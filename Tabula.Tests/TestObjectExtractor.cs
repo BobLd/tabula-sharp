@@ -73,7 +73,7 @@ namespace Tabula.Tests
                 PageIterator pi = oe.Extract();
 
                 PageArea page = pi.Next();
-                List<Ruling> rulings = page.GetRulings();
+                IReadOnlyList<Ruling> rulings = page.GetRulings();
 
                 foreach (Ruling r in rulings)
                 {

@@ -15,14 +15,14 @@ namespace Tabula.Tests
 
 			Assert.NotNull(textElement);
 			Assert.Equal("A", textElement.GetText());
-			Assert.Equal(1f, textElement.GetFontSize(), 0);
-			Assert.Equal(15f, textElement.GetLeft(), 0);
-			Assert.Equal(5f, textElement.GetBottom(), 0); // getTop()
-			Assert.Equal(10f, textElement.GetWidth(), 0);
-			Assert.Equal(20f, textElement.GetHeight(), 0);
-			Assert.Equal(UtilsForTesting.HELVETICA_BOLD, textElement.GetFont());
-			Assert.Equal(1f, textElement.GetWidthOfSpace(), 0);
-			Assert.Equal(0f, textElement.GetDirection(), 0);
+			Assert.Equal(1f, textElement.FontSize, 0);
+			Assert.Equal(15f, textElement.Left, 0);
+			Assert.Equal(5f, textElement.Bottom, 0); // getTop()
+			Assert.Equal(10f, textElement.Width, 0);
+			Assert.Equal(20f, textElement.Height, 0);
+			Assert.Equal(UtilsForTesting.HELVETICA_BOLD, textElement.Font);
+			Assert.Equal(1f, textElement.WidthOfSpace, 0);
+			Assert.Equal(0f, textElement.Direction, 0);
 		}
 
 		[Fact]
@@ -32,14 +32,14 @@ namespace Tabula.Tests
 
 			Assert.NotNull(textElement);
 			Assert.Equal("A", textElement.GetText());
-			Assert.Equal(1f, textElement.GetFontSize(), 0);
-			Assert.Equal(15f, textElement.GetLeft(), 0);
-			Assert.Equal(5f, textElement.GetBottom(), 0); // .getTop()
-			Assert.Equal(10f, textElement.GetWidth(), 0);
-			Assert.Equal(20f, textElement.GetHeight(), 0);
-			Assert.Equal(UtilsForTesting.HELVETICA_BOLD, textElement.GetFont());
-			Assert.Equal(1f, textElement.GetWidthOfSpace(), 0);
-			Assert.Equal(6f, textElement.GetDirection(), 0);
+			Assert.Equal(1f, textElement.FontSize, 0);
+			Assert.Equal(15f, textElement.Left, 0);
+			Assert.Equal(5f, textElement.Bottom, 0); // .getTop()
+			Assert.Equal(10f, textElement.Width, 0);
+			Assert.Equal(20f, textElement.Height, 0);
+			Assert.Equal(UtilsForTesting.HELVETICA_BOLD, textElement.Font);
+			Assert.Equal(1f, textElement.WidthOfSpace, 0);
+			Assert.Equal(6f, textElement.Direction, 0);
 		}
 
 		[Fact]

@@ -16,31 +16,16 @@ namespace Tabula.Json
 
             JObject result = new JObject
             {
-                { "extraction_method", src.GetExtractionMethod() },
-                { "top", src.GetTop() },
-                { "left", src.GetLeft() },
-                { "width", src.GetWidth() },
-                { "height", src.GetHeight() },
-                { "right", src.GetRight() },
-                { "bottom", src.GetBottom() }
+                { "extraction_method", src.ExtractionMethod },
+                { "top", src.Top },
+                { "left", src.Left },
+                { "width", src.Width },
+                { "height", src.Height },
+                { "right", src.Right },
+                { "bottom", src.Bottom }
             };
 
-            var data = JArray.FromObject(src.GetRows(), serializer);
-            //JArray data = new JArray();
-            //result.Add("data", data = new JArray());
-            /*
-            foreach (List<RectangularTextContainer> srcRow in src.getRows())
-            {
-                JArray row = new JArray();
-                foreach (RectangularTextContainer textChunk in srcRow)
-                {
-                    row.Add(serializer.Serialize(writer, textChunk));
-                }
-                data.Add(row);
-            }
-            */
-
-            result.Add("data", data);
+            result.Add("data", JArray.FromObject(src.Rows, serializer));
 
             result.WriteTo(writer);
         }

@@ -12,6 +12,10 @@ namespace Tabula
         //private STRtree si = new STRtree();
         private List<T> rectangles = new List<T>();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="te"></param>
         public void Add(T te)
         {
             rectangles.Add(te);
@@ -22,18 +26,27 @@ namespace Tabula
         /// hack
         /// </summary>
         /// <param name="rectangle"></param>
-        /// <returns></returns>
         private PdfRectangle Expand(PdfRectangle rectangle)
         {
             return new PdfRectangle(rectangle.Left - 1, rectangle.Bottom - 1, rectangle.Right + 1, rectangle.Top + 1);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns></returns>
         public List<T> Contains(PdfRectangle r)
         {
             var expanded = Expand(r);
             return rectangles.Where(tr => expanded.Contains(tr.BoundingBox, true)).ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns></returns>
         public List<T> Contains(TableRectangle r)
         {
             var expanded = Expand(r.BoundingBox);
@@ -87,7 +100,6 @@ namespace Tabula
         /// <summary>
         /// Minimum bounding box of all the Rectangles contained on this RectangleSpatialIndex.
         /// </summary>
-        /// <returns></returns>
         public TableRectangle GetBounds()
         {
             return TableRectangle.BoundingBoxOf(rectangles.Cast<TableRectangle>());

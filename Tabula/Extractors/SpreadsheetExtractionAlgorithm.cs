@@ -91,7 +91,7 @@ namespace Tabula.Extractors
         /// </summary>
         /// <param name="page"></param>
         /// <param name="rulings"></param>
-        public List<Table> Extract(PageArea page, List<Ruling> rulings)
+        public List<Table> Extract(PageArea page, IReadOnlyList<Ruling> rulings)
         {
             // split rulings into horizontal and vertical
             List<Ruling> horizontalR = new List<Ruling>();
@@ -99,11 +99,11 @@ namespace Tabula.Extractors
 
             foreach (Ruling r in rulings)
             {
-                if (r.Horizontal())
+                if (r.IsHorizontal)
                 {
                     horizontalR.Add(r);
                 }
-                else if (r.Vertical())
+                else if (r.IsVertical)
                 {
                     verticalR.Add(r);
                 }
@@ -178,8 +178,8 @@ namespace Tabula.Extractors
                 return false;
             }
             Table table = tables[0];
-            int rowsDefinedByLines = table.GetRowCount();
-            int colsDefinedByLines = table.GetColCount();
+            int rowsDefinedByLines = table.RowCount;
+            int colsDefinedByLines = table.ColumnCount;
 
             tables = new BasicExtractionAlgorithm().Extract(minimalRegion);
             if (tables.Count == 0)
@@ -188,15 +188,15 @@ namespace Tabula.Extractors
                 System.Diagnostics.Debug.Write("SpreadsheetExtractionAlgorithm.isTabular(): no table found.");
             }
             table = tables[0];
-            int rowsDefinedWithoutLines = table.GetRowCount();
-            int colsDefinedWithoutLines = table.GetColCount();
+            int rowsDefinedWithoutLines = table.RowCount;
+            int colsDefinedWithoutLines = table.ColumnCount;
 
             float ratio = (((float)colsDefinedByLines / colsDefinedWithoutLines) + ((float)rowsDefinedByLines / rowsDefinedWithoutLines)) / 2.0f;
 
             return ratio > MAGIC_HEURISTIC_NUMBER && ratio < (1 / MAGIC_HEURISTIC_NUMBER);
         }
 
-        public static List<Cell> FindCells(List<Ruling> horizontalRulingLines, List<Ruling> verticalRulingLines)
+        public static List<Cell> FindCells(IReadOnlyList<Ruling> horizontalRulingLines, IReadOnlyList<Ruling> verticalRulingLines)
         {
             List<Cell> cellsFound = new List<Cell>();
             SortedDictionary<PdfPoint, Ruling[]> intersectionPoints = Ruling.FindIntersections(horizontalRulingLines, verticalRulingLines);
@@ -281,7 +281,7 @@ namespace Tabula.Extractors
 
             foreach (TableRectangle cell in cells)
             {
-                foreach (PdfPoint pt in cell.GetPoints())
+                foreach (PdfPoint pt in cell.Points)
                 {
                     if (pointSet.Contains(pt))
                     {

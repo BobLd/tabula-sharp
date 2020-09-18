@@ -9,25 +9,37 @@ namespace Tabula
     // https://github.com/tabulapdf/tabula-java/blob/ebc83ac2bb1a1cbe54ab8081d70f3c9fe81886ea/src/main/java/technology/tabula/TextChunk.java#L11
     public class TextChunk : RectangularTextContainer<TextElement>, IHasText
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static TextChunk EMPTY => new TextChunk();
 
-        public List<TextElement> textElements = new List<TextElement>();
-
-        private TextChunk() : base(new PdfRectangle())
-        { }
-
-        [Obsolete("Use TextChunk(TextElement) instead.")]
-        public TextChunk(double top, double left, double width, double height) : base(top, left, width, height)
+        /// <summary>
+        /// 
+        /// </summary>
+        private TextChunk()
+            : base(new PdfRectangle())
         {
-            throw new ArgumentOutOfRangeException();
+            SetTextElements(new List<TextElement>());
         }
 
-        public TextChunk(TextElement textElement) : base(textElement.BoundingBox)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="textElement"></param>
+        public TextChunk(TextElement textElement)
+            : base(textElement.BoundingBox)
         {
+            SetTextElements(new List<TextElement>());
             this.Add(textElement);
         }
 
-        public TextChunk(List<TextElement> textElements) : this(textElements[0])
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="textElements"></param>
+        public TextChunk(List<TextElement> textElements)
+            : this(textElements[0])
         {
             for (int i = 1; i < textElements.Count; i++)
             {
@@ -64,7 +76,7 @@ namespace Tabula
 
             { "RLE", DirectionalityOptions.RTL },   // DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING, Strong BCT
             { "RLO", DirectionalityOptions.RTL },   // DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE, Strong BCT
-            { "S", DirectionalityOptions.RTL },     // DIRECTIONALITY_SEGMENT_SEPARATOR, Neutral BCT // Bobld: should be none??
+            { "S", DirectionalityOptions.RTL },     // DIRECTIONALITY_SEGMENT_SEPARATOR, Neutral BCT // Bobld: should be NONE??
 
             { "WS", DirectionalityOptions.NONE },   // DIRECTIONALITY_WHITESPACE, Neutral BCT
 
@@ -78,28 +90,26 @@ namespace Tabula
         /// Splits a TextChunk into N TextChunks, where each chunk is of a single directionality, and
         /// then reverse the RTL ones.
         /// what we're doing here is *reversing* the Unicode bidi algorithm
-        /// in the language of that algorithm, each chunk is a(maximal) directional run.
-        /// We attach whitespace to the beginning of non-RTL
+        /// in the language of that algorithm, each chunk is a (maximal) directional run.
+        /// We attach whitespace to the beginning of non-RTL.
         /// </summary>
         /// <param name="isLtrDominant"></param>
-        /// <returns></returns>
         public TextChunk GroupByDirectionality(bool isLtrDominant)
         {
-            if (this.GetTextElements().Count == 0)
+            if (this.TextElements.Count == 0)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("TextElements is empty.");
             }
 
             List<List<TextElement>> chunks = new List<List<TextElement>>();
             List<TextElement> buff = new List<TextElement>();
             DirectionalityOptions buffDirectionality = DirectionalityOptions.NONE; // the directionality of the characters in buff;
 
-            foreach (TextElement te in this.GetTextElements())
+            foreach (TextElement te in this.TextElements)
             {
                 //TODO: we need to loop over the textelement characters
                 //      because it is possible for a textelement to contain multiple characters?
 
-                // System.out.println(te.getText() + " is " + Character.getDirectionality(te.getText().charAt(0) ) + " " + directionalities.get(Character.getDirectionality(te.getText().charAt(0) )));
                 if (buff.Count == 0)
                 {
                     buff.Add(te);
@@ -129,7 +139,7 @@ namespace Tabula
                         // finish this chunk
                         if (buffDirectionality == DirectionalityOptions.RTL)
                         {
-                            buff.Reverse(); // Collections.reverse(buff);
+                            buff.Reverse();
                         }
                         chunks.Add(buff);
 
@@ -166,9 +176,9 @@ namespace Tabula
         {
             int ltrCnt = 0;
             int rtlCnt = 0;
-            for (int i = 0; i < this.GetTextElements().Count; i++)
+            for (int i = 0; i < this.TextElements.Count; i++)
             {
-                string elementText = this.GetTextElements()[i].GetText();
+                string elementText = this.TextElements[i].GetText();
                 for (int j = 0; j < elementText.Length; j++)
                 {
                     var dir = elementText[j].GetDirectionality();
@@ -187,7 +197,7 @@ namespace Tabula
 
         public TextChunk Merge(TextChunk other)
         {
-            base.Merge(other); // super.merge(other);
+            base.Merge(other);
             return this;
         }
 
@@ -203,11 +213,6 @@ namespace Tabula
             {
                 this.Add(te);
             }
-        }
-
-        public override List<TextElement> GetTextElements()
-        {
-            return textElements;
         }
 
         public override string GetText()
@@ -262,24 +267,24 @@ namespace Tabula
         /// <param name="i"></param>
         public TextChunk[] SplitAt(int i)
         {
-            if (i < 1 || i >= this.GetTextElements().Count)
+            if (i < 1 || i >= this.TextElements.Count)
             {
                 throw new ArgumentException();
             }
 
             TextChunk[] rv = new TextChunk[]
             {
-                new TextChunk(this.GetTextElements().SubList(0, i)),
-                new TextChunk(this.GetTextElements().SubList(i, this.GetTextElements().Count))
+                new TextChunk(this.TextElements.SubList(0, i)),
+                new TextChunk(this.TextElements.SubList(i, this.TextElements.Count))
             };
 
-            System.Diagnostics.Debug.Assert(this.GetTextElements().Count == (rv[0].GetTextElements().Count + rv[1].GetTextElements().Count));
+            System.Diagnostics.Debug.Assert(this.TextElements.Count == (rv[0].TextElements.Count + rv[1].TextElements.Count));
 
             return rv;
         }
 
         /// <summary>
-        /// Removes runs of identical TextElements in this TextChunk
+        /// Removes runs of identical TextElements in this TextChunk.
         /// <para>For example, if the TextChunk contains this string of characters: "1234xxxxx56xx"
         /// and c == 'x' and minRunLength == 4, this method will return a list of TextChunk
         /// such that: ["1234", "56xx"]
@@ -294,9 +299,9 @@ namespace Tabula
             TextChunk[] t;
             List<TextChunk> rv = new List<TextChunk>();
 
-            for (int i = 0; i < this.GetTextElements().Count; i++)
+            for (int i = 0; i < this.TextElements.Count; i++)
             {
-                TextElement textElement = this.GetTextElements()[i];
+                TextElement textElement = this.TextElements[i];
                 string text = textElement.GetText();
                 if (text.Length > 1)
                 {
@@ -313,9 +318,9 @@ namespace Tabula
                 }
                 else
                 {
-                    if (((lastChar != null && !lastChar.Equals(currentChar)) || i + 1 == this.GetTextElements().Count) && subSequenceLength >= minRunLength)
+                    if (((lastChar != null && !lastChar.Equals(currentChar)) || i + 1 == this.TextElements.Count) && subSequenceLength >= minRunLength)
                     {
-                        if (subSequenceStart == 0 && subSequenceLength <= this.GetTextElements().Count - 1)
+                        if (subSequenceStart == 0 && subSequenceLength <= this.TextElements.Count - 1)
                         {
                             t = this.SplitAt(subSequenceLength);
                         }
@@ -373,29 +378,12 @@ namespace Tabula
                 return true;
             }
             return false;
-
-            /*
-            if (this == obj)
-                return true;
-            if (!base.Equals(obj))
-                return false;
-            if (GetType() != obj.GetType())
-                return false;
-            TextChunk other = (TextChunk)obj;
-            if (textElements == null)
-            {
-                if (other.textElements != null)
-                    return false;
-            }
-            else if (!textElements.Equals(other.textElements))
-                return false;
-            return true;
-            */
         }
 
-        public static bool AllSameChar(List<TextChunk> textChunks)
+        public static bool AllSameChar(IReadOnlyList<TextChunk> textChunks)
         {
-            /* the previous, far more elegant version of this method failed when there was an empty TextChunk in textChunks.
+            /* 
+             * the previous, far more elegant version of this method failed when there was an empty TextChunk in textChunks.
              * so I rewrote it in an ugly way. but it works!
              * it would be good for this to get rewritten eventually
              * the purpose is basically just to return true iff there are 2+ TextChunks and they're identical.
@@ -427,7 +415,7 @@ namespace Tabula
 
         public static List<TableLine> GroupByLines(List<TextChunk> textChunks)
         {
-            Utils.Sort(textChunks); // added by bld: force re-sorting
+            Utils.Sort(textChunks); // added by bobLd: force re-sorting
 
             List<TableLine> lines = new List<TableLine>();
 
@@ -448,7 +436,7 @@ namespace Tabula
             {
                 if (last.VerticalOverlapRatio(te) < 0.1)
                 {
-                    if (last.Width / bbwidth > 0.9 && TextChunk.AllSameChar(last.GetTextElements()))
+                    if (last.Width / bbwidth > 0.9 && TextChunk.AllSameChar(last.TextElements))
                     {
                         lines.RemoveAt(lines.Count - 1);
                     }
@@ -458,7 +446,7 @@ namespace Tabula
                 last.AddTextChunk(te);
             }
 
-            if (last.Width / bbwidth > 0.9 && TextChunk.AllSameChar(last.GetTextElements()))
+            if (last.Width / bbwidth > 0.9 && TextChunk.AllSameChar(last.TextElements))
             {
                 lines.RemoveAt(lines.Count - 1);
             }

@@ -129,7 +129,7 @@ namespace Tabula.Tests
             PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/m27.pdf", new PdfRectangle(28.28, 532 - (103.04 - 79.2), 732.6, 532)); // 79.2f, 28.28f, 103.04f, 732.6f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.Extract(page)[0];
-            var firstRow = table.GetRows()[0];
+            var firstRow = table.Rows[0];
 
             Assert.Equal("ALLEGIANT AIR", firstRow[1].GetText());
             Assert.Equal("ALLEGIANT AIR LLC", firstRow[2].GetText());
@@ -173,7 +173,7 @@ namespace Tabula.Tests
             PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/campaign_donors.pdf", new PdfRectangle(40.43, 755 - (398.76 - 255.57), 557.35, 755)); //255.57f, 40.43f, 398.76f, 557.35f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(rulings);
             Table table = bea.Extract(page)[0];
-            var sixthRow = table.GetRows()[5];
+            var sixthRow = table.Rows[5];
 
             Assert.Equal("VALSANGIACOMO BLANC", sixthRow[0].GetText());
             Assert.Equal("OFERNANDO JORGE", sixthRow[1].GetText());
@@ -218,7 +218,7 @@ namespace Tabula.Tests
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 PageArea page = UtilsForTesting.GetPage(EU_017_PDF, 3);
-                BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.GetVerticalRulings());
+                BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.VerticalRulings);
                 Table table = bea.Extract(page.GetArea(new PdfRectangle(148.44, 543 - (711.875 - 299.625), 452.32, 543)))[0]; //299.625f, 148.44f, 711.875f, 452.32f))[0];
 
                 var result = UtilsForTesting.TableToArrayOfRows(table);
@@ -274,7 +274,7 @@ namespace Tabula.Tests
             PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/12s0324.pdf", new PdfRectangle(17.25, 342, 410.25, 560.5)); // 99.0f, 17.25f, 316.5f, 410.25f);
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.Extract(page)[0];
-            var rows = table.GetRows();
+            var rows = table.Rows;
             var firstRow = rows[0];
             var firstRowFirstCell = firstRow[0].GetText();
             var lastRow = rows[rows.Count - 1];
@@ -288,10 +288,10 @@ namespace Tabula.Tests
         public void TestNaturalOrderOfRectangles()
         {
             PageArea page = UtilsForTesting.GetPage("Resources/us-017.pdf", 2).GetArea(new PdfRectangle(90, 97, 532, 352)); //446.0f, 97.0f, 685.0f, 520.0f);
-            BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.GetVerticalRulings());
+            BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.VerticalRulings);
             Table table = bea.Extract(page)[0];
 
-            List<Cell> cells = table.Cells; //new List<RectangularTextContainer>(table.cells.Values);
+            IReadOnlyList<Cell> cells = table.Cells; //new List<RectangularTextContainer>(table.cells.Values);
             foreach (var rectangularTextContainer in cells)
             {
                 Debug.Print(rectangularTextContainer.GetText());

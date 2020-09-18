@@ -13,19 +13,16 @@ namespace Tabula
         internal Letter letter; // do we really use it
 
         private string text;
-        private FontDetails font; // PDFont
-        private double fontSize;
-        private double widthOfSpace, dir;
         private static double AVERAGE_CHAR_TOLERANCE = 0.3;
 
         public TextElement(PdfRectangle pdfRectangle, FontDetails font, double fontSize, string c, double widthOfSpace, double dir)
             : base(pdfRectangle)
         {
             this.text = c;
-            this.widthOfSpace = widthOfSpace;
-            this.fontSize = fontSize;
-            this.font = font;
-            this.dir = dir;
+            this.WidthOfSpace = widthOfSpace;
+            this.FontSize = fontSize;
+            this.Font = font;
+            this.Direction = dir;
         }
 
         [Obsolete("Use TextElement(PdfRectangle...) instead.")]
@@ -43,37 +40,22 @@ namespace Tabula
         {
             //base.setRect(x, y, width, height);
             this.text = c;
-            this.widthOfSpace = widthOfSpace;
-            this.fontSize = fontSize;
-            this.font = font;
-            this.dir = dir;
+            this.WidthOfSpace = widthOfSpace;
+            this.FontSize = fontSize;
+            this.Font = font;
+            this.Direction = dir;
             throw new ArgumentOutOfRangeException();
         }
 
-        public string GetText()
-        {
-            return text;
-        }
+        public string GetText() => text;
 
-        public double GetDirection()
-        {
-            return dir;
-        }
+        public double Direction { get; }
 
-        public double GetWidthOfSpace()
-        {
-            return widthOfSpace;
-        }
+        public double WidthOfSpace { get; }
 
-        public FontDetails GetFont()
-        {
-            return font;
-        }
+        public FontDetails Font { get; }
 
-        public double GetFontSize()
-        {
-            return fontSize;
-        }
+        public double FontSize { get; }
 
         public override string ToString()
         {
@@ -89,16 +71,17 @@ namespace Tabula
             const int prime = 31;
             int result = base.GetHashCode();
 
-            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(dir), 0); //java.lang.Float.floatToIntBits(dir);
-            result = prime * result + ((font == null) ? 0 : font.GetHashCode());
-            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(fontSize), 0); // java.lang.Float.floatToIntBits(fontSize);
+            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(Direction), 0); //java.lang.Float.floatToIntBits(dir);
+            result = prime * result + ((Font == null) ? 0 : Font.GetHashCode());
+            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(FontSize), 0); // java.lang.Float.floatToIntBits(fontSize);
             result = prime * result + ((text == null) ? 0 : text.GetHashCode());
-            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(widthOfSpace), 0); //java.lang.Float.floatToIntBits(widthOfSpace);
+            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(WidthOfSpace), 0); //java.lang.Float.floatToIntBits(widthOfSpace);
             return result;
         }
 
         public override bool Equals(object obj)
         {
+
             if (this == obj)
                 return true;
             if (!base.Equals(obj))
@@ -106,19 +89,19 @@ namespace Tabula
             if (!this.GetType().Equals(obj.GetType())) // getClass() != obj.getClass())
                 return false;
             TextElement other = (TextElement)obj;
-            if (BitConverter.ToInt32(BitConverter.GetBytes(dir), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.dir), 0)) //if (java.lang.Float.floatToIntBits(dir) != java.lang.Float.floatToIntBits(other.dir))
+            if (BitConverter.ToInt32(BitConverter.GetBytes(Direction), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.Direction), 0)) //if (java.lang.Float.floatToIntBits(dir) != java.lang.Float.floatToIntBits(other.dir))
                 return false;
-            if (font == null)
+            if (Font == null)
             {
-                if (other.font != null)
+                if (other.Font != null)
                     return false;
             }
-            else if (!font.Equals(other.font))
+            else if (!Font.Equals(other.Font))
             {
                 return false;
             }
 
-            if (BitConverter.ToInt32(BitConverter.GetBytes(fontSize), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.fontSize), 0)) //if (java.lang.Float.floatToIntBits(fontSize) != java.lang.Float.floatToIntBits(other.fontSize))
+            if (BitConverter.ToInt32(BitConverter.GetBytes(FontSize), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.FontSize), 0)) //if (java.lang.Float.floatToIntBits(fontSize) != java.lang.Float.floatToIntBits(other.fontSize))
                 return false;
             if (text == null)
             {
@@ -130,7 +113,7 @@ namespace Tabula
                 return false;
             }
 
-            return BitConverter.ToInt32(BitConverter.GetBytes(widthOfSpace), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.widthOfSpace), 0);  //return java.lang.Float.floatToIntBits(widthOfSpace) == java.lang.Float.floatToIntBits(other.widthOfSpace);
+            return BitConverter.ToInt32(BitConverter.GetBytes(WidthOfSpace), 0) != BitConverter.ToInt32(BitConverter.GetBytes(other.WidthOfSpace), 0);  //return java.lang.Float.floatToIntBits(widthOfSpace) == java.lang.Float.floatToIntBits(other.widthOfSpace);
         }
 
         public static List<TextChunk> MergeWords(List<TextElement> textElements)
@@ -146,7 +129,7 @@ namespace Tabula
         /// <param name="textElements"></param>
         /// <param name="verticalRulings"></param>
         /// <returns></returns>
-        public static List<TextChunk> MergeWords(List<TextElement> textElements, List<Ruling> verticalRulings)
+        public static List<TextChunk> MergeWords(List<TextElement> textElements, IReadOnlyList<Ruling> verticalRulings)
         {
             List<TextChunk> textChunks = new List<TextChunk>();
 
@@ -174,10 +157,10 @@ namespace Tabula
             TextChunk firstTC = textChunks[0];
 
             double previousAveCharWidth = firstTC.Width;
-            double endOfLastTextX = firstTC.GetRight();
-            double maxYForLine = firstTC.GetTop(); //.getBottom();
+            double endOfLastTextX = firstTC.Right;
+            double maxYForLine = firstTC.Top; //.getBottom();
             double maxHeightForLine = firstTC.Height;
-            double minYTopForLine = firstTC.GetBottom();//.getTop();
+            double minYTopForLine = firstTC.Bottom;//.getTop();
             double lastWordSpacing = -1;
             double wordSpacing, deltaSpace, averageCharWidth, deltaCharWidth;
             double expectedStartOfNextWordX, dist;
@@ -188,7 +171,7 @@ namespace Tabula
             foreach (TextElement chr in textElements.Skip(1)) //copyOfTextElements)
             {
                 currentChunk = textChunks[textChunks.Count - 1];
-                prevChar = currentChunk.textElements[currentChunk.textElements.Count - 1];
+                prevChar = currentChunk.TextElements[currentChunk.TextElements.Count - 1];
 
                 // if same char AND overlapped, skip
                 if (chr.GetText().Equals(prevChar.GetText()) && (prevChar.OverlapRatio(chr) > 0.5))
@@ -197,14 +180,14 @@ namespace Tabula
                 }
 
                 // if chr is a space that overlaps with prevChar, skip
-                if (chr.GetText().Equals(" ") && Utils.Feq(prevChar.GetLeft(), chr.GetLeft()) && Utils.Feq(prevChar.GetBottom(), chr.GetBottom())) // getTop() getTop()
+                if (chr.GetText().Equals(" ") && Utils.Feq(prevChar.Left, chr.Left) && Utils.Feq(prevChar.Bottom, chr.Bottom)) // getTop() getTop()
                 {
                     continue;
                 }
 
                 // Resets the average character width when we see a change in font
                 // or a change in the font size
-                if ((chr.GetFont() != prevChar.GetFont()) || !Utils.Feq(chr.GetFontSize(), prevChar.GetFontSize()))
+                if ((chr.Font != prevChar.Font) || !Utils.Feq(chr.FontSize, prevChar.FontSize))
                 {
                     previousAveCharWidth = -1;
                 }
@@ -213,8 +196,8 @@ namespace Tabula
                 acrossVerticalRuling = false;
                 foreach (Ruling r in verticalRulings)
                 {
-                    if (VerticallyOverlapsRuling(prevChar, r) && VerticallyOverlapsRuling(chr, r) && prevChar.X < r.GetPosition() && chr.X > r.GetPosition() ||
-                        (prevChar.X > r.GetPosition() && chr.X < r.GetPosition()))
+                    if (VerticallyOverlapsRuling(prevChar, r) && VerticallyOverlapsRuling(chr, r) && prevChar.X < r.Position && chr.X > r.Position ||
+                        (prevChar.X > r.Position && chr.X < r.Position))
                     {
                         acrossVerticalRuling = true;
                         break;
@@ -223,7 +206,7 @@ namespace Tabula
 
                 // Estimate the expected width of the space based on the
                 // space character with some margin.
-                wordSpacing = chr.GetWidthOfSpace();
+                wordSpacing = chr.WidthOfSpace;
                 deltaSpace = 0;
                 if (double.IsNaN(wordSpacing) || wordSpacing == 0)
                 {
@@ -264,7 +247,7 @@ namespace Tabula
 
                 // new line?
                 sameLine = true;
-                if (!Utils.Overlap(chr.GetTop(), chr.Height, maxYForLine, maxHeightForLine)) // getBottom()
+                if (!Utils.Overlap(chr.Top, chr.Height, maxYForLine, maxHeightForLine)) // getBottom()
                 {
                     endOfLastTextX = -1;
                     expectedStartOfNextWordX = -double.MaxValue;
@@ -274,17 +257,17 @@ namespace Tabula
                     sameLine = false;
                 }
 
-                endOfLastTextX = chr.GetRight();
+                endOfLastTextX = chr.Right;
 
                 // should we add a space?
-                if (!acrossVerticalRuling && sameLine && expectedStartOfNextWordX < chr.GetLeft() && !prevChar.GetText().EndsWith(" "))
+                if (!acrossVerticalRuling && sameLine && expectedStartOfNextWordX < chr.Left && !prevChar.GetText().EndsWith(" "))
                 {
                     sp = new TextElement(
                         new PdfRectangle(prevChar.BoundingBox.BottomLeft, new PdfPoint(expectedStartOfNextWordX, prevChar.BoundingBox.TopRight.Y)),
-                            prevChar.GetFont(),
-                            prevChar.GetFontSize(),
+                            prevChar.Font,
+                            prevChar.FontSize,
                             " ",
-                            prevChar.GetWidthOfSpace(), 0);
+                            prevChar.WidthOfSpace, 0);
 
                     currentChunk.Add(sp);
                 }
@@ -293,11 +276,11 @@ namespace Tabula
                     sp = null;
                 }
 
-                maxYForLine = Math.Max(chr.GetTop(), maxYForLine); // getBottom()
+                maxYForLine = Math.Max(chr.Top, maxYForLine); // getBottom()
                 maxHeightForLine = Math.Max(maxHeightForLine, chr.Height);
-                minYTopForLine = Math.Min(minYTopForLine, chr.GetBottom()); // .getTop()
+                minYTopForLine = Math.Min(minYTopForLine, chr.Bottom); // .getTop()
 
-                dist = chr.GetLeft() - (sp != null ? sp.GetRight() : prevChar.GetRight());
+                dist = chr.Left - (sp != null ? sp.Right : prevChar.Right);
 
                 // added by BobLd
                 // handle cases where order of character is not good, implement quicksort???
@@ -336,7 +319,7 @@ namespace Tabula
 
         private static bool VerticallyOverlapsRuling(TextElement te, Ruling r)
         {
-            return Math.Max(0, Math.Min(te.GetTop(), r.GetY2()) - Math.Max(te.GetBottom(), r.GetY1())) > 0; // .getBottom() .getTop()
+            return Math.Max(0, Math.Min(te.Top, r.Y2) - Math.Max(te.Bottom, r.Y1)) > 0; // .getBottom() .getTop()
         }
     }
 }

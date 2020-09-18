@@ -11,13 +11,17 @@ namespace Tabula
         {
             public int Compare(Cell arg0, Cell arg1)
             {
-                return -arg0.GetTop().CompareTo(arg1.GetTop()); // bobld multiply by -1 to sort from top to bottom (reading order)
+                return -arg0.Top.CompareTo(arg1.Top); // bobld multiply by -1 to sort from top to bottom (reading order)
             }
         }
 
         private readonly List<Ruling> verticalRulings;
         private readonly List<Ruling> horizontalRulings;
         private readonly RectangleSpatialIndex<Cell> si = new RectangleSpatialIndex<Cell>();
+
+        public IReadOnlyList<Ruling> VerticalRulings => verticalRulings;
+
+        public IReadOnlyList<Ruling> HorizontalRulings => horizontalRulings;
 
         public TableWithRulingLines(TableRectangle area, List<Cell> cells, List<Ruling> horizontalRulings, List<Ruling> verticalRulings, IExtractionAlgorithm extractionAlgorithm)
             : base(extractionAlgorithm)
@@ -41,6 +45,7 @@ namespace Tabula
             }
 
             List<List<Cell>> rowsOfCells = TableWithRulingLines.RowsOfCells(cells);
+            var siBounds = si.GetBounds();
             for (int i = 0; i < rowsOfCells.Count; i++)
             {
                 List<Cell> row = rowsOfCells[i];
@@ -58,7 +63,7 @@ namespace Tabula
                                 //                   si.getBounds().getBottom() - cell.getBottom()) // height
 
                                 // BobLd: really not sure here
-                                new PdfRectangle(si.GetBounds().GetLeft(), si.GetBounds().GetBottom(), cell.GetLeft(), cell.GetBottom())
+                                new PdfRectangle(siBounds.Left, siBounds.Bottom, cell.Left, cell.Bottom)
                                 ));
                 int startColumn = 0;
                 foreach (List<Cell> r in others)
@@ -93,7 +98,7 @@ namespace Tabula
             iter.MoveNext();
             c = iter.Current;
 
-            lastTop = c.GetTop();
+            lastTop = c.Top;
             lastRow = new List<Cell>();
             lastRow.Add(c);
             rv.Add(lastRow);
@@ -101,13 +106,13 @@ namespace Tabula
             while (iter.MoveNext())
             {
                 c = iter.Current;
-                if (!Utils.Feq(c.GetTop(), lastTop))
+                if (!Utils.Feq(c.Top, lastTop))
                 {
                     lastRow = new List<Cell>();
                     rv.Add(lastRow);
                 }
                 lastRow.Add(c);
-                lastTop = c.GetTop();
+                lastTop = c.Top;
             }
             return rv;
         }

@@ -20,7 +20,7 @@ namespace Tabula.Tests
             };
             line.SetTextElements(tList);
 
-			Assert.Equal("testTabula1", line.GetTextElements()[0].GetText());
+			Assert.Equal("testTabula1", line.TextElements[0].GetText());
 		}
 
 		[Fact]
@@ -31,7 +31,7 @@ namespace Tabula.Tests
 			TextElement tElement = new TextElement(new PdfRectangle(), UtilsForTesting.HELVETICA_BOLD, 10, "testTabula2", 5, 0);
 			TextChunk tChunk = new TextChunk(tElement);
 			line.AddTextChunk(3, tChunk);
-			Assert.Equal("testTabula2", line.GetTextElements()[3].GetText());
+			Assert.Equal("testTabula2", line.TextElements[3].GetText());
 		}
 
 		[Fact]
@@ -44,7 +44,7 @@ namespace Tabula.Tests
 			line.AddTextChunk(0, tChunk);
 			line.AddTextChunk(0, tChunk);
 
-			Assert.Equal("testtest", line.GetTextElements()[0].GetText());
+			Assert.Equal("testtest", line.TextElements[0].GetText());
 		}
 
 		[Fact]

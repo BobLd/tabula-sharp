@@ -304,8 +304,8 @@ namespace Tabula
             List<PdfPoint> points = new List<PdfPoint>();
             foreach (Ruling r in rulings)
             {
-                points.Add(r.GetP1());
-                points.Add(r.GetP2());
+                points.Add(r.P1);
+                points.Add(r.P2);
             }
 
             // snap by X
@@ -416,10 +416,10 @@ namespace Tabula
         /// <param name="fromIndex">low endpoint (inclusive) of the subList</param>
         /// <param name="toIndex">high endpoint (exclusive) of the subList</param>
         /// <returns></returns>
-        public static List<T> SubList<T>(this List<T> list, int fromIndex, int toIndex)
+        public static List<T> SubList<T>(this IReadOnlyList<T> list, int fromIndex, int toIndex)
         {
             //int count = toIndex - fromIndex; // - 1;
-            return list.GetRange(fromIndex, toIndex - fromIndex);
+            return list.ToList().GetRange(fromIndex, toIndex - fromIndex);
         }
     }
 }

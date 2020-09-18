@@ -11,13 +11,13 @@ namespace Tabula.Tests
 		[Fact]
 		public void TestGetWidth()
 		{
-			Assert.Equal(10f, ruling.GetWidth(), 5);
+			Assert.Equal(10f, ruling.Width, 5);
 		}
 
 		[Fact]
 		public void TestGetHeight()
 		{
-			Assert.Equal(10f, ruling.GetHeight(),5);
+			Assert.Equal(10f, ruling.Height,5);
 		}
 
 		[Fact]
@@ -52,7 +52,7 @@ namespace Tabula.Tests
 		public void TestGetPositionError()
 		{
 			Ruling other = new Ruling(0, 0, 1, 1);
-			Assert.Throws<InvalidOperationException>(() => other.GetPosition());
+			Assert.Throws<InvalidOperationException>(() => other.Position);
 		}
 
 		[Fact]
@@ -72,14 +72,14 @@ namespace Tabula.Tests
 		public void TestGetStartError()
 		{
 			Ruling other = new Ruling(0, 0, 1, 1);
-			Assert.Throws<InvalidOperationException>(() => other.GetStart());
+			Assert.Throws<InvalidOperationException>(() => other.Start);
 		}
 
 		[Fact]
 		public void TestGetEndError()
 		{
 			Ruling other = new Ruling(0, 0, 1, 1);
-			Assert.Throws<InvalidOperationException>(() => other.GetEnd());
+			Assert.Throws<InvalidOperationException>(() => other.End);
 		}
 
 		[Fact]
@@ -92,16 +92,16 @@ namespace Tabula.Tests
 		[Fact]
 		public void TestColinear()
 		{
-			//		Ruling another = new Ruling(0, 0, 500, 5);
+			// Ruling another = new Ruling(0, 0, 500, 5);
 			PdfPoint float1 = new PdfPoint(20, 20);
 			PdfPoint float2 = new PdfPoint(0, 0);
 			PdfPoint float3 = new PdfPoint(20, 0);
 			PdfPoint float4 = new PdfPoint(0, 20);
 
-			Assert.False(ruling.Colinear(float1));
-			Assert.True(ruling.Colinear(float2));
-			Assert.False(ruling.Colinear(float3));
-			Assert.False(ruling.Colinear(float4));
+			Assert.False(ruling.IsColinear(float1));
+			Assert.True(ruling.IsColinear(float2));
+			Assert.False(ruling.IsColinear(float3));
+			Assert.False(ruling.IsColinear(float4));
 		}
 	}
 }

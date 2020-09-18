@@ -43,7 +43,7 @@ namespace Tabula.Tests
 
         public static string[][] TableToArrayOfRows(Table table)
         {
-            var tableRows = table.GetRows();
+            var tableRows = table.Rows;
 
             int maxColCount = 0;
 
@@ -56,7 +56,7 @@ namespace Tabula.Tests
                 }
             }
 
-            Assert.Equal(maxColCount, table.GetColCount());
+            Assert.Equal(maxColCount, table.ColumnCount);
 
             string[][] rv = new string[tableRows.Count][];
 
@@ -66,7 +66,7 @@ namespace Tabula.Tests
                 rv[i] = new string[maxColCount];
                 for (int j = 0; j < row.Count; j++)
                 {
-                    rv[i][j] = table.GetCell(i, j).GetText();
+                    rv[i][j] = table[i, j].GetText();
                 }
             }
 
