@@ -16,10 +16,10 @@ namespace Tabula.Json
 
             JObject result = new JObject
             {
-                { "top", src.GetTop() },
-                { "left", src.GetLeft() },
-                { "width", src.GetWidth() },
-                { "height", src.GetHeight() },
+                { "top", src.Top },
+                { "left", src.Left },
+                { "width", src.Width },
+                { "height", src.Height },
                 { "text", src.GetText() }
             };
             result.WriteTo(writer);

@@ -160,10 +160,10 @@ namespace Tabula.Tests
             List<Cell> cells = SpreadsheetExtractionAlgorithm.FindCells(SINGLE_CELL_RULINGS[0].ToList(), SINGLE_CELL_RULINGS[1].ToList());
             Assert.Single(cells);
             Cell cell = cells[0];
-            Assert.True(Utils.Feq(151.65355, cell.GetLeft()));
-            Assert.True(Utils.Feq(185.6693, cell.GetBottom())); // .getTop()
-            Assert.True(Utils.Feq(229.08083, cell.GetWidth()));
-            Assert.True(Utils.Feq(128.97636, cell.GetHeight()));
+            Assert.True(Utils.Feq(151.65355, cell.Left));
+            Assert.True(Utils.Feq(185.6693, cell.Bottom)); // .getTop()
+            Assert.True(Utils.Feq(229.08083, cell.Width));
+            Assert.True(Utils.Feq(128.97636, cell.Height));
         }
 
         [Fact]
@@ -304,15 +304,15 @@ namespace Tabula.Tests
         public void TestMergeLinesCloseToEachOther()
         {
             PageArea page = UtilsForTesting.GetPage("Resources/20.pdf", 1);
-            List<Ruling> rulings = page.GetVerticalRulings();
+            IReadOnlyList<Ruling> rulings = page.VerticalRulings;
             Assert.Equal(6, rulings.Count);
 
             double[] expectedRulings = new double[] { 105.554812, 107.522417, 160.568521, 377.172662, 434.963828, 488.229949 };
 
-            var lefts = rulings.Select(x => x.GetLeft()).ToArray();
+            var lefts = rulings.Select(x => x.Left).ToArray();
             for (int i = 0; i < rulings.Count; i++)
             {
-                Assert.Equal(expectedRulings[i], rulings[i].GetLeft(), 2);
+                Assert.Equal(expectedRulings[i], rulings[i].Left, 2);
             }
         }
 
@@ -339,7 +339,7 @@ namespace Tabula.Tests
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
             List<Table> tables = se.Extract(page);
             Table table = tables[0];
-            Assert.Equal(15, table.GetRows().Count);
+            Assert.Equal(15, table.Rows.Count);
 
             const string expected = "\"\",TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM,M.U$S,TM\n" +
                     "Peces vivos,1,25,1,23,2,38,1,37,2,67,2,89,1\n" +
@@ -431,7 +431,7 @@ namespace Tabula.Tests
             Table table = tables[0];
             Assert.Equal(18, table.Cells.Count);
 
-            var rows = table.GetRows();
+            var rows = table.Rows;
 
             Assert.Equal("Payroll Period", rows[0][0].GetText());
             Assert.Equal("One Withholding\rAllowance", rows[0][1].GetText());
@@ -462,8 +462,8 @@ namespace Tabula.Tests
             Assert.Single(tables);
             Table table = tables[0];
 
-            Assert.Equal("Total Supply", table.GetRows()[4][0].GetText());
-            Assert.Equal("6.6", table.GetRows()[6][2].GetText());
+            Assert.Equal("Total Supply", table.Rows[4][0].GetText());
+            Assert.Equal("6.6", table.Rows[6][2].GetText());
         }
 
         [Fact]
@@ -475,7 +475,7 @@ namespace Tabula.Tests
             List<Table> tables = sea.Extract(page);
             for (int i = 1; i < tables.Count; i++)
             {
-                Assert.True(tables[i - 1].GetTop() >= tables[i].GetTop()); // Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
+                Assert.True(tables[i - 1].Top >= tables[i].Top); // Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
             }
         }
 
@@ -488,7 +488,7 @@ namespace Tabula.Tests
             List<Table> tables = sea.Extract(page);
             for (int i = 1; i < tables.Count; i++)
             {
-                Assert.True(tables[i - 1].GetTop() >= tables[i].GetTop()); //Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
+                Assert.True(tables[i - 1].Top >= tables[i].Top); //Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
             }
         }
 
@@ -501,7 +501,7 @@ namespace Tabula.Tests
             // Assert.Equal(1, tables.size());
             Table table = tables[0];
 
-            var rows = table.GetRows();
+            var rows = table.Rows;
 
             Assert.Equal("اسمي سلطان", rows[1][1].GetText());
             Assert.Equal("من اين انت؟", rows[2][1].GetText());
@@ -531,7 +531,7 @@ namespace Tabula.Tests
             List<Table> tables = sea.Extract(page);
             Assert.Single(tables);
             Table table = tables[0];
-            var rows = table.GetRows();
+            var rows = table.Rows;
 
             Assert.Equal("الانتخابات التشريعية  2014", rows[0][0].GetText()); // the doubled spaces might be a bug in my implementation. // bobld: missing space or worng words order
             Assert.Equal("ورقة كشف نتائج دائرة مدنين", rows[1][0].GetText());
@@ -567,7 +567,7 @@ namespace Tabula.Tests
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
             Table table = sea.Extract(page)[0];
 
-            Assert.Equal("REGIONAL PULMONARY & SLEEP\rMEDICINE", table.GetRows()[8][1].GetText());
+            Assert.Equal("REGIONAL PULMONARY & SLEEP\rMEDICINE", table.Rows[8][1].GetText());
         }
 
         [Fact]

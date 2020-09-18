@@ -7,41 +7,41 @@ namespace Tabula.Tests
 		[Fact]
 		public void TestEmpty()
 		{
-			Table empty = Table.Empty();
+			Table empty = Table.EMPTY;
 
-			Assert.Equal(Cell.EMPTY, empty.GetCell(0, 0));
-			Assert.Equal(Cell.EMPTY, empty.GetCell(1, 1));
+			Assert.Equal(Cell.EMPTY, empty[0, 0]);
+			Assert.Equal(Cell.EMPTY, empty[1, 1]);
 
-			Assert.Equal(0, empty.GetRowCount());
-			Assert.Equal(0, empty.GetColCount());
+			Assert.Equal(0, empty.RowCount);
+			Assert.Equal(0, empty.ColumnCount);
 
-			Assert.Equal("", empty.GetExtractionMethod());
+			Assert.Equal("", empty.ExtractionMethod);
 
-			Assert.Equal(0, empty.GetTop(), 0);
-			Assert.Equal(0, empty.GetRight(), 0);
-			Assert.Equal(0, empty.GetBottom(), 0);
-			Assert.Equal(0, empty.GetLeft(), 0);
+			Assert.Equal(0, empty.Top, 0);
+			Assert.Equal(0, empty.Right, 0);
+			Assert.Equal(0, empty.Bottom, 0);
+			Assert.Equal(0, empty.Left, 0);
 
-			Assert.Equal(0, empty.GetArea(), 0);
+			Assert.Equal(0, empty.Area, 0);
 		}
 
 		[Fact]
 		public void TestRowColCounts()
 		{
-			Table table = Table.Empty();
+			Table table = Table.EMPTY;
 
-			Assert.Equal(0, table.GetRowCount());
-			Assert.Equal(0, table.GetColCount());
+			Assert.Equal(0, table.RowCount);
+			Assert.Equal(0, table.ColumnCount);
 
 			table.Add(Cell.EMPTY, 0, 0);
 
-			Assert.Equal(1, table.GetRowCount());
-			Assert.Equal(1, table.GetColCount());
+			Assert.Equal(1, table.RowCount);
+			Assert.Equal(1, table.ColumnCount);
 
 			table.Add(Cell.EMPTY, 9, 9);
 
-			Assert.Equal(10, table.GetRowCount());
-			Assert.Equal(10, table.GetColCount());
+			Assert.Equal(10, table.RowCount);
+			Assert.Equal(10, table.ColumnCount);
 		}
 	}
 }

@@ -13,10 +13,11 @@ namespace Tabula
         private List<TextChunk> textChunks = new List<TextChunk>();
         public static readonly char[] WHITE_SPACE_CHARS = { ' ', '\t', '\r', '\n', '\f' };
 
-        public List<TextChunk> GetTextElements()
-        {
-            return textChunks;
-        }
+        /// <summary>
+        /// Get the list of text elements.
+        /// <para>This is a read-only list. Use <see cref="AddTextChunk(TextChunk)"/> to add a <see cref="TextChunk"/>.</para>
+        /// </summary>
+        public IReadOnlyList<TextChunk> TextElements => textChunks;
 
         public void SetTextElements(List<TextChunk> textChunks)
         {
@@ -27,7 +28,7 @@ namespace Tabula
         {
             if (i < 0)
             {
-                throw new ArgumentException("i can't be less than 0");
+                throw new ArgumentException("Index can't be less than 0.", nameof(i));
             }
 
             int s = this.textChunks.Count;
@@ -37,7 +38,7 @@ namespace Tabula
                 {
                     this.textChunks.Add(null);
                 }
-                this.textChunks[i] = textChunk;//this.textChunks.set(i, textChunk);
+                this.textChunks[i] = textChunk;
             }
             else
             {
@@ -77,7 +78,7 @@ namespace Tabula
         {
             TableLine rv = new TableLine();
 
-            foreach (TextChunk t in line.GetTextElements())
+            foreach (TextChunk t in line.TextElements)
             {
                 foreach (TextChunk r in t.Squeeze(c, minRunLength))
                 {

@@ -18,7 +18,7 @@ namespace Tabula.Detectors
     {
         public List<TableRectangle> Detect(PageArea page)
         {
-            List<Cell> cells = SpreadsheetExtractionAlgorithm.FindCells(page.GetHorizontalRulings(), page.GetVerticalRulings());
+            List<Cell> cells = SpreadsheetExtractionAlgorithm.FindCells(page.HorizontalRulings, page.VerticalRulings);
 
             //SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
 

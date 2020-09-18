@@ -8,7 +8,6 @@ namespace Tabula.Writers
 {
     public class CSVWriter : IWriter
     {
-        //private CSVFormat format;
         public readonly string delimiter;
 
         public CSVWriter(string delimiter = ",")
@@ -30,7 +29,7 @@ namespace Tabula.Writers
 
             foreach (Table table in tables)
             {
-                foreach (var row in table.GetRows())
+                foreach (var row in table.Rows)
                 {
                     //List<string> cells = new List<string>(row.Count);
                     //bool isfirst = true;

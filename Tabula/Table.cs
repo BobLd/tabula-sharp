@@ -7,32 +7,43 @@ namespace Tabula
 {
     public class Table : TableRectangle
     {
-        public static Table Empty() { return new Table(""); }
+        /// <summary>
+        /// An empty table.
+        /// </summary>
+        public static Table EMPTY => new Table("");
 
         private Table(string extractionMethod)
         {
-            this.extractionMethod = extractionMethod;
+            this.ExtractionMethod = extractionMethod;
         }
 
         public Table(IExtractionAlgorithm extractionAlgorithm)
             : this(extractionAlgorithm.ToString())
         { }
 
-        private string extractionMethod;
-
-        private int rowCount = 0;
-        private int colCount = 0;
-
-        /* visible for testing */
         //TreeMap<CellPosition, RectangularTextContainer> cells = new TreeMap<>();
         private SortedDictionary<CellPosition, Cell> cells = new SortedDictionary<CellPosition, Cell>();
 
-        public List<Cell> Cells => cells.Values.ToList();
+        /// <summary>
+        /// Get the list of cells.
+        /// <para>This is a read-only list. Use <see cref="Add(RectangularTextContainer, int, int)"/> to add a <see cref="Cell"/>.</para>
+        /// </summary>
+        public IReadOnlyList<Cell> Cells => cells.Values.ToList();
 
-        public int GetRowCount() { return rowCount; }
-        public int GetColCount() { return colCount; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int RowCount { get; private set; }
 
-        public string GetExtractionMethod() { return extractionMethod; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int ColumnCount { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ExtractionMethod { get; }
 
         public void Add(RectangularTextContainer chunk, int row, int col)
         {
@@ -40,82 +51,85 @@ namespace Tabula
             {
                 this.Merge(cell);
 
-                rowCount = Math.Max(rowCount, row + 1);
-                colCount = Math.Max(colCount, col + 1);
+                RowCount = Math.Max(RowCount, row + 1);
+                ColumnCount = Math.Max(ColumnCount, col + 1);
 
                 CellPosition cp = new CellPosition(row, col);
 
-                //RectangularTextContainer old = cells[cp]; //.get(cp);
-                //if (old != null) chunk.merge(old);
                 if (cells.TryGetValue(cp, out var old))
                 {
                     cell.Merge(old);
                 }
 
-                cells[cp] = cell; //cells.put(cp, chunk);
+                cells[cp] = cell;
 
                 this.memoizedRows = null;
             }
             else
             {
-                throw new ArgumentException();
+                throw new ArgumentException("Cannot add a chunk that is not a Cell.", nameof(chunk));
             }
         }
 
-        private List<List<Cell>> memoizedRows = null;
+        private List<List<Cell>> memoizedRows;
 
-        public List<List<Cell>> GetRows()
+        /// <summary>
+        /// 
+        /// </summary>
+        public IReadOnlyList<IReadOnlyList<Cell>> Rows
         {
-            if (this.memoizedRows == null) this.memoizedRows = ComputeRows();
-            return this.memoizedRows;
+            get
+            {
+                if (this.memoizedRows == null)
+                {
+                    this.memoizedRows = ComputeRows();
+                }
+                return this.memoizedRows;
+            }
         }
 
         private List<List<Cell>> ComputeRows()
         {
             List<List<Cell>> rows = new List<List<Cell>>();
-            for (int i = 0; i < rowCount; i++)
+            for (int i = 0; i < RowCount; i++)
             {
                 List<Cell> lastRow = new List<Cell>();
                 rows.Add(lastRow);
-                for (int j = 0; j < colCount; j++)
+                for (int j = 0; j < ColumnCount; j++)
                 {
-                    //RectangularTextContainer cell = cells.get(new CellPosition(i, j)); // JAVA_8 use getOrDefault()
-                    //lastRow.add(cell != null ? cell : TextChunk.EMPTY);
-                    if (cells.TryGetValue(new CellPosition(i, j), out var cell))
-                    {
-                        lastRow.Add(cell);
-                    }
-                    else
-                    {
-                        lastRow.Add(Cell.EMPTY);
-                    }
+                    lastRow.Add(this[i, j]);
                 }
             }
             return rows;
         }
 
-        public Cell GetCell(int i, int j)
+        /// <summary>
+        /// Get the cell at position [i, j].
+        /// </summary>
+        /// <param name="i">Row.</param>
+        /// <param name="j">Column.</param>
+        /// <returns></returns>
+        public Cell this[int i, int j]
         {
-            //RectangularTextContainer cell = cells[new CellPosition(i, j)]; // JAVA_8 use getOrDefault()
-            //return cell != null ? cell : TextChunk.EMPTY;
-            if (cells.TryGetValue(new CellPosition(i, j), out var cell))
+            get
             {
-                return cell;
+                if (cells.TryGetValue(new CellPosition(i, j), out var cell))
+                {
+                    return cell;
+                }
+                return Cell.EMPTY;
             }
-            return Cell.EMPTY;
         }
-
-        public Cell this[int i, int j] => GetCell(i, j);
 
         private class CellPosition : IComparable<CellPosition>
         {
+            private readonly int row, col;
+
             public CellPosition(int row, int col)
             {
                 this.row = row;
                 this.col = col;
             }
-
-            private readonly int row, col;
 
             public int CompareTo(CellPosition other)
             {
@@ -136,12 +150,6 @@ namespace Tabula
                     return row == other.row && col == other.col;
                 }
                 return false;
-
-                //if (this == obj) return true;
-                //if (obj == null) return false;
-                //if (GetType() != obj.GetType()) return false;
-                //CellPosition other = (CellPosition)obj;
-                //return row == other.row && col == other.col;
             }
         }
     }

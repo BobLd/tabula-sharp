@@ -48,11 +48,11 @@ namespace Tabula
                 double requiredOverlap = Math.Min(o1.Height, o2.Height) * VERTICAL_COMPARISON_THRESHOLD;
                 if (overlap < requiredOverlap)
                 {
-                    int retval = -o1.GetBottom().CompareTo(o2.GetBottom()); //bobld multiply by -1 to sort from top to bottom (reading order)
+                    int retval = -o1.Bottom.CompareTo(o2.Bottom); //bobld multiply by -1 to sort from top to bottom (reading order)
 
                     if (retval != 0)
                     {
-                        retval = -o1.GetTop().CompareTo(o2.GetTop()); //bobld multiply by -1 to sort from top to bottom (reading order)
+                        retval = -o1.Top.CompareTo(o2.Top); //bobld multiply by -1 to sort from top to bottom (reading order)
                     }
 
                     if (retval != 0)
@@ -60,7 +60,7 @@ namespace Tabula
                         return retval;
                     }
                 }
-                return o1.IsLtrDominant() == -1 && o2.IsLtrDominant() == -1 ? -o1.GetX().CompareTo(o2.GetX()) : o1.GetX().CompareTo(o2.GetX());
+                return o1.IsLtrDominant() == -1 && o2.IsLtrDominant() == -1 ? -o1.X.CompareTo(o2.X) : o1.X.CompareTo(o2.X);
             }
         }
 
@@ -99,12 +99,6 @@ namespace Tabula
             return 0;
         }
 
-        public double GetArea() => BoundingBox.Area;
-
-        public double GetWidth() => BoundingBox.Width;
-
-        public double GetHeight() => BoundingBox.Height;
-
         public double VerticalOverlap(TableRectangle other)
         {
             return Math.Max(0, Math.Min(this.BoundingBox.Top, other.BoundingBox.Top)
@@ -118,7 +112,7 @@ namespace Tabula
 
         public double HorizontalOverlap(TableRectangle other)
         {
-            return Math.Max(0, Math.Min(this.GetRight(), other.GetRight()) - Math.Max(this.GetLeft(), other.GetLeft()));
+            return Math.Max(0, Math.Min(this.Right, other.Right) - Math.Max(this.Left, other.Left));
         }
 
         public bool HorizontallyOverlaps(TableRectangle other)
@@ -136,10 +130,10 @@ namespace Tabula
 
         public double OverlapRatio(TableRectangle other)
         {
-            double intersectionWidth = Math.Max(0, Math.Min(this.GetRight(), other.GetRight()) - Math.Max(this.GetLeft(), other.GetLeft()));
-            double intersectionHeight = Math.Max(0, Math.Min(this.GetTop(), other.GetTop()) - Math.Max(this.GetBottom(), other.GetBottom()));
+            double intersectionWidth = Math.Max(0, Math.Min(this.Right, other.Right) - Math.Max(this.Left, other.Left));
+            double intersectionHeight = Math.Max(0, Math.Min(this.Top, other.Top) - Math.Max(this.Bottom, other.Bottom));
             double intersectionArea = Math.Max(0, intersectionWidth * intersectionHeight);
-            double unionArea = this.GetArea() + other.GetArea() - intersectionArea;
+            double unionArea = this.Area + other.Area - intersectionArea;
             return intersectionArea / unionArea;
         }
 
@@ -149,59 +143,81 @@ namespace Tabula
             return this;
         }
 
-        public double GetTop() => BoundingBox.Top;
+        /// <summary>
+        /// Get the <see cref="TableRectangle"/>'s top coordinate.
+        /// </summary>
+        public double Top => BoundingBox.Top;
 
+        /// <summary>
+        /// Set the <see cref="TableRectangle"/>'s top coordinate.
+        /// </summary>
         public void SetTop(double top)
         {
             //double deltaHeight = top - this.y;
             //this.setRect(this.x, top, this.width, this.height - deltaHeight);
 
             // BobLD: Not sure between top and bottom!
-            this.SetRect(new PdfRectangle(this.GetLeft(), this.GetBottom(), this.GetRight(), top));
+            this.SetRect(new PdfRectangle(this.Left, this.Bottom, this.Right, top));
         }
 
-        public double GetRight() => BoundingBox.Right;
+        /// <summary>
+        /// Get the <see cref="TableRectangle"/>'s right coordinate.
+        /// </summary>
+        public double Right => BoundingBox.Right;
 
+        /// <summary>
+        /// Set the <see cref="TableRectangle"/>'s right coordinate.
+        /// </summary>
         public void SetRight(double right)
         {
             //this.setRect(this.x, this.y, right - this.x, this.height);
 
-            this.SetRect(new PdfRectangle(this.GetLeft(), this.GetBottom(), right, this.GetTop()));
+            this.SetRect(new PdfRectangle(this.Left, this.Bottom, right, this.Top));
         }
 
-        public double GetLeft() => BoundingBox.Left;
+        /// <summary>
+        /// Get the <see cref="TableRectangle"/>'s left coordinate.
+        /// </summary>
+        public double Left => BoundingBox.Left;
 
+        /// <summary>
+        /// Set the <see cref="TableRectangle"/>'s left coordinate.
+        /// </summary>
         public void SetLeft(double left)
         {
             //double deltaWidth = left - this.x;
             //this.setRect(left, this.y, this.width - deltaWidth, this.height);
 
-            this.SetRect(new PdfRectangle(left, this.GetBottom(), this.GetRight(), this.GetTop()));
-        }
-
-        public double GetBottom() => BoundingBox.Bottom;
-
-        public void SetBottom(double bottom)
-        {
-            this.SetRect(this.X, this.Y, this.Width, bottom - this.Y);
-
-            // BobLD: Not sure between top and bottom!
-            this.SetRect(new PdfRectangle(this.GetLeft(), bottom, this.GetRight(), this.GetTop()));
+            this.SetRect(new PdfRectangle(left, this.Bottom, this.Right, this.Top));
         }
 
         /// <summary>
+        /// Get the <see cref="TableRectangle"/>'s bottom coordinate.
+        /// </summary>
+        public double Bottom => BoundingBox.Bottom;
+
+        /// <summary>
+        /// Set the <see cref="TableRectangle"/>'s bottom coordinate.
+        /// </summary>
+        public void SetBottom(double bottom)
+        {
+            //this.SetRect(this.X, this.Y, this.Width, bottom - this.Y);
+
+            // BobLD: Not sure between top and bottom!
+            this.SetRect(new PdfRectangle(this.Left, bottom, this.Right, this.Top));
+        }
+
+        /// <summary>
+        /// Get the <see cref="TableRectangle"/>'s points.
         /// Counter-clockwise, starting from bottom left point.
         /// </summary>
-        public PdfPoint[] GetPoints()
+        public PdfPoint[] Points => new PdfPoint[]
         {
-            return new PdfPoint[]
-            {
-                this.BoundingBox.BottomLeft,
-                this.BoundingBox.BottomRight,
-                this.BoundingBox.TopRight,
-                this.BoundingBox.TopLeft
-            };
-        }
+            this.BoundingBox.BottomLeft,
+            this.BoundingBox.BottomRight,
+            this.BoundingBox.TopRight,
+            this.BoundingBox.TopLeft
+        };
 
         public override int GetHashCode()
         {
@@ -235,7 +251,7 @@ namespace Tabula
             sb.Append(this.GetType());
             string s = this.BoundingBox.ToString();
             sb.Append(s, 0, s.Length - 1);
-            sb.Append($",bottom={this.GetBottom():0.00},right={this.GetRight():0.00}]");
+            sb.Append($",bottom={this.Bottom:0.00},right={this.Right:0.00}]");
             return sb.ToString();
         }
 
@@ -246,30 +262,11 @@ namespace Tabula
 
         public bool Intersects(TableRectangle tableRectangle)
         {
-            //throw new NotImplementedException();
             return this.BoundingBox.IntersectsWith(tableRectangle.BoundingBox);
         }
 
         public bool IntersectsLine(Ruling ruling)
         {
-            /*
-            // needs checks
-            // use clipper
-            var clipper = new Clipper();
-            clipper.AddPath(Clipper.ToClipperIntPoints(this.BoundingBox), PolyType.ptClip, true);
-
-            clipper.AddPath(Clipper.ToClipperIntPoints(ruling), PolyType.ptSubject, false);
-
-            var solutions = new PolyTree();
-            if (clipper.Execute(ClipType.ctIntersection, solutions))
-            {
-                return solutions.Childs.Count > 0;
-            }
-            else
-            {
-                return false;
-            }
-            */
             return IntersectsLine(ruling.Line);
         }
 
@@ -289,38 +286,47 @@ namespace Tabula
         }
 
         #region helpers
-        public double X => this.BoundingBox.TopLeft.X;
-
-        public double Y => this.BoundingBox.TopLeft.Y;
-
-        public double Width => this.BoundingBox.Width;
-
-        public double Height => this.BoundingBox.Height;
-
-        private double GetX() => this.X;
-
-        private double GetY() => this.Y;
-
-        public double GetMinX() => this.BoundingBox.Left;
-
-        public double GetMaxX() => this.BoundingBox.Right;
-
-        public double GetMinY() => this.BoundingBox.Bottom;
-
-        public double GetMaxY() => this.BoundingBox.Top;
+        public double Area => BoundingBox.Area;
 
         /// <summary>
-        /// Sets the location and size of this Rectangle2D to the specified double values.
+        /// The <see cref="TableRectangle"/>'s top-left X coordinate.
         /// </summary>
-        /// <param name="x">the X coordinate of the upper-left corner of this Rectangle2D</param>
-        /// <param name="y">the Y coordinate of the upper-left corner of this Rectangle2D</param>
-        /// <param name="w">the width of this Rectangle2D</param>
-        /// <param name="h">the height of this Rectangle2D</param>
-        internal void SetRect(double x, double y, double w, double h)
-        {
-            //setRect(new PdfRectangle(x, y - h, x + w, y));
-            throw new ArgumentOutOfRangeException();
-        }
+        public double X => this.BoundingBox.TopLeft.X;
+
+        /// <summary>
+        /// The <see cref="TableRectangle"/>'s top-left Y coordinate.
+        /// </summary>
+        public double Y => this.BoundingBox.TopLeft.Y;
+
+        /// <summary>
+        /// The <see cref="TableRectangle"/>'s width.
+        /// </summary>
+        public double Width => this.BoundingBox.Width;
+
+        /// <summary>
+        /// The <see cref="TableRectangle"/>'s height.
+        /// </summary>
+        public double Height => this.BoundingBox.Height;
+
+        /// <summary>
+        /// The <see cref="TableRectangle"/>'s left coordinate.
+        /// </summary>
+        public double MinX => this.BoundingBox.Left;
+
+        /// <summary>
+        /// The <see cref="TableRectangle"/>'s right coordinate.
+        /// </summary>
+        public double MaxX => this.BoundingBox.Right;
+
+        /// <summary>
+        /// The <see cref="TableRectangle"/>'s bottom coordinate.
+        /// </summary>
+        public double MinY => this.BoundingBox.Bottom;
+
+        /// <summary>
+        /// The <see cref="TableRectangle"/>'s top coordinate.
+        /// </summary>
+        public double MaxY => this.BoundingBox.Top;
 
         internal void SetRect(PdfRectangle rectangle)
         {
@@ -339,18 +345,17 @@ namespace Tabula
 
         public bool Contains(PdfPoint point)
         {
-            // include border???
             return this.BoundingBox.Contains(point, true);
         }
 
         public bool Contains(TableLine tableLine)
         {
-            return this.BoundingBox.Contains(tableLine.BoundingBox);
+            return this.BoundingBox.Contains(tableLine.BoundingBox, true);
         }
 
         public bool Contains(TableRectangle other)
         {
-            return this.BoundingBox.Contains(other.BoundingBox);
+            return this.BoundingBox.Contains(other.BoundingBox, true);
         }
         #endregion
     }

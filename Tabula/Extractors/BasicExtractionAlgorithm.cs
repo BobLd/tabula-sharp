@@ -8,7 +8,7 @@ namespace Tabula.Extractors
     /// </summary>
     public class BasicExtractionAlgorithm : IExtractionAlgorithm
     {
-        private List<Ruling> verticalRulings = null;
+        private IReadOnlyList<Ruling> verticalRulings;
 
         /// <summary>
         /// stream
@@ -20,17 +20,17 @@ namespace Tabula.Extractors
         /// <summary>
         /// stream
         /// </summary>
-        public BasicExtractionAlgorithm(List<Ruling> verticalRulings)
+        public BasicExtractionAlgorithm(IReadOnlyList<Ruling> verticalRulings)
         {
             this.verticalRulings = verticalRulings;
         }
 
-        public List<Table> Extract(PageArea page, List<float> verticalRulingPositions)
+        public List<Table> Extract(PageArea page, IReadOnlyList<float> verticalRulingPositions)
         {
             List<Ruling> verticalRulings = new List<Ruling>(verticalRulingPositions.Count);
             foreach (float p in verticalRulingPositions)
             {
-                verticalRulings.Add(new Ruling(page.GetHeight(), p, 0.0f, page.GetHeight())); // wrong here???
+                verticalRulings.Add(new Ruling(page.Height, p, 0.0f, page.Height)); // wrong here???
             }
             this.verticalRulings = verticalRulings;
             return this.Extract(page);
@@ -42,7 +42,7 @@ namespace Tabula.Extractors
 
             if (textElements.Count == 0)
             {
-                return new Table[] { Table.Empty() }.ToList();
+                return new Table[] { Table.EMPTY }.ToList();
             }
 
             List<TextChunk> textChunks = this.verticalRulings == null ? TextElement.MergeWords(page.GetText()) : TextElement.MergeWords(page.GetText(), this.verticalRulings);
@@ -57,7 +57,7 @@ namespace Tabula.Extractors
                 columns = new List<double>(clippedVerticalRulings.Count);
                 foreach (Ruling vr in clippedVerticalRulings)
                 {
-                    columns.Add(vr.GetLeft());
+                    columns.Add(vr.Left);
                 }
 
                 /*
@@ -84,7 +84,7 @@ namespace Tabula.Extractors
             for (int i = 0; i < lines.Count; i++)
             {
                 TableLine line = lines[i];
-                List<TextChunk> elements = line.GetTextElements();
+                List<TextChunk> elements = line.TextElements.ToList();
 
                 elements.Sort(new TextChunkComparer());
 
@@ -99,7 +99,7 @@ namespace Tabula.Extractors
                     bool found = false;
                     for (; j < columns.Count; j++)
                     {
-                        if (tc.GetLeft() <= columns[j])
+                        if (tc.Left <= columns[j])
                         {
                             found = true;
                             break;
@@ -123,10 +123,10 @@ namespace Tabula.Extractors
         /// </summary>
         /// <param name="lines">Must be an array of lines sorted by their +top+ attribute.</param>
         /// <returns>a list of column boundaries (x axis).</returns>
-        public static List<double> ColumnPositions(List<TableLine> lines)
+        public static List<double> ColumnPositions(IReadOnlyList<TableLine> lines)
         {
             List<TableRectangle> regions = new List<TableRectangle>();
-            foreach (TextChunk tc in lines[0].GetTextElements())
+            foreach (TextChunk tc in lines[0].TextElements)
             {
                 if (tc.IsSameChar(TableLine.WHITE_SPACE_CHARS))
                 {
@@ -140,7 +140,7 @@ namespace Tabula.Extractors
             foreach (TableLine l in lines.SubList(1, lines.Count))
             {
                 List<TextChunk> lineTextElements = new List<TextChunk>();
-                foreach (TextChunk tc in l.GetTextElements())
+                foreach (TextChunk tc in l.TextElements)
                 {
                     if (!tc.IsSameChar(TableLine.WHITE_SPACE_CHARS))
                     {
@@ -212,7 +212,7 @@ namespace Tabula.Extractors
             List<double> rv = new List<double>();
             foreach (TableRectangle r in regions)
             {
-                rv.Add(r.GetRight());
+                rv.Add(r.Right);
             }
 
             rv.Sort(); //Collections.sort(rv);
@@ -225,7 +225,7 @@ namespace Tabula.Extractors
         {
             public int Compare(Ruling arg0, Ruling arg1)
             {
-                return arg0.GetLeft().CompareTo(arg1.GetLeft());
+                return arg0.Left.CompareTo(arg1.Left);
             }
         }
 
@@ -233,7 +233,7 @@ namespace Tabula.Extractors
         {
             public int Compare(TextChunk o1, TextChunk o2)
             {
-                return o1.GetLeft().CompareTo(o2.GetLeft());
+                return o1.Left.CompareTo(o2.Left);
             }
         }
         #endregion

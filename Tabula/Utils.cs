@@ -30,8 +30,6 @@ namespace Tabula
         }
 
         private static float EPSILON = 0.01f;
-        //private static bool useQuickSort = useCustomQuickSort();
-
         public static bool Feq(double f1, double f2)
         {
             return Math.Abs(f1 - f2) < EPSILON;
@@ -40,11 +38,6 @@ namespace Tabula
         public static double Round(double d, int decimalPlace)
         {
             return Math.Round(d, decimalPlace);
-            /*
-            BigDecimal bd = new BigDecimal(Double.ToString(d));
-            bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
-            return bd.floatValue();
-            */
         }
 
         public static PdfRectangle Bounds(IEnumerable<Ruling> shapes)
@@ -64,66 +57,24 @@ namespace Tabula
             var maxX = shapes.Max(r => r.Right);
             var maxY = shapes.Max(r => r.Top);
             return new PdfRectangle(minX, minY, maxX, maxY);
-
-            /*
-            Iterator <? extends Shape > iter = shapes.iterator();
-            Rectangle rv = new Rectangle();
-            rv.setRect(iter.next().getBounds2D());
-
-            while (iter.hasNext())
-            {
-                Rectangle2D.union(iter.next().getBounds2D(), rv, rv);
-            }
-
-            return rv;
-            */
-
         }
 
         public static TableRectangle Bounds(IEnumerable<TableRectangle> shapes)
         {
-            if (!shapes.Any()) //(shapes.isEmpty())
+            if (!shapes.Any())
             {
                 throw new ArgumentException("shapes can't be empty");
             }
 
             return new TableRectangle(Bounds(shapes.Select(s => s.BoundingBox)));
-
-            /*
-            Iterator <? extends Shape > iter = shapes.iterator();
-            Rectangle rv = new Rectangle();
-            rv.setRect(iter.next().getBounds2D());
-
-            while (iter.hasNext())
-            {
-                Rectangle2D.union(iter.next().getBounds2D(), rv, rv);
-            }
-
-            return rv;
-            */
-
         }
 
         // range iterator
         public static IEnumerable<int> Range(int begin, int end)
         {
-            return Enumerable.Range(begin, end - begin); //.ToList();
-            /* return new IList<int>()
-             {
-                 @Override
-                 public Integer get(int index)
-             {
-                 return begin + index;
-             }
-
-             @Override
-                 public int size()
-             {
-                 return end - begin;
-             }*/
+            return Enumerable.Range(begin, end - begin);
         }
 
-        /* from apache.commons-lang */
         public static bool IsNumeric(string cs)
         {
             if (string.IsNullOrEmpty(cs))
@@ -179,61 +130,21 @@ namespace Tabula
          * Wrap Collections.sort so we can fallback to a non-stable quicksort if we're
          * running on JDK7+
          */
-        public static void Sort<T>(List<T> list) where T : TableRectangle //IComparable<T> // <T extends Comparable<? super T>> 
+        public static void Sort<T>(List<T> list) where T : TableRectangle
         {
-            //list.Sort();
-
             // Using OrderBy() insted of Sort() to keep order when equality
             var newList = list.OrderBy(x => x).ToList();
             list.Clear();
             list.AddRange(newList);
-
-            //if (useQuickSort) QuickSort.sort(list);
-            //else list.Sort();
         }
 
-        public static void Sort<T>(List<T> list, IComparer<T> comparator) where T : TableRectangle
+        public static void Sort<T>(List<T> list, IComparer<T> comparer) where T : TableRectangle
         {
-            //list.Sort(comparator);
-
             // Using OrderBy() insted of Sort() to keep order when equality
-            var newList = list.OrderBy(x => x, comparator).ToList();
+            var newList = list.OrderBy(x => x, comparer).ToList();
             list.Clear();
             list.AddRange(newList);
-            //if (useQuickSort) QuickSort.sort(list, comparator);
-            //else Collections.sort(list, comparator);
         }
-
-        /*
-        private static bool useCustomQuickSort()
-        {
-            // taken from PDFBOX:
-
-            // check if we need to use the custom quicksort algorithm as a
-            // workaround to the transitivity issue of TextPositionComparator:
-            // https://issues.apache.org/jira/browse/PDFBOX-1512
-
-            String numberybits = System.getProperty("java.version").split(
-                    "-")[0]; // some Java version strings are 9-internal, which is dumb.
-            String[] versionComponents = numberybits.split(
-                    "\\.");
-            int javaMajorVersion;
-            int javaMinorVersion;
-            if (versionComponents.length >= 2)
-            {
-                javaMajorVersion = Integer.parseInt(versionComponents[0]);
-                javaMinorVersion = Integer.parseInt(versionComponents[1]);
-            }
-            else
-            {
-                javaMajorVersion = 1;
-                javaMinorVersion = Integer.parseInt(versionComponents[0]);
-            }
-            bool is16orLess = javaMajorVersion == 1 && javaMinorVersion <= 6;
-            String useLegacySort = System.getProperty("java.util.Arrays.useLegacyMergeSort");
-            return !is16orLess || (useLegacySort != null && useLegacySort.equals("true"));
-        }
-        */
 
         public static List<int> ParsePagesOption(string pagesSpec)
         {
@@ -250,7 +161,7 @@ namespace Tabula
                 string[] r = ranges[i].Split('-');
                 if (r.Length == 0 || !Utils.IsNumeric(r[0]) || (r.Length > 1 && !Utils.IsNumeric(r[1])))
                 {
-                    throw new FormatException("Syntax error in page range specification");// ParseException("Syntax error in page range specification");
+                    throw new FormatException("Syntax error in page range specification");
                 }
 
                 if (r.Length < 2)
@@ -263,13 +174,13 @@ namespace Tabula
                     int f = int.Parse(r[1]);
                     if (t > f)
                     {
-                        throw new FormatException("Syntax error in page range specification");// throw new ParseException("Syntax error in page range specification");
+                        throw new FormatException("Syntax error in page range specification");
                     }
                     rv.AddRange(Utils.Range(t, f + 1));
                 }
             }
 
-            rv.Sort(); // Collections.sort(rv);
+            rv.Sort();
             return rv;
         }
 
@@ -285,7 +196,7 @@ namespace Tabula
         {
             public int Compare(PdfPoint arg0, PdfPoint arg1)
             {
-                return -arg0.Y.CompareTo(arg1.Y);  //bobld multiply by -1 to sort from top to bottom (reading order)
+                return -arg0.Y.CompareTo(arg1.Y); //bobld multiply by -1 to sort from top to bottom (reading order)
             }
         }
 
@@ -304,8 +215,8 @@ namespace Tabula
             List<PdfPoint> points = new List<PdfPoint>();
             foreach (Ruling r in rulings)
             {
-                points.Add(r.GetP1());
-                points.Add(r.GetP2());
+                points.Add(r.P1);
+                points.Add(r.P2);
             }
 
             // snap by X
@@ -338,7 +249,7 @@ namespace Tabula
                 avgLoc /= group.Count;
                 for (int p = 0; p < group.Count; p++)
                 {
-                    newXCoordinates[group[p].X] = Utils.Round(avgLoc, 6); // round?
+                    newXCoordinates[group[p].X] = Utils.Round(avgLoc, 6);
                 }
             }
             // ---
@@ -373,7 +284,7 @@ namespace Tabula
                 avgLoc /= group.Count;
                 for (int p = 0; p < group.Count; p++)
                 {
-                    newYCoordinates[group[p].Y] = Utils.Round(avgLoc, 6); // round?
+                    newYCoordinates[group[p].Y] = Utils.Round(avgLoc, 6);
                 }
             }
             // ---
@@ -413,13 +324,12 @@ namespace Tabula
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="fromIndex">low endpoint (inclusive) of the subList</param>
-        /// <param name="toIndex">high endpoint (exclusive) of the subList</param>
-        /// <returns></returns>
-        public static List<T> SubList<T>(this List<T> list, int fromIndex, int toIndex)
+        /// <param name="fromIndex">Low endpoint (inclusive) of the subList</param>
+        /// <param name="toIndex">High endpoint (exclusive) of the subList</param>
+        public static List<T> SubList<T>(this IReadOnlyList<T> list, int fromIndex, int toIndex)
         {
             //int count = toIndex - fromIndex; // - 1;
-            return list.GetRange(fromIndex, toIndex - fromIndex);
+            return list.ToList().GetRange(fromIndex, toIndex - fromIndex);
         }
     }
 }
