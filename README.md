@@ -1,4 +1,4 @@
-work in progress
+NuGet packages available in the [releases](https://github.com/BobLd/tabula-sharp/releases) page.
 
 # tabula-sharp
 Port of [tabula-java](https://github.com/tabulapdf/tabula-java)
