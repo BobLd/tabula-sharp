@@ -5,6 +5,9 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
+    /// <summary>
+    /// A tabula table with ruling lines.
+    /// </summary>
     public class TableWithRulingLines : Table
     {
         private class CellComparer : IComparer<Cell>
@@ -19,10 +22,26 @@ namespace Tabula
         private readonly List<Ruling> horizontalRulings;
         private readonly RectangleSpatialIndex<Cell> si = new RectangleSpatialIndex<Cell>();
 
+        /// <summary>
+        /// Gets the vertical rulings.
+        /// <para>This is a read-only list.</para>
+        /// </summary>
         public IReadOnlyList<Ruling> VerticalRulings => verticalRulings;
 
+        /// <summary>
+        /// Gets the horizontal rulings.
+        /// <para>This is a read-only list.</para>
+        /// </summary>
         public IReadOnlyList<Ruling> HorizontalRulings => horizontalRulings;
 
+        /// <summary>
+        /// Create a table.
+        /// </summary>
+        /// <param name="area"></param>
+        /// <param name="cells"></param>
+        /// <param name="horizontalRulings"></param>
+        /// <param name="verticalRulings"></param>
+        /// <param name="extractionAlgorithm"></param>
         public TableWithRulingLines(TableRectangle area, List<Cell> cells, List<Ruling> horizontalRulings, List<Ruling> verticalRulings, IExtractionAlgorithm extractionAlgorithm)
             : base(extractionAlgorithm)
         {

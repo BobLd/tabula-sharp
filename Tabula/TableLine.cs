@@ -8,22 +8,38 @@ namespace Tabula
 
     // TODO this class seems superfluous - get rid of it
 
+    /// <summary>
+    /// A Tabula Line.
+    /// </summary>
     public class TableLine : TableRectangle
     {
-        private List<TextChunk> textChunks = new List<TextChunk>();
+        /// <summary>
+        /// List of white space characters.
+        /// </summary>
         public static readonly char[] WHITE_SPACE_CHARS = { ' ', '\t', '\r', '\n', '\f' };
 
+        private List<TextChunk> textChunks = new List<TextChunk>();
+
         /// <summary>
-        /// Get the list of text elements.
+        /// Gets the list of text elements.
         /// <para>This is a read-only list. Use <see cref="AddTextChunk(TextChunk)"/> to add a <see cref="TextChunk"/>.</para>
         /// </summary>
         public IReadOnlyList<TextChunk> TextElements => textChunks;
 
+        /// <summary>
+        /// Sets the TextElements.
+        /// </summary>
+        /// <param name="textChunks"></param>
         public void SetTextElements(List<TextChunk> textChunks)
         {
             this.textChunks = textChunks;
         }
 
+        /// <summary>
+        /// Add a text chunk to the text elements at a given index.
+        /// </summary>
+        /// <param name="i">The index at which to add the chunk.</param>
+        /// <param name="textChunk">The chunk to be added.</param>
         public void AddTextChunk(int i, TextChunk textChunk)
         {
             if (i < 0)
@@ -47,6 +63,10 @@ namespace Tabula
             this.Merge(textChunk);
         }
 
+        /// <summary>
+        /// Add a text chunk to the text elements.
+        /// </summary>
+        /// <param name="textChunk">The chunk to be added.</param>
         public void AddTextChunk(TextChunk textChunk)
         {
             if (this.textChunks.Count == 0)
@@ -60,6 +80,7 @@ namespace Tabula
             this.textChunks.Add(textChunk);
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

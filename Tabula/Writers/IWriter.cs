@@ -4,14 +4,37 @@ using System.Text;
 
 namespace Tabula.Writers
 {
+    /// <summary>
+    /// Base interface for tabula writer.
+    /// </summary>
     public interface IWriter
     {
+        /// <summary>
+        /// Write the table to the stream.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="table"></param>
         void Write(StreamWriter sb, Table table);
 
+        /// <summary>
+        /// Write the tables to the stream.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="tables"></param>
         void Write(StreamWriter sb, IReadOnlyList<Table> tables);
 
+        /// <summary>
+        /// Write the table to the stream.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="table"></param>
         void Write(StringBuilder sb, Table table);
 
+        /// <summary>
+        /// Write the tables to the stream.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="tables"></param>
         void Write(StringBuilder sb, IReadOnlyList<Table> tables);
     }
 }

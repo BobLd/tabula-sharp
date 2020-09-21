@@ -5,6 +5,9 @@ using Tabula.Extractors;
 
 namespace Tabula
 {
+    /// <summary>
+    /// A tabula table.
+    /// </summary>
     public class Table : TableRectangle
     {
         /// <summary>
@@ -12,11 +15,19 @@ namespace Tabula
         /// </summary>
         public static Table EMPTY => new Table("");
 
-        private Table(string extractionMethod)
+        /// <summary>
+        /// Create a table.
+        /// </summary>
+        /// <param name="extractionMethod"></param>
+        private Table(string extractionMethod) : base()
         {
             this.ExtractionMethod = extractionMethod;
         }
 
+        /// <summary>
+        /// Create a table.
+        /// </summary>
+        /// <param name="extractionAlgorithm"></param>
         public Table(IExtractionAlgorithm extractionAlgorithm)
             : this(extractionAlgorithm.ToString())
         { }
@@ -31,20 +42,26 @@ namespace Tabula
         public IReadOnlyList<Cell> Cells => cells.Values.ToList();
 
         /// <summary>
-        /// 
+        /// Gets the number of rows in the table.
         /// </summary>
         public int RowCount { get; private set; }
 
         /// <summary>
-        /// 
+        /// Gets the number of columns in the table.
         /// </summary>
         public int ColumnCount { get; private set; }
 
         /// <summary>
-        /// 
+        /// Gets the extraction method used to build to table.
         /// </summary>
         public string ExtractionMethod { get; }
 
+        /// <summary>
+        /// Add a cell at the given [row, column] position.
+        /// </summary>
+        /// <param name="chunk"></param>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
         public void Add(RectangularTextContainer chunk, int row, int col)
         {
             if (chunk is Cell cell)
@@ -74,7 +91,7 @@ namespace Tabula
         private List<List<Cell>> memoizedRows;
 
         /// <summary>
-        /// 
+        /// Gets the table's rows.
         /// </summary>
         public IReadOnlyList<IReadOnlyList<Cell>> Rows
         {
@@ -108,7 +125,6 @@ namespace Tabula
         /// </summary>
         /// <param name="i">Row.</param>
         /// <param name="j">Column.</param>
-        /// <returns></returns>
         public Cell this[int i, int j]
         {
             get

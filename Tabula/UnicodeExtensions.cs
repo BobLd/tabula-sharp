@@ -2,19 +2,32 @@
 
 namespace Tabula
 {
+    /// <summary>
+    /// Unicode extensions.
+    /// <para>As of Unicode v13.0.</para>
+    /// </summary>
     public static class UnicodeExtensions
     {
+        /// <summary>
+        /// Gets the character abbreviated type (i.e. 'BN', 'S', 'NSM', 'LRO'), used in the Unicode Bidirectional Algorithm.
+        /// </summary>
+        /// <param name="c">The character value.</param>
         public static string GetDirectionality(this char c)
         {
             var val = char.ConvertToUtf32(c.ToString(), 0);
             return GetDirectionality(val);
         }
 
+        /// <summary>
+        /// Gets the character abbreviated type (i.e. 'BN', 'S', 'NSM', 'LRO'), used in the Unicode Bidirectional Algorithm.
+        /// </summary>
+        /// <param name="val">The integer value of a char.</param>
+        /// <returns></returns>
         public static string GetDirectionality(int val)
         {
             if (val < 0)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("Char integer value needs to be more or equal to 0.", nameof(val));
             }
 
             // need to add check for max value

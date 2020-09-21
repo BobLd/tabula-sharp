@@ -8,6 +8,9 @@ using UglyToad.PdfPig.PdfFonts;
 
 namespace Tabula
 {
+    /// <summary>
+    /// A tabula, text element. Equivalent to a letter.
+    /// </summary>
     public class TextElement : TableRectangle, IHasText
     {
         internal Letter letter; // do we really use it?
@@ -15,6 +18,15 @@ namespace Tabula
         private string text;
         private static double AVERAGE_CHAR_TOLERANCE = 0.3;
 
+        /// <summary>
+        /// Create a text element.
+        /// </summary>
+        /// <param name="pdfRectangle"></param>
+        /// <param name="font"></param>
+        /// <param name="fontSize"></param>
+        /// <param name="c"></param>
+        /// <param name="widthOfSpace"></param>
+        /// <param name="dir">The direction of the text (0, 90, 180, or 270). Can be any number with PdfPig.</param>
         public TextElement(PdfRectangle pdfRectangle, FontDetails font, double fontSize, string c, double widthOfSpace, double dir)
             : base(pdfRectangle)
         {
@@ -26,6 +38,9 @@ namespace Tabula
         }
         public string GetText() => text;
 
+        /// <summary>
+        /// The direction of the text (0, 90, 180, or 270). Can be any number with PdfPig.
+        /// </summary>
         public double Direction { get; }
 
         public double WidthOfSpace { get; }
@@ -34,6 +49,7 @@ namespace Tabula
 
         public double FontSize { get; }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -43,6 +59,7 @@ namespace Tabula
             return sb.ToString();
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             const int prime = 31;
@@ -56,6 +73,7 @@ namespace Tabula
             return result;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             if (obj is TextElement other)

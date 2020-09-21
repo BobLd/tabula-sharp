@@ -8,16 +8,24 @@ using static UglyToad.PdfPig.Core.PdfSubpath;
 
 namespace Tabula
 {
-    /**
+    /*
      * ** tabula/ObjectExtractor.java **
      * ** tabula/ObjectExtractorStreamEngine.java **
      */
+
+    /// <summary>
+    /// Tabula object extractor.
+    /// </summary>
     public class ObjectExtractor
     {
         private const int rounding = 6;
 
         private PdfDocument pdfDocument;
 
+        /// <summary>
+        /// Create a Tabula object extractor.
+        /// </summary>
+        /// <param name="pdfDocument"></param>
         public ObjectExtractor(PdfDocument pdfDocument)
         {
             this.pdfDocument = pdfDocument;
@@ -49,6 +57,10 @@ namespace Tabula
             return new PdfPoint(Utils.Round(pdfPoint.X, decimalPlace), Utils.Round(pdfPoint.Y, decimalPlace));
         }
 
+        /// <summary>
+        /// Extract the <see cref="PageArea"/>, with its text elements (letters) and rulings (processed PdfPath and PdfSubpath).
+        /// </summary>
+        /// <param name="pageNumber">The page number to extract.</param>
         public PageArea ExtractPage(int pageNumber)
         {
             if (pageNumber > this.pdfDocument.NumberOfPages || pageNumber < 1)
@@ -156,21 +168,35 @@ namespace Tabula
                 pdfTextStripper.spatialIndex);
         }
 
+        /// <summary>
+        /// Enumerate and extract over the given pages.
+        /// </summary>
+        /// <param name="pages"></param>
         public PageIterator Extract(IEnumerable<int> pages)
         {
             return new PageIterator(this, pages);
         }
 
+        /// <summary>
+        /// Enumerate and extract over all the pages.
+        /// </summary>
         public PageIterator Extract()
         {
             return Extract(Utils.Range(1, this.pdfDocument.NumberOfPages + 1));
         }
 
+        /// <summary>
+        /// Extract the <see cref="PageArea"/>, with its text elements (letters) and rulings (processed PdfPath and PdfSubpath).
+        /// </summary>
+        /// <param name="pageNumber">The page number to extract.</param>
         public PageArea Extract(int pageNumber)
         {
             return Extract(Utils.Range(pageNumber, pageNumber + 1)).Next();
         }
 
+        /// <summary>
+        /// Close the ObjectExtractor.
+        /// </summary>
         public void Close()
         {
             this.pdfDocument.Dispose();

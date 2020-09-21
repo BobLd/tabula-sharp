@@ -4,27 +4,33 @@ using System.Linq;
 namespace Tabula.Extractors
 {
     /// <summary>
-    /// stream
+    /// Stream extraction algorithm.
     /// </summary>
     public class BasicExtractionAlgorithm : IExtractionAlgorithm
     {
         private IReadOnlyList<Ruling> verticalRulings;
 
         /// <summary>
-        /// stream
+        /// Stream extraction algorithm.
         /// </summary>
         public BasicExtractionAlgorithm()
         {
         }
 
         /// <summary>
-        /// stream
+        /// Stream extraction algorithm.
         /// </summary>
+        /// <param name="verticalRulings">List of vertical rulings.</param>
         public BasicExtractionAlgorithm(IReadOnlyList<Ruling> verticalRulings)
         {
             this.verticalRulings = verticalRulings;
         }
 
+        /// <summary>
+        /// Extracts the tables in the page.
+        /// </summary>
+        /// <param name="page">The page where to extract the tables.</param>
+        /// <param name="verticalRulingPositions">List of vertical rulings, indicated by there x position.</param>
         public List<Table> Extract(PageArea page, IReadOnlyList<float> verticalRulingPositions)
         {
             List<Ruling> verticalRulings = new List<Ruling>(verticalRulingPositions.Count);
@@ -36,6 +42,10 @@ namespace Tabula.Extractors
             return this.Extract(page);
         }
 
+        /// <summary>
+        /// Extracts the tables in the page.
+        /// </summary>
+        /// <param name="page">The page where to extract the tables.</param>
         public List<Table> Extract(PageArea page)
         {
             List<TextElement> textElements = page.GetText();
@@ -113,13 +123,14 @@ namespace Tabula.Extractors
             return new Table[] { table }.ToList();
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return "stream";
         }
 
         /// <summary>
-        /// 
+        /// Gets columns positions.
         /// </summary>
         /// <param name="lines">Must be an array of lines sorted by their +top+ attribute.</param>
         /// <returns>a list of column boundaries (x axis).</returns>

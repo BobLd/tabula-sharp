@@ -7,12 +7,12 @@ namespace Tabula.Extractors
 {
     //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/extractors/SpreadsheetExtractionAlgorithm.java
     /// <summary>
-    /// lattice
+    /// Lattice extraction algorithm.
     /// </summary>
     public class SpreadsheetExtractionAlgorithm : IExtractionAlgorithm
     {
         /// <summary>
-        /// lattice
+        /// Lattice extraction algorithm.
         /// </summary>
         public SpreadsheetExtractionAlgorithm()
         {
@@ -81,13 +81,17 @@ namespace Tabula.Extractors
             }
         }
 
+        /// <summary>
+        /// Extracts the tables in the page.
+        /// </summary>
+        /// <param name="page">The page where to extract the tables.</param>
         public List<Table> Extract(PageArea page)
         {
             return Extract(page, page.GetRulings());
         }
 
         /// <summary>
-        /// Extract a list of Table from page using rulings as separators
+        /// Extracts the tables in the page using rulings as separators.
         /// </summary>
         /// <param name="page"></param>
         /// <param name="rulings"></param>
@@ -159,6 +163,10 @@ namespace Tabula.Extractors
             return spreadsheets;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
         public bool IsTabular(PageArea page)
         {
             // if there's no text at all on the page, it's not a table 
@@ -177,6 +185,7 @@ namespace Tabula.Extractors
             {
                 return false;
             }
+
             Table table = tables[0];
             int rowsDefinedByLines = table.RowCount;
             int colsDefinedByLines = table.ColumnCount;
@@ -187,6 +196,7 @@ namespace Tabula.Extractors
                 // TODO WHAT DO WE DO HERE?
                 System.Diagnostics.Debug.Write("SpreadsheetExtractionAlgorithm.isTabular(): no table found.");
             }
+
             table = tables[0];
             int rowsDefinedWithoutLines = table.RowCount;
             int colsDefinedWithoutLines = table.ColumnCount;
@@ -196,6 +206,11 @@ namespace Tabula.Extractors
             return ratio > MAGIC_HEURISTIC_NUMBER && ratio < (1 / MAGIC_HEURISTIC_NUMBER);
         }
 
+        /// <summary>
+        /// Find cells from horizontal and vertical ruling lines.
+        /// </summary>
+        /// <param name="horizontalRulingLines"></param>
+        /// <param name="verticalRulingLines"></param>
         public static List<Cell> FindCells(IReadOnlyList<Ruling> horizontalRulingLines, IReadOnlyList<Ruling> verticalRulingLines)
         {
             List<Cell> cellsFound = new List<Cell>();
@@ -266,6 +281,11 @@ namespace Tabula.Extractors
             return cellsFound;
         }
 
+        /// <summary>
+        /// Find spreadsheets areas from cells.
+        /// <para>Based on O'Rourke's `Uniqueness of orthogonal connect-the-dots`.</para>
+        /// </summary>
+        /// <param name="cells"></param>
         public static List<TableRectangle> FindSpreadsheetsFromCells(List<TableRectangle> cells)
         {
             // via: http://stackoverflow.com/questions/13746284/merging-multiple-adjacent-rectangles-into-one-polygon
@@ -390,6 +410,7 @@ namespace Tabula.Extractors
             return rectangles;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return "lattice";
@@ -419,12 +440,6 @@ namespace Tabula.Extractors
                     return this.point.Equals(o.point);
                 }
                 return false;
-                /*
-                if (this == other)
-                    return true;
-                if (!(other is PolygonVertex)) return false;
-                return this.point.Equals(((PolygonVertex)other).point);
-                */
             }
 
             public override int GetHashCode()
