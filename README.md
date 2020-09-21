@@ -39,5 +39,4 @@ using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() {
 ```
 
 **TO DO**
-- some tests are failing
 - image library not available in dotnet core - `NurminenDetectionAlgorithm`
