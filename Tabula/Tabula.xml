@@ -5,13 +5,64 @@
     </assembly>
     <members>
         <member name="T:Tabula.Cell">
-            ** tabula/Cell.java **
+            <summary>
+            A cell in a table.
+            </summary>
         </member>
-        <member name="T:Tabula.Detectors.DetectionAlgorithm">
-            ** tabula/detectors/DetectionAlgorithm.java **
-            Created by matt on 2015-12-14.
+        <member name="P:Tabula.Cell.EMPTY">
+            <summary>
+            An empty Cell, with coordinates [0, 0, 0, 0].
+            </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:Tabula.Detectors.NurminenDetectionAlgorithm" -->
+        <member name="M:Tabula.Cell.#ctor(UglyToad.PdfPig.Core.PdfRectangle)">
+            <summary>
+            Create a cell in a table.
+            </summary>
+            <param name="pdfRectangle"></param>
+        </member>
+        <member name="M:Tabula.Cell.#ctor(Tabula.TextChunk)">
+            <summary>
+            Create a cell in a table.
+            </summary>
+            <param name="chunk"></param>
+        </member>
+        <member name="M:Tabula.Cell.#ctor(UglyToad.PdfPig.Core.PdfPoint,UglyToad.PdfPig.Core.PdfPoint)">
+            <summary>
+            Create a cell in a table.
+            </summary>
+            <param name="topLeft"></param>
+            <param name="bottomRight"></param>
+        </member>
+        <member name="M:Tabula.Cell.GetText(System.Boolean)">
+            <summary>
+            Gets the cell's text.
+            </summary>
+            <param name="useLineReturns"></param>
+        </member>
+        <member name="M:Tabula.Cell.GetText">
+            <summary>
+            Gets the cell's text.
+            </summary>
+        </member>
+        <member name="M:Tabula.Cell.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Tabula.Detectors.IDetectionAlgorithm">
+            <summary>
+            Table detection algorithm.
+            </summary>
+        </member>
+        <member name="M:Tabula.Detectors.IDetectionAlgorithm.Detect(Tabula.PageArea)">
+            <summary>
+            Detects the tables in the page.
+            </summary>
+            <param name="page">The page where to detect the tables.</param>
+        </member>
+        <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm">
+            <summary>
+            Nurminen detection algorithm.
+            </summary>
+        </member>
         <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm.TextEdge">
             <summary>
             Helper class that encapsulates a text edge
@@ -28,52 +79,325 @@
             </summary>
         </member>
         <member name="T:Tabula.Detectors.SpreadsheetDetectionAlgorithm">
-            Created by matt on 2015-12-14.
+            <summary>
             This is the basic spreadsheet table detection algorithm currently implemented in tabula (web).
             It uses intersecting ruling lines to find tables.
+            </summary>
+        </member>
+        <member name="M:Tabula.Detectors.SpreadsheetDetectionAlgorithm.Detect(Tabula.PageArea)">
+            <summary>
+            Detects the tables in the page.
+            </summary>
+            <param name="page">The page where to detect the tables.</param>
         </member>
         <member name="T:Tabula.Extractors.BasicExtractionAlgorithm">
             <summary>
-            stream
+            Stream extraction algorithm.
             </summary>
         </member>
         <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.#ctor">
             <summary>
-            stream
+            Stream extraction algorithm.
             </summary>
         </member>
-        <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.#ctor(System.Collections.Generic.List{Tabula.Ruling})">
+        <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.#ctor(System.Collections.Generic.IReadOnlyList{Tabula.Ruling})">
             <summary>
-            stream
+            Stream extraction algorithm.
             </summary>
+            <param name="verticalRulings">List of vertical rulings.</param>
+        </member>
+        <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.Extract(Tabula.PageArea,System.Collections.Generic.IReadOnlyList{System.Single})">
+            <summary>
+            Extracts the tables in the page.
+            </summary>
+            <param name="page">The page where to extract the tables.</param>
+            <param name="verticalRulingPositions">List of vertical rulings, indicated by there x position.</param>
+        </member>
+        <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.Extract(Tabula.PageArea)">
+            <summary>
+            Extracts the tables in the page.
+            </summary>
+            <param name="page">The page where to extract the tables.</param>
+        </member>
+        <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.ColumnPositions(System.Collections.Generic.IReadOnlyList{Tabula.TableLine})">
+            <summary>
+            Gets columns positions.
+            </summary>
+            <param name="lines">Must be an array of lines sorted by their +top+ attribute.</param>
+            <returns>a list of column boundaries (x axis).</returns>
+        </member>
+        <member name="T:Tabula.Extractors.IExtractionAlgorithm">
+            <summary>
+            Table extraction algorithm.
+            </summary>
+        </member>
+        <member name="M:Tabula.Extractors.IExtractionAlgorithm.Extract(Tabula.PageArea)">
+            <summary>
+            Extracts the tables in the page.
+            </summary>
+            <param name="page">The page where to extract the tables.</param>
         </member>
         <member name="T:Tabula.Extractors.SpreadsheetExtractionAlgorithm">
             <summary>
-            lattice
+            Lattice extraction algorithm.
             </summary>
         </member>
         <member name="M:Tabula.Extractors.SpreadsheetExtractionAlgorithm.#ctor">
             <summary>
-            lattice
+            Lattice extraction algorithm.
             </summary>
         </member>
-        <member name="M:Tabula.Extractors.SpreadsheetExtractionAlgorithm.extract(Tabula.PageArea,System.Collections.Generic.List{Tabula.Ruling})">
+        <member name="M:Tabula.Extractors.SpreadsheetExtractionAlgorithm.Extract(Tabula.PageArea)">
             <summary>
-            Extract a list of Table from page using rulings as separators
+            Extracts the tables in the page.
+            </summary>
+            <param name="page">The page where to extract the tables.</param>
+        </member>
+        <member name="M:Tabula.Extractors.SpreadsheetExtractionAlgorithm.Extract(Tabula.PageArea,System.Collections.Generic.IReadOnlyList{Tabula.Ruling})">
+            <summary>
+            Extracts the tables in the page using rulings as separators.
             </summary>
             <param name="page"></param>
             <param name="rulings"></param>
-            <returns></returns>
+        </member>
+        <member name="M:Tabula.Extractors.SpreadsheetExtractionAlgorithm.IsTabular(Tabula.PageArea)">
+            <summary>
+            
+            </summary>
+            <param name="page"></param>
+        </member>
+        <member name="M:Tabula.Extractors.SpreadsheetExtractionAlgorithm.FindCells(System.Collections.Generic.IReadOnlyList{Tabula.Ruling},System.Collections.Generic.IReadOnlyList{Tabula.Ruling})">
+            <summary>
+            Find cells from horizontal and vertical ruling lines.
+            </summary>
+            <param name="horizontalRulingLines"></param>
+            <param name="verticalRulingLines"></param>
+        </member>
+        <member name="M:Tabula.Extractors.SpreadsheetExtractionAlgorithm.FindSpreadsheetsFromCells(System.Collections.Generic.List{Tabula.TableRectangle})">
+            <summary>
+            Find spreadsheets areas from cells.
+            <para>Based on O'Rourke's `Uniqueness of orthogonal connect-the-dots`.</para>
+            </summary>
+            <param name="cells"></param>
+        </member>
+        <member name="M:Tabula.Extractors.SpreadsheetExtractionAlgorithm.ToString">
+            <inheritdoc/>
         </member>
         <member name="T:Tabula.ObjectExtractor">
-            ** tabula/ObjectExtractor.java **
-            ** tabula/ObjectExtractorStreamEngine.java **
+            <summary>
+            Tabula object extractor.
+            </summary>
+        </member>
+        <member name="M:Tabula.ObjectExtractor.#ctor(UglyToad.PdfPig.PdfDocument)">
+            <summary>
+            Create a Tabula object extractor.
+            </summary>
+            <param name="pdfDocument"></param>
+        </member>
+        <member name="M:Tabula.ObjectExtractor.ExtractPage(System.Int32)">
+            <summary>
+            Extract the <see cref="T:Tabula.PageArea"/>, with its text elements (letters) and rulings (processed PdfPath and PdfSubpath).
+            </summary>
+            <param name="pageNumber">The page number to extract.</param>
+        </member>
+        <member name="M:Tabula.ObjectExtractor.Extract(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Enumerate and extract over the given pages.
+            </summary>
+            <param name="pages"></param>
+        </member>
+        <member name="M:Tabula.ObjectExtractor.Extract">
+            <summary>
+            Enumerate and extract over all the pages.
+            </summary>
+        </member>
+        <member name="M:Tabula.ObjectExtractor.Extract(System.Int32)">
+            <summary>
+            Extract the <see cref="T:Tabula.PageArea"/>, with its text elements (letters) and rulings (processed PdfPath and PdfSubpath).
+            </summary>
+            <param name="pageNumber">The page number to extract.</param>
+        </member>
+        <member name="M:Tabula.ObjectExtractor.Close">
+            <summary>
+            Close the ObjectExtractor.
+            </summary>
+        </member>
+        <member name="T:Tabula.PageArea">
+            <summary>
+            A tabula page.
+            </summary>
+        </member>
+        <member name="P:Tabula.PageArea.Rotation">
+            <summary>
+            The page rotation.
+            </summary>
+        </member>
+        <member name="P:Tabula.PageArea.PageNumber">
+            <summary>
+            The page number.
+            </summary>
+        </member>
+        <member name="P:Tabula.PageArea.PdfPage">
+            <summary>
+            The original page.
+            </summary>
+        </member>
+        <member name="P:Tabula.PageArea.PdfDocument">
+            <summary>
+            The original document.
+            </summary>
+        </member>
+        <member name="P:Tabula.PageArea.MinCharWidth">
+            <summary>
+            The minimum character width.
+            </summary>
+        </member>
+        <member name="P:Tabula.PageArea.MinCharHeight">
+            <summary>
+            The minimum character height.
+            </summary>
+        </member>
+        <member name="P:Tabula.PageArea.HasText">
+            <summary>
+            True if the page contains text.
+            </summary>
+        </member>
+        <member name="P:Tabula.PageArea.VerticalRulings">
+            <summary>
+            Gets the vertical rulings.
+            <para>This is a read-only list. Use <see cref="M:Tabula.PageArea.AddRuling(Tabula.Ruling)"/> to add a <see cref="T:Tabula.Ruling"/>.</para>
+            </summary>
+        </member>
+        <member name="P:Tabula.PageArea.HorizontalRulings">
+            <summary>
+            Gets the horizontal rulings.
+            <para>This is a read-only list. Use <see cref="M:Tabula.PageArea.AddRuling(Tabula.Ruling)"/> to add a <see cref="T:Tabula.Ruling"/>.</para>
+            </summary>
+        </member>
+        <member name="P:Tabula.PageArea.UnprocessedRulings">
+            <summary>
+            Gets the unprocessed rulings.
+            <para>This is a read-only list. Use <see cref="M:Tabula.PageArea.AddRuling(Tabula.Ruling)"/> to add a <see cref="T:Tabula.Ruling"/>.</para>
+            </summary>
+        </member>
+        <member name="M:Tabula.PageArea.#ctor(UglyToad.PdfPig.Core.PdfRectangle,System.Int32,System.Int32,UglyToad.PdfPig.Content.Page,UglyToad.PdfPig.PdfDocument,System.Collections.Generic.List{Tabula.TextElement},System.Collections.Generic.List{Tabula.Ruling},System.Double,System.Double,Tabula.RectangleSpatialIndex{Tabula.TextElement})">
+            <summary>
+            Create a new page area.
+            </summary>
+            <param name="area"></param>
+            <param name="rotation"></param>
+            <param name="pageNumber"></param>
+            <param name="pdPage"></param>
+            <param name="doc"></param>
+            <param name="characters"></param>
+            <param name="rulings"></param>
+            <param name="minCharWidth"></param>
+            <param name="minCharHeight"></param>
+            <param name="index"></param>
+        </member>
+        <member name="M:Tabula.PageArea.GetArea(UglyToad.PdfPig.Core.PdfRectangle)">
+            <summary>
+            Gets the page area from the given area.
+            </summary>
+            <param name="area"></param>
+        </member>
+        <member name="M:Tabula.PageArea.GetArea(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Gets the page area from the given area.
+            </summary>
+            <param name="top"></param>
+            <param name="left"></param>
+            <param name="bottom"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.PageArea.GetText">
+            <summary>
+            Gets the page's text.
+            </summary>
+        </member>
+        <member name="M:Tabula.PageArea.GetText(UglyToad.PdfPig.Core.PdfRectangle)">
+            <summary>
+            Gets the page's text contained in the area.
+            </summary>
+            <param name="area"></param>
+        </member>
+        <member name="M:Tabula.PageArea.GetTextBounds">
+            <summary>
+            Gets the bounding box containing the text.
+            </summary>
+        </member>
+        <member name="M:Tabula.PageArea.GetRulings">
+            <summary>
+            Get the cleaned rulings.
+            </summary>
+        </member>
+        <member name="M:Tabula.PageArea.AddRuling(Tabula.Ruling)">
+            <summary>
+            Add a vertical or a horizontal ruling lines.
+            </summary>
+            <param name="r"></param>
+        </member>
+        <member name="T:Tabula.PageIterator">
+            <summary>
+            A tabula page iterator.
+            </summary>
+        </member>
+        <member name="M:Tabula.PageIterator.#ctor(Tabula.ObjectExtractor,System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Create a tabula page iterator.
+            </summary>
+            <param name="oe"></param>
+            <param name="pages"></param>
+        </member>
+        <member name="P:Tabula.PageIterator.Current">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tabula.PageIterator.System#Collections#IEnumerator#Current">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tabula.PageIterator.Next">
+            <summary>
+            Helper function that does MoveNext() + Current;
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.PageIterator.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tabula.PageIterator.MoveNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tabula.PageIterator.Reset">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tabula.RectangleSpatialIndex`1.Add(`0)">
+            <summary>
+            
+            </summary>
+            <param name="te"></param>
         </member>
         <member name="M:Tabula.RectangleSpatialIndex`1.Expand(UglyToad.PdfPig.Core.PdfRectangle)">
             <summary>
             hack
             </summary>
             <param name="rectangle"></param>
+        </member>
+        <member name="M:Tabula.RectangleSpatialIndex`1.Contains(UglyToad.PdfPig.Core.PdfRectangle)">
+            <summary>
+            
+            </summary>
+            <param name="r"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.RectangleSpatialIndex`1.Contains(Tabula.TableRectangle)">
+            <summary>
+            
+            </summary>
+            <param name="r"></param>
             <returns></returns>
         </member>
         <member name="M:Tabula.RectangleSpatialIndex`1.IntersectsWithNoBug(UglyToad.PdfPig.Core.PdfRectangle,UglyToad.PdfPig.Core.PdfRectangle)">
@@ -81,11 +405,15 @@
             TO REMOVE: need to check PdfPig's 'IntersectsWith' for bug with empty rectangles. they should instersect
             </summary>
         </member>
-        <member name="M:Tabula.RectangleSpatialIndex`1.getBounds">
+        <member name="M:Tabula.RectangleSpatialIndex`1.GetBounds">
             <summary>
             Minimum bounding box of all the Rectangles contained on this RectangleSpatialIndex.
             </summary>
-            <returns></returns>
+        </member>
+        <member name="P:Tabula.RectangularTextContainer`1.TextElements">
+            <summary>
+            
+            </summary>
         </member>
         <member name="M:Tabula.Ruling.#ctor(UglyToad.PdfPig.Core.PdfPoint,UglyToad.PdfPig.Core.PdfPoint)">
             <summary>
@@ -94,19 +422,33 @@
             <param name="p1">bottom point.</param>
             <param name="p2">top point</param>
         </member>
-        <member name="M:Tabula.Ruling.normalize">
+        <member name="M:Tabula.Ruling.Normalize">
             <summary>
-            Normalize almost horizontal or almost vertical lines
+            Normalize almost horizontal or almost vertical lines.
             </summary>
         </member>
-        <member name="M:Tabula.Ruling.getPosition">
+        <member name="P:Tabula.Ruling.IsVertical">
+            <summary>
+            Is the <see cref="T:Tabula.Ruling"/> vertical?
+            </summary>
+        </member>
+        <member name="P:Tabula.Ruling.IsHorizontal">
+            <summary>
+            Is the <see cref="T:Tabula.Ruling"/> horizontal?
+            </summary>
+        </member>
+        <member name="P:Tabula.Ruling.Oblique">
+            <summary>
+            Is the <see cref="T:Tabula.Ruling"/> blique? Neither vertical nor horizontal.
+            </summary>
+        </member>
+        <member name="P:Tabula.Ruling.Position">
             <summary>
             attributes that make sense only for non-oblique lines
             these are used to have a single collapse method (in page, currently)
             </summary>
-            <returns></returns>
         </member>
-        <member name="M:Tabula.Ruling.nearlyIntersects(Tabula.Ruling)">
+        <member name="M:Tabula.Ruling.NearlyIntersects(Tabula.Ruling)">
             <summary>
             if the lines we're comparing are colinear or parallel, we expand them by a only 1 pixel,
             because the expansions are additive
@@ -119,28 +461,137 @@
             <param name="another"></param>
             <returns></returns>
         </member>
-        <member name="M:Tabula.Ruling.findIntersections(System.Collections.Generic.List{Tabula.Ruling},System.Collections.Generic.List{Tabula.Ruling})">
+        <member name="P:Tabula.Ruling.Top">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Tabula.Ruling.GetAngle">
+            <summary>
+            Compute the angle. [0, +180].
+            </summary>
+        </member>
+        <member name="M:Tabula.Ruling.FindIntersections(System.Collections.Generic.IReadOnlyList{Tabula.Ruling},System.Collections.Generic.IReadOnlyList{Tabula.Ruling})">
             <summary>
             log(n) implementation of find_intersections
             based on http://people.csail.mit.edu/indyk/6.838-old/handouts/lec2.pdf
             </summary>
             <param name="horizontals"></param>
             <param name="verticals"></param>
-            <returns></returns>
         </member>
-        <member name="M:Tabula.Ruling.intersectsLine(Tabula.Ruling)">
+        <member name="M:Tabula.Ruling.IntersectsLine(Tabula.Ruling)">
             <summary>
             True if both horizontal, aligned and overlap (i.e. infinite intersection points).
             True if both vertical, aligned and overlap (i.e. infinite intersection points).
             True if not parallel and intersect (i.e. in intersection point).
             </summary>
             <param name="other"></param>
-            <returns></returns>
         </member>
-        <member name="M:Tabula.Ruling.clone">
+        <member name="M:Tabula.Ruling.Clone">
             <summary>
             Deep copy.
             </summary>
+        </member>
+        <member name="T:Tabula.Table">
+            <summary>
+            A tabula table.
+            </summary>
+        </member>
+        <member name="P:Tabula.Table.EMPTY">
+            <summary>
+            An empty table.
+            </summary>
+        </member>
+        <member name="M:Tabula.Table.#ctor(System.String)">
+            <summary>
+            Create a table.
+            </summary>
+            <param name="extractionMethod"></param>
+        </member>
+        <member name="M:Tabula.Table.#ctor(Tabula.Extractors.IExtractionAlgorithm)">
+            <summary>
+            Create a table.
+            </summary>
+            <param name="extractionAlgorithm"></param>
+        </member>
+        <member name="P:Tabula.Table.Cells">
+            <summary>
+            Get the list of cells.
+            <para>This is a read-only list. Use <see cref="M:Tabula.Table.Add(Tabula.RectangularTextContainer,System.Int32,System.Int32)"/> to add a <see cref="T:Tabula.Cell"/>.</para>
+            </summary>
+        </member>
+        <member name="P:Tabula.Table.RowCount">
+            <summary>
+            Gets the number of rows in the table.
+            </summary>
+        </member>
+        <member name="P:Tabula.Table.ColumnCount">
+            <summary>
+            Gets the number of columns in the table.
+            </summary>
+        </member>
+        <member name="P:Tabula.Table.ExtractionMethod">
+            <summary>
+            Gets the extraction method used to build to table.
+            </summary>
+        </member>
+        <member name="M:Tabula.Table.Add(Tabula.RectangularTextContainer,System.Int32,System.Int32)">
+            <summary>
+            Add a cell at the given [row, column] position.
+            </summary>
+            <param name="chunk"></param>
+            <param name="row"></param>
+            <param name="col"></param>
+        </member>
+        <member name="P:Tabula.Table.Rows">
+            <summary>
+            Gets the table's rows.
+            </summary>
+        </member>
+        <member name="P:Tabula.Table.Item(System.Int32,System.Int32)">
+            <summary>
+            Get the cell at position [i, j].
+            </summary>
+            <param name="i">Row.</param>
+            <param name="j">Column.</param>
+        </member>
+        <member name="T:Tabula.TableLine">
+            <summary>
+            A Tabula Line.
+            </summary>
+        </member>
+        <member name="F:Tabula.TableLine.WHITE_SPACE_CHARS">
+            <summary>
+            List of white space characters.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableLine.TextElements">
+            <summary>
+            Gets the list of text elements.
+            <para>This is a read-only list. Use <see cref="M:Tabula.TableLine.AddTextChunk(Tabula.TextChunk)"/> to add a <see cref="T:Tabula.TextChunk"/>.</para>
+            </summary>
+        </member>
+        <member name="M:Tabula.TableLine.SetTextElements(System.Collections.Generic.List{Tabula.TextChunk})">
+            <summary>
+            Sets the TextElements.
+            </summary>
+            <param name="textChunks"></param>
+        </member>
+        <member name="M:Tabula.TableLine.AddTextChunk(System.Int32,Tabula.TextChunk)">
+            <summary>
+            Add a text chunk to the text elements at a given index.
+            </summary>
+            <param name="i">The index at which to add the chunk.</param>
+            <param name="textChunk">The chunk to be added.</param>
+        </member>
+        <member name="M:Tabula.TableLine.AddTextChunk(Tabula.TextChunk)">
+            <summary>
+            Add a text chunk to the text elements.
+            </summary>
+            <param name="textChunk">The chunk to be added.</param>
+        </member>
+        <member name="M:Tabula.TableLine.ToString">
+            <inheritdoc/>
         </member>
         <member name="T:Tabula.TableRectangle.ILL_DEFINED_ORDER">
             <summary>
@@ -157,58 +608,186 @@
             <param name="o2"></param>
             <returns></returns>
         </member>
-        <member name="M:Tabula.TableRectangle.isLtrDominant">
+        <member name="M:Tabula.TableRectangle.IsLtrDominant">
             <summary>
             1 is LTR, 0 is neutral, -1 is RTL.
             <para>Need this for fancy sorting in Tabula.TextChunk</para>
             </summary>
         </member>
-        <member name="M:Tabula.TableRectangle.getPoints">
+        <member name="P:Tabula.TableRectangle.Top">
             <summary>
+            Get the <see cref="T:Tabula.TableRectangle"/>'s top coordinate.
+            </summary>
+        </member>
+        <member name="M:Tabula.TableRectangle.SetTop(System.Double)">
+            <summary>
+            Set the <see cref="T:Tabula.TableRectangle"/>'s top coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableRectangle.Right">
+            <summary>
+            Get the <see cref="T:Tabula.TableRectangle"/>'s right coordinate.
+            </summary>
+        </member>
+        <member name="M:Tabula.TableRectangle.SetRight(System.Double)">
+            <summary>
+            Set the <see cref="T:Tabula.TableRectangle"/>'s right coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableRectangle.Left">
+            <summary>
+            Get the <see cref="T:Tabula.TableRectangle"/>'s left coordinate.
+            </summary>
+        </member>
+        <member name="M:Tabula.TableRectangle.SetLeft(System.Double)">
+            <summary>
+            Set the <see cref="T:Tabula.TableRectangle"/>'s left coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableRectangle.Bottom">
+            <summary>
+            Get the <see cref="T:Tabula.TableRectangle"/>'s bottom coordinate.
+            </summary>
+        </member>
+        <member name="M:Tabula.TableRectangle.SetBottom(System.Double)">
+            <summary>
+            Set the <see cref="T:Tabula.TableRectangle"/>'s bottom coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableRectangle.Points">
+            <summary>
+            Get the <see cref="T:Tabula.TableRectangle"/>'s points.
             Counter-clockwise, starting from bottom left point.
             </summary>
         </member>
-        <member name="M:Tabula.TableRectangle.setRect(System.Double,System.Double,System.Double,System.Double)">
+        <member name="P:Tabula.TableRectangle.X">
             <summary>
-            Sets the location and size of this Rectangle2D to the specified double values.
+            The <see cref="T:Tabula.TableRectangle"/>'s top-left X coordinate.
             </summary>
-            <param name="x">the X coordinate of the upper-left corner of this Rectangle2D</param>
-            <param name="y">the Y coordinate of the upper-left corner of this Rectangle2D</param>
-            <param name="w">the width of this Rectangle2D</param>
-            <param name="h">the height of this Rectangle2D</param>
         </member>
-        <member name="M:Tabula.TextChunk.groupByDirectionality(System.Boolean)">
+        <member name="P:Tabula.TableRectangle.Y">
+            <summary>
+            The <see cref="T:Tabula.TableRectangle"/>'s top-left Y coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableRectangle.Width">
+            <summary>
+            The <see cref="T:Tabula.TableRectangle"/>'s width.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableRectangle.Height">
+            <summary>
+            The <see cref="T:Tabula.TableRectangle"/>'s height.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableRectangle.MinX">
+            <summary>
+            The <see cref="T:Tabula.TableRectangle"/>'s left coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableRectangle.MaxX">
+            <summary>
+            The <see cref="T:Tabula.TableRectangle"/>'s right coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableRectangle.MinY">
+            <summary>
+            The <see cref="T:Tabula.TableRectangle"/>'s bottom coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableRectangle.MaxY">
+            <summary>
+            The <see cref="T:Tabula.TableRectangle"/>'s top coordinate.
+            </summary>
+        </member>
+        <member name="T:Tabula.TableWithRulingLines">
+            <summary>
+            A tabula table with ruling lines.
+            </summary>
+        </member>
+        <member name="P:Tabula.TableWithRulingLines.VerticalRulings">
+            <summary>
+            Gets the vertical rulings.
+            <para>This is a read-only list.</para>
+            </summary>
+        </member>
+        <member name="P:Tabula.TableWithRulingLines.HorizontalRulings">
+            <summary>
+            Gets the horizontal rulings.
+            <para>This is a read-only list.</para>
+            </summary>
+        </member>
+        <member name="M:Tabula.TableWithRulingLines.#ctor(Tabula.TableRectangle,System.Collections.Generic.List{Tabula.Cell},System.Collections.Generic.List{Tabula.Ruling},System.Collections.Generic.List{Tabula.Ruling},Tabula.Extractors.IExtractionAlgorithm)">
+            <summary>
+            Create a table.
+            </summary>
+            <param name="area"></param>
+            <param name="cells"></param>
+            <param name="horizontalRulings"></param>
+            <param name="verticalRulings"></param>
+            <param name="extractionAlgorithm"></param>
+        </member>
+        <member name="P:Tabula.TextChunk.EMPTY">
+            <summary>
+            An empty text chunk.
+            </summary>
+        </member>
+        <member name="M:Tabula.TextChunk.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Tabula.TextChunk.#ctor(Tabula.TextElement)">
+            <summary>
+            
+            </summary>
+            <param name="textElement"></param>
+        </member>
+        <member name="M:Tabula.TextChunk.#ctor(System.Collections.Generic.List{Tabula.TextElement})">
+            <summary>
+            
+            </summary>
+            <param name="textElements"></param>
+        </member>
+        <member name="M:Tabula.TextChunk.GroupByDirectionality(System.Boolean)">
             <summary>
             Splits a TextChunk into N TextChunks, where each chunk is of a single directionality, and
             then reverse the RTL ones.
             what we're doing here is *reversing* the Unicode bidi algorithm
-            in the language of that algorithm, each chunk is a(maximal) directional run.
-            We attach whitespace to the beginning of non-RTL
+            in the language of that algorithm, each chunk is a (maximal) directional run.
+            We attach whitespace to the beginning of non-RTL.
             </summary>
             <param name="isLtrDominant"></param>
-            <returns></returns>
         </member>
-        <member name="M:Tabula.TextChunk.isLtrDominant">
+        <member name="M:Tabula.TextChunk.IsLtrDominant">
             <summary>
-            1 is LtR, 0 is neutral, -1 is RtL.
+            1 is Left-to-Right, 0 is neutral, -1 is Right-to-Left.
             </summary>
         </member>
-        <member name="M:Tabula.TextChunk.isSameChar(System.Char)">
+        <member name="M:Tabula.TextChunk.GetText(System.Boolean)">
+            <summary>
+            Returns null.
+            <para>TODO Auto-generated method stub</para>
+            </summary>
+            <param name="useLineReturns"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tabula.TextChunk.IsSameChar(System.Char)">
             <summary>
             Returns true if text contained in this TextChunk is the same repeated character
             </summary>
             <param name="c"></param>
             <returns></returns>
         </member>
-        <member name="M:Tabula.TextChunk.splitAt(System.Int32)">
+        <member name="M:Tabula.TextChunk.SplitAt(System.Int32)">
             <summary>
             Splits a TextChunk in two, at the position of the i-th TextElement
             </summary>
             <param name="i"></param>
         </member>
-        <member name="M:Tabula.TextChunk.squeeze(System.Char,System.Int32)">
+        <member name="M:Tabula.TextChunk.Squeeze(System.Char,System.Int32)">
             <summary>
-            Removes runs of identical TextElements in this TextChunk
+            Removes runs of identical TextElements in this TextChunk.
             <para>For example, if the TextChunk contains this string of characters: "1234xxxxx56xx"
             and c == 'x' and minRunLength == 4, this method will return a list of TextChunk
             such that: ["1234", "56xx"]
@@ -217,7 +796,49 @@
             <param name="c"></param>
             <param name="minRunLength"></param>
         </member>
-        <member name="M:Tabula.TextElement.mergeWords(System.Collections.Generic.List{Tabula.TextElement},System.Collections.Generic.List{Tabula.Ruling})">
+        <member name="M:Tabula.TextChunk.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tabula.TextChunk.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tabula.TextChunk.AllSameChar(System.Collections.Generic.IReadOnlyList{Tabula.TextChunk})">
+            <summary>
+            The purpose is basically just to return true iff there are 2+ TextChunks and they're identical.
+            </summary>
+            <param name="textChunks"></param>
+        </member>
+        <member name="T:Tabula.TextElement">
+            <summary>
+            A tabula, text element. Equivalent to a letter.
+            </summary>
+        </member>
+        <member name="M:Tabula.TextElement.#ctor(UglyToad.PdfPig.Core.PdfRectangle,UglyToad.PdfPig.PdfFonts.FontDetails,System.Double,System.String,System.Double,System.Double)">
+            <summary>
+            Create a text element.
+            </summary>
+            <param name="pdfRectangle"></param>
+            <param name="font"></param>
+            <param name="fontSize"></param>
+            <param name="c"></param>
+            <param name="widthOfSpace"></param>
+            <param name="dir">The direction of the text (0, 90, 180, or 270). Can be any number with PdfPig.</param>
+        </member>
+        <member name="P:Tabula.TextElement.Direction">
+            <summary>
+            The direction of the text (0, 90, 180, or 270). Can be any number with PdfPig.
+            </summary>
+        </member>
+        <member name="M:Tabula.TextElement.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tabula.TextElement.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tabula.TextElement.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tabula.TextElement.MergeWords(System.Collections.Generic.IReadOnlyList{Tabula.TextElement},System.Collections.Generic.IReadOnlyList{Tabula.Ruling})">
             <summary>
             heuristically merge a list of TextElement into a list of TextChunk
             ported from PDFBox's PDFTextStripper.writePage, with modifications.
@@ -227,14 +848,33 @@
             <param name="verticalRulings"></param>
             <returns></returns>
         </member>
+        <member name="T:Tabula.UnicodeExtensions">
+            <summary>
+            Unicode extensions.
+            <para>As of Unicode v13.0.</para>
+            </summary>
+        </member>
+        <member name="M:Tabula.UnicodeExtensions.GetDirectionality(System.Char)">
+            <summary>
+            Gets the character abbreviated type (i.e. 'BN', 'S', 'NSM', 'LRO'), used in the Unicode Bidirectional Algorithm.
+            </summary>
+            <param name="c">The character value.</param>
+        </member>
+        <member name="M:Tabula.UnicodeExtensions.GetDirectionality(System.Int32)">
+            <summary>
+            Gets the character abbreviated type (i.e. 'BN', 'S', 'NSM', 'LRO'), used in the Unicode Bidirectional Algorithm.
+            </summary>
+            <param name="val">The integer value of a char.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tabula.Utils">
             @author manuel
         </member>
-        <member name="M:Tabula.Utils.sort``1(System.Collections.Generic.List{``0})">
+        <member name="M:Tabula.Utils.Sort``1(System.Collections.Generic.List{``0})">
             Wrap Collections.sort so we can fallback to a non-stable quicksort if we're
             running on JDK7+
         </member>
-        <member name="M:Tabula.Utils.snapPoints(System.Collections.Generic.List{Tabula.Ruling},System.Double,System.Double)">
+        <member name="M:Tabula.Utils.SnapPoints(System.Collections.Generic.List{Tabula.Ruling},System.Double,System.Double)">
             <summary>
             re-implemented.
             </summary>
@@ -242,15 +882,47 @@
             <param name="xThreshold"></param>
             <param name="yThreshold"></param>
         </member>
-        <member name="M:Tabula.Utils.subList``1(System.Collections.Generic.List{``0},System.Int32,System.Int32)">
+        <member name="M:Tabula.Utils.SubList``1(System.Collections.Generic.IReadOnlyList{``0},System.Int32,System.Int32)">
             <summary>
             
             </summary>
             <typeparam name="T"></typeparam>
             <param name="list"></param>
-            <param name="fromIndex">low endpoint (inclusive) of the subList</param>
-            <param name="toIndex">high endpoint (exclusive) of the subList</param>
-            <returns></returns>
+            <param name="fromIndex">Low endpoint (inclusive) of the subList</param>
+            <param name="toIndex">High endpoint (exclusive) of the subList</param>
+        </member>
+        <member name="T:Tabula.Writers.IWriter">
+            <summary>
+            Base interface for tabula writer.
+            </summary>
+        </member>
+        <member name="M:Tabula.Writers.IWriter.Write(System.IO.StreamWriter,Tabula.Table)">
+            <summary>
+            Write the table to the stream.
+            </summary>
+            <param name="sb"></param>
+            <param name="table"></param>
+        </member>
+        <member name="M:Tabula.Writers.IWriter.Write(System.IO.StreamWriter,System.Collections.Generic.IReadOnlyList{Tabula.Table})">
+            <summary>
+            Write the tables to the stream.
+            </summary>
+            <param name="sb"></param>
+            <param name="tables"></param>
+        </member>
+        <member name="M:Tabula.Writers.IWriter.Write(System.Text.StringBuilder,Tabula.Table)">
+            <summary>
+            Write the table to the stream.
+            </summary>
+            <param name="sb"></param>
+            <param name="table"></param>
+        </member>
+        <member name="M:Tabula.Writers.IWriter.Write(System.Text.StringBuilder,System.Collections.Generic.IReadOnlyList{Tabula.Table})">
+            <summary>
+            Write the tables to the stream.
+            </summary>
+            <param name="sb"></param>
+            <param name="tables"></param>
         </member>
     </members>
 </doc>

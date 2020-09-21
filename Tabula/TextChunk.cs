@@ -10,7 +10,7 @@ namespace Tabula
     public class TextChunk : RectangularTextContainer<TextElement>, IHasText
     {
         /// <summary>
-        /// 
+        /// An empty text chunk.
         /// </summary>
         public static TextChunk EMPTY => new TextChunk();
 
@@ -170,7 +170,7 @@ namespace Tabula
         }
 
         /// <summary>
-        /// 1 is LtR, 0 is neutral, -1 is RtL.
+        /// 1 is Left-to-Right, 0 is neutral, -1 is Right-to-Left.
         /// </summary>
         public override int IsLtrDominant()
         {
@@ -231,6 +231,12 @@ namespace Tabula
             return sb.ToString().Normalize(NormalizationForm.FormKC).Trim();
         }
 
+        /// <summary>
+        /// Returns null.
+        /// <para>TODO Auto-generated method stub</para>
+        /// </summary>
+        /// <param name="useLineReturns"></param>
+        /// <returns></returns>
         public override string GetText(bool useLineReturns)
         {
             // TODO Auto-generated method stub
@@ -355,6 +361,7 @@ namespace Tabula
             return rv;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             const int prime = 31;
@@ -362,6 +369,7 @@ namespace Tabula
             return prime * result + ((textElements?.GetHashCode()) ?? 0);
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             if (obj is TextChunk other)
@@ -380,6 +388,10 @@ namespace Tabula
             return false;
         }
 
+        /// <summary>
+        /// The purpose is basically just to return true iff there are 2+ TextChunks and they're identical.
+        /// </summary>
+        /// <param name="textChunks"></param>
         public static bool AllSameChar(IReadOnlyList<TextChunk> textChunks)
         {
             /* 

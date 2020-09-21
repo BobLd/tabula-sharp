@@ -11,7 +11,7 @@ namespace Tabula
     // TODO: this class should probably be called "PageArea" or something like that
 
     /// <summary>
-    /// 
+    /// A tabula page.
     /// </summary>
     public class PageArea : TableRectangle
     {
@@ -43,22 +43,22 @@ namespace Tabula
         public PdfDocument PdfDocument { get; }
 
         /// <summary>
-        /// 
+        /// The minimum character width.
         /// </summary>
         public double MinCharWidth { get; }
 
         /// <summary>
-        /// 
+        /// The minimum character height.
         /// </summary>
         public double MinCharHeight { get; }
 
         /// <summary>
-        /// 
+        /// True if the page contains text.
         /// </summary>
         public bool HasText => this.texts.Count > 0;
 
         /// <summary>
-        /// Get the vertical rulings.
+        /// Gets the vertical rulings.
         /// <para>This is a read-only list. Use <see cref="AddRuling(Ruling)"/> to add a <see cref="Ruling"/>.</para>
         /// </summary>
         public IReadOnlyList<Ruling> VerticalRulings
@@ -75,7 +75,7 @@ namespace Tabula
         }
 
         /// <summary>
-        /// Get the horizontal rulings.
+        /// Gets the horizontal rulings.
         /// <para>This is a read-only list. Use <see cref="AddRuling(Ruling)"/> to add a <see cref="Ruling"/>.</para>
         /// </summary>
         public IReadOnlyList<Ruling> HorizontalRulings
@@ -92,7 +92,7 @@ namespace Tabula
         }
 
         /// <summary>
-        /// Get the unprocessed rulings.
+        /// Gets the unprocessed rulings.
         /// <para>This is a read-only list. Use <see cref="AddRuling(Ruling)"/> to add a <see cref="Ruling"/>.</para>
         /// </summary>
         public IReadOnlyList<Ruling> UnprocessedRulings => this.rulings;
@@ -135,12 +135,25 @@ namespace Tabula
         }
         */
 
-        public PageArea(PdfRectangle area, int rotation, int page_number, Page pdPage, PdfDocument doc,
+        /// <summary>
+        /// Create a new page area.
+        /// </summary>
+        /// <param name="area"></param>
+        /// <param name="rotation"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pdPage"></param>
+        /// <param name="doc"></param>
+        /// <param name="characters"></param>
+        /// <param name="rulings"></param>
+        /// <param name="minCharWidth"></param>
+        /// <param name="minCharHeight"></param>
+        /// <param name="index"></param>
+        public PageArea(PdfRectangle area, int rotation, int pageNumber, Page pdPage, PdfDocument doc,
              List<TextElement> characters, List<Ruling> rulings,
              double minCharWidth, double minCharHeight, RectangleSpatialIndex<TextElement> index) : base(area)
         {
             this.Rotation = rotation;
-            this.PageNumber = page_number;
+            this.PageNumber = pageNumber;
             this.PdfPage = pdPage;
             this.PdfDocument = doc;
             this.texts = characters;
@@ -150,6 +163,10 @@ namespace Tabula
             this.spatial_index = index;
         }
 
+        /// <summary>
+        /// Gets the page area from the given area.
+        /// </summary>
+        /// <param name="area"></param>
         public PageArea GetArea(PdfRectangle area)
         {
             List<TextElement> t = GetText(area);
@@ -192,21 +209,39 @@ namespace Tabula
             return rv;
         }
 
+        /// <summary>
+        /// Gets the page area from the given area.
+        /// </summary>
+        /// <param name="top"></param>
+        /// <param name="left"></param>
+        /// <param name="bottom"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public PageArea GetArea(double top, double left, double bottom, double right)
         {
             return this.GetArea(new PdfRectangle(left, bottom, right, top));
         }
 
+        /// <summary>
+        /// Gets the page's text.
+        /// </summary>
         public List<TextElement> GetText()
         {
             return texts;
         }
 
+        /// <summary>
+        /// Gets the page's text contained in the area.
+        /// </summary>
+        /// <param name="area"></param>
         public List<TextElement> GetText(PdfRectangle area)
         {
             return this.spatial_index.Contains(area);
         }
 
+        /// <summary>
+        /// Gets the bounding box containing the text.
+        /// </summary>
         public TableRectangle GetTextBounds()
         {
             List<TextElement> texts = this.GetText();
@@ -265,6 +300,10 @@ namespace Tabula
             return this.cleanRulings;
         }
 
+        /// <summary>
+        /// Add a vertical or a horizontal ruling lines.
+        /// </summary>
+        /// <param name="r"></param>
         public void AddRuling(Ruling r)
         {
             if (r.Oblique)

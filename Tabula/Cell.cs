@@ -9,7 +9,7 @@ namespace Tabula
     * ** tabula/Cell.java **
     */
     /// <summary>
-    /// 
+    /// A cell in a table.
     /// </summary>
     public class Cell : RectangularTextContainer<TextChunk>
     {
@@ -19,7 +19,7 @@ namespace Tabula
         public static Cell EMPTY => new Cell(new PdfRectangle());
 
         /// <summary>
-        /// 
+        /// Create a cell in a table.
         /// </summary>
         /// <param name="pdfRectangle"></param>
         public Cell(PdfRectangle pdfRectangle)
@@ -31,7 +31,7 @@ namespace Tabula
         }
 
         /// <summary>
-        /// 
+        /// Create a cell in a table.
         /// </summary>
         /// <param name="chunk"></param>
         public Cell(TextChunk chunk)
@@ -41,7 +41,7 @@ namespace Tabula
         }
 
         /// <summary>
-        /// 
+        /// Create a cell in a table.
         /// </summary>
         /// <param name="topLeft"></param>
         /// <param name="bottomRight"></param>
@@ -59,6 +59,10 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// Gets the cell's text.
+        /// </summary>
+        /// <param name="useLineReturns"></param>
         public override string GetText(bool useLineReturns)
         {
             if (base.textElements.Count == 0)
@@ -81,6 +85,9 @@ namespace Tabula
             return sb.ToString().Trim();
         }
 
+        /// <summary>
+        /// Gets the cell's text.
+        /// </summary>
         public override string GetText()
         {
             return GetText(true);
@@ -100,6 +107,7 @@ namespace Tabula
             this.IsPlaceholder = placeholder;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return GetText();

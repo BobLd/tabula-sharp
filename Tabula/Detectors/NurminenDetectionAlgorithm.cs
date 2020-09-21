@@ -8,7 +8,7 @@ using UglyToad.PdfPig.DocumentLayoutAnalysis;
 
 namespace Tabula.Detectors
 {
-    /**
+    /*
      * ** tabula/detectors/NurminenDetectionAlgorithm.java **
      * Created by matt on 2015-12-17.
      * <p>
@@ -16,6 +16,10 @@ namespace Tabula.Detectors
      * Anssi Nurminen's master's thesis:
      * http://dspace.cc.tut.fi/dpub/bitstream/handle/123456789/21520/Nurminen.pdf?sequence=3
      */
+
+    /// <summary>
+    /// Nurminen detection algorithm.
+    /// </summary>
     public class NurminenDetectionAlgorithm : IDetectionAlgorithm
     {
         private static int GRAYSCALE_INTENSITY_THRESHOLD = 25;
