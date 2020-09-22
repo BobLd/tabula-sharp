@@ -93,6 +93,12 @@
             Helper container for relevant text edge info
             </summary>
         </member>
+        <member name="M:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.Detect(Tabula.PageArea)">
+            <summary>
+            
+            </summary>
+            <param name="page"></param>
+        </member>
         <member name="T:Tabula.Detectors.SpreadsheetDetectionAlgorithm">
             <summary>
             This is the basic spreadsheet table detection algorithm currently implemented in tabula (web).
@@ -674,6 +680,12 @@
             Get the <see cref="T:Tabula.TableRectangle"/>'s points.
             Counter-clockwise, starting from bottom left point.
             </summary>
+        </member>
+        <member name="M:Tabula.TableRectangle.Expand(UglyToad.PdfPig.Core.PdfRectangle)">
+            <summary>
+            hack to include border
+            </summary>
+            <param name="rectangle"></param>
         </member>
         <member name="P:Tabula.TableRectangle.X">
             <summary>

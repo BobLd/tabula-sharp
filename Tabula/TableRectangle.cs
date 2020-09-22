@@ -101,8 +101,8 @@ namespace Tabula
 
         public double VerticalOverlap(TableRectangle other)
         {
-            return Math.Max(0, Math.Min(this.BoundingBox.Top, other.BoundingBox.Top)
-                             - Math.Max(this.BoundingBox.Bottom, other.BoundingBox.Bottom));
+            return Math.Max(0, Math.Min(this.BoundingBox.TopLeft.Y, other.BoundingBox.TopLeft.Y)
+                             - Math.Max(this.BoundingBox.BottomLeft.Y, other.BoundingBox.BottomLeft.Y));
         }
 
         public bool VerticallyOverlaps(TableRectangle other)
@@ -122,8 +122,8 @@ namespace Tabula
 
         public double VerticalOverlapRatio(TableRectangle other)
         {
-            double delta = Math.Min(this.BoundingBox.Top - this.BoundingBox.Bottom,
-                                    other.BoundingBox.Top - other.BoundingBox.Bottom);
+            double delta = Math.Min(this.BoundingBox.TopLeft.Y - this.BoundingBox.BottomLeft.Y,
+                                    other.BoundingBox.TopLeft.Y - other.BoundingBox.BottomLeft.Y);
             var overl = VerticalOverlap(other);
             return overl / delta;
         }
@@ -146,7 +146,7 @@ namespace Tabula
         /// <summary>
         /// Get the <see cref="TableRectangle"/>'s top coordinate.
         /// </summary>
-        public double Top => BoundingBox.Top;
+        public double Top => BoundingBox.TopRight.Y; //.Top;
 
         /// <summary>
         /// Set the <see cref="TableRectangle"/>'s top coordinate.
@@ -163,7 +163,7 @@ namespace Tabula
         /// <summary>
         /// Get the <see cref="TableRectangle"/>'s right coordinate.
         /// </summary>
-        public double Right => BoundingBox.Right;
+        public double Right => BoundingBox.TopRight.X; //.Right;
 
         /// <summary>
         /// Set the <see cref="TableRectangle"/>'s right coordinate.
@@ -178,7 +178,7 @@ namespace Tabula
         /// <summary>
         /// Get the <see cref="TableRectangle"/>'s left coordinate.
         /// </summary>
-        public double Left => BoundingBox.Left;
+        public double Left => BoundingBox.BottomLeft.X; //.Left;
 
         /// <summary>
         /// Set the <see cref="TableRectangle"/>'s left coordinate.
@@ -194,7 +194,7 @@ namespace Tabula
         /// <summary>
         /// Get the <see cref="TableRectangle"/>'s bottom coordinate.
         /// </summary>
-        public double Bottom => BoundingBox.Bottom;
+        public double Bottom => BoundingBox.BottomLeft.Y; //.Bottom;
 
         /// <summary>
         /// Set the <see cref="TableRectangle"/>'s bottom coordinate.
@@ -270,10 +270,20 @@ namespace Tabula
             return IntersectsLine(ruling.Line);
         }
 
+
+        /// <summary>
+        /// hack to include border
+        /// </summary>
+        /// <param name="rectangle"></param>
+        private PdfRectangle Expand(PdfRectangle rectangle)
+        {
+            return new PdfRectangle(rectangle.Left - 1, rectangle.Bottom - 1, rectangle.Right + 1, rectangle.Top + 1);
+        }
+
         public bool IntersectsLine(PdfLine line)
         {
             var clipper = new Clipper();
-            clipper.AddPath(Clipper.ToClipperIntPoints(this.BoundingBox), PolyType.ptClip, true);
+            clipper.AddPath(Clipper.ToClipperIntPoints(Expand(this.BoundingBox)), PolyType.ptClip, true);
 
             clipper.AddPath(Clipper.ToClipperIntPoints(line), PolyType.ptSubject, false);
 

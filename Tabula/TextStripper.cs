@@ -61,8 +61,8 @@ namespace Tabula
                     letter = letter
                 };
 
-                this.minCharWidth = Math.Min(this.minCharWidth, te.Width);
-                this.minCharHeight = Math.Min(this.minCharHeight, Math.Max(te.Height, 1)); // added by bobld: min height value to 1
+                if (!string.IsNullOrWhiteSpace(c)) this.minCharWidth = Math.Min(this.minCharWidth, te.Width);
+                if (!string.IsNullOrWhiteSpace(c)) this.minCharHeight = Math.Min(this.minCharHeight, Math.Max(te.Height, 1)); // added by bobld: min height value to 1
 
                 countHeight++;
                 totalHeight += Math.Max(te.Height, 1); // added by bobld: min height value to 1
