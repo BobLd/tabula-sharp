@@ -1,4 +1,4 @@
-NuGet packages available in the [releases](https://github.com/BobLd/tabula-sharp/releases) page.
+NuGet packages available on the [releases](https://github.com/BobLd/tabula-sharp/releases) page.
 
 # tabula-sharp
 Port of [tabula-java](https://github.com/tabulapdf/tabula-java)
@@ -7,7 +7,14 @@ Port of [tabula-java](https://github.com/tabulapdf/tabula-java)
 ![Linux](https://github.com/BobLd/tabula-sharp/workflows/Linux/badge.svg)
 ![Mac OS](https://github.com/BobLd/tabula-sharp/workflows/Mac%20OS/badge.svg)
 
-Supports .NET Core 3.1; .NET Standard 2.0; .NET Framework 4.5, 4.51, 4.52, 4.6, 4.61, 4.62, 4.7
+- Supports .NET Core 3.1; .NET Standard 2.0; .NET Framework 4.5, 4.51, 4.52, 4.6, 4.61, 4.62, 4.7
+- No java bindings
+
+## Difference to tabula-java
+- Uses [PdfPig](https://github.com/UglyToad/PdfPig), and not PdfBox.
+- Coordinate system starts from the bottom left point of the page, and not from the top left point.
+- The `NurminenDetectionAlgorithm` is replaced by `SimpleNurminenDetectionAlgorithm`, because it requieres an image management library.
+- Table results might be different because of the way PdfPig builds Letter bounding box.
 
 # Usage
 ## Stream mode - BasicExtractionAlgorithm
@@ -16,9 +23,13 @@ using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() {
 {
 	ObjectExtractor oe = new ObjectExtractor(document);
 	PageArea page = oe.Extract(1);
-
+	
+	// detect canditate table zones
+	SimpleNurminenDetectionAlgorithm detector = new SimpleNurminenDetectionAlgorithm();
+	var regions = detector.Detect(page);
+	
 	IExtractionAlgorithm ea = new BasicExtractionAlgorithm();
-	List<Table> tables = ea.Extract(page);
+	List<Table> tables = ea.Extract(page.GetArea(regions[0].BoundingBox)); // take first candidate area
 	var table = tables[0];
 	var rows = table.Rows;
 }
@@ -37,7 +48,3 @@ using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() {
 	var rows = table.Rows;
 }
 ```
-
-**TO DO**
-- some tests are failing
-- image library not available in dotnet core - `NurminenDetectionAlgorithm`
