@@ -127,11 +127,6 @@ namespace Tabula.Extractors
                 {
                     if (c.Intersects(area))
                     {
-                        var text = page.GetText(c.BoundingBox);
-                        if (text.Count == 0)
-                        {
-                            Console.WriteLine("");
-                        }
                         c.SetTextElements(TextElement.MergeWords(page.GetText(c.BoundingBox)));
                         overlappingCells.Add(c);
                     }

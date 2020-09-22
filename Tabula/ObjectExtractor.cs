@@ -90,6 +90,7 @@ namespace Tabula
                     if (subpath.Commands.Any(c => c is BezierCurve))
                     {
                         // or contains operations other than LINETO, MOVETO or CLOSE
+                        // bobld: skip at subpath or path level?
                         continue;
                     }
 
@@ -101,7 +102,7 @@ namespace Tabula
                     PdfLine line;
                     PointComparer pc = new PointComparer();
 
-                    foreach (var command in subpath.Commands) //while (!pi.isDone())
+                    foreach (var command in subpath.Commands)
                     {
                         if (command is Line linePath)
                         {
@@ -122,7 +123,7 @@ namespace Tabula
                         }
                         else if (command is Move move)
                         {
-                            start_pos = RoundPdfPoint(move.Location, rounding); // move.Location; // round it?
+                            start_pos = RoundPdfPoint(move.Location, rounding);
                             end_pos = start_pos;
                         }
                         else if (command is Close)

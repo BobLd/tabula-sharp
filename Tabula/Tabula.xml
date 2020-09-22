@@ -131,6 +131,13 @@
             <param name="page">The page where to extract the tables.</param>
             <param name="verticalRulingPositions">List of vertical rulings, indicated by there x position.</param>
         </member>
+        <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.Extract(Tabula.PageArea,System.Collections.Generic.IReadOnlyList{Tabula.Ruling})">
+            <summary>
+            Extracts the tables in the page.
+            </summary>
+            <param name="page">The page where to extract the tables.</param>
+            <param name="verticalRulings">List of vertical rulings.</param>
+        </member>
         <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.Extract(Tabula.PageArea)">
             <summary>
             Extracts the tables in the page.
@@ -496,6 +503,14 @@
             </summary>
             <param name="horizontals"></param>
             <param name="verticals"></param>
+        </member>
+        <member name="M:Tabula.Ruling.CollapseOrientedRulings(System.Collections.Generic.List{Tabula.Ruling},System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="lines"></param>
+            <param name="expandAmount"></param>
+            <returns></returns>
         </member>
         <member name="M:Tabula.Ruling.IntersectsLine(Tabula.Ruling)">
             <summary>
@@ -917,6 +932,21 @@
             <param name="rulings"></param>
             <param name="xThreshold"></param>
             <param name="yThreshold"></param>
+        </member>
+        <member name="M:Tabula.Utils.PageConvertToImage(UglyToad.PdfPig.Content.Page,System.Int32)">
+            <summary>
+            Not Implemented.
+            </summary>
+            <param name="page"></param>
+            <param name="dpi"></param>
+        </member>
+        <member name="M:Tabula.Utils.PageConvertToImage(UglyToad.PdfPig.PdfDocument,UglyToad.PdfPig.Content.Page,System.Int32)">
+            <summary>
+            Not Implemented.
+            </summary>
+            <param name="doc"></param>
+            <param name="page"></param>
+            <param name="dpi"></param>
         </member>
         <member name="M:Tabula.Utils.SubList``1(System.Collections.Generic.IReadOnlyList{``0},System.Int32,System.Int32)">
             <summary>

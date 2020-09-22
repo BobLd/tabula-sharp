@@ -253,9 +253,9 @@ namespace Tabula.Detectors
 
                 // get text edges from remaining lines in the document
                 TextEdges textEdges = getTextEdges(lines);
-                List<TextEdge> leftTextEdges = textEdges[TextEdge.LEFT];
-                List<TextEdge> midTextEdges = textEdges[TextEdge.MID];
-                List<TextEdge> rightTextEdges = textEdges[TextEdge.RIGHT];
+                //List<TextEdge> leftTextEdges = textEdges[TextEdge.LEFT];
+                //List<TextEdge> midTextEdges = textEdges[TextEdge.MID];
+                //List<TextEdge> rightTextEdges = textEdges[TextEdge.RIGHT];
 
                 // find the relevant text edges (the ones we think define where a table is)
                 RelevantEdges relevantEdgeInfo = getRelevantEdges(textEdges, lines);
@@ -267,13 +267,13 @@ namespace Tabula.Detectors
                     switch (relevantEdgeInfo.edgeType)
                     {
                         case TextEdge.LEFT:
-                            relevantEdges = leftTextEdges;
+                            relevantEdges = textEdges[TextEdge.LEFT];   // leftTextEdges;
                             break;
                         case TextEdge.MID:
-                            relevantEdges = midTextEdges;
+                            relevantEdges = textEdges[TextEdge.MID];    // midTextEdges;
                             break;
                         case TextEdge.RIGHT:
-                            relevantEdges = rightTextEdges;
+                            relevantEdges = textEdges[TextEdge.RIGHT];  // rightTextEdges;
                             break;
                     }
 

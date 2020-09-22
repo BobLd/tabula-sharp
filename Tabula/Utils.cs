@@ -298,6 +298,11 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// Not Implemented.
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="dpi"></param>
         public static object PageConvertToImage(Page page, int dpi) //, ImageType imageType) // BufferedImage
         {
             throw new NotImplementedException();
@@ -312,6 +317,12 @@ namespace Tabula
             */
         }
 
+        /// <summary>
+        /// Not Implemented.
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="page"></param>
+        /// <param name="dpi"></param>
         public static object PageConvertToImage(PdfDocument doc, Page page, int dpi) //, ImageType imageType) // BufferedImage
         {
             throw new NotImplementedException();
@@ -328,7 +339,6 @@ namespace Tabula
         /// <param name="toIndex">High endpoint (exclusive) of the subList</param>
         public static List<T> SubList<T>(this IReadOnlyList<T> list, int fromIndex, int toIndex)
         {
-            //int count = toIndex - fromIndex; // - 1;
             return list.ToList().GetRange(fromIndex, toIndex - fromIndex);
         }
     }

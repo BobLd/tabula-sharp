@@ -24,18 +24,20 @@ namespace Tabula
 
         public void SetLine(PdfPoint p1, PdfPoint p2)
         {
+            /*
             if (Math.Round(p1.Y, 2) > Math.Round(p2.Y, 2)) // using round here to account for almost vert. or horiz. line before normalize
             {
                 throw new ArgumentException("Points order is wrong. p1 needs to be below p2 (p1.Y <= p2.Y)");
             }
+            */
 
             // test X?
-
+            Debug.Assert(Math.Round(p1.Y, 2) <= Math.Round(p2.Y, 2), "Points order is wrong. p1 needs to be below p2 (p1.Y <= p2.Y)");
             Line = new PdfLine(p1, p2);
         }
 
-        public Ruling(double top, double left, double width, double height)
-            : this(new PdfPoint(left, top), new PdfPoint(left + width, height + top))
+        public Ruling(double bottom, double left, double width, double height)
+            : this(new PdfPoint(left, bottom), new PdfPoint(left + width, height + bottom))
         {
         }
 
@@ -252,6 +254,9 @@ namespace Tabula
             return rv;
         }
 
+        /// <summary>
+        /// Not Implemented.
+        /// </summary>
         public Ruling Intersect(PdfRectangle clip)
         {
             // use clipper 
@@ -358,28 +363,22 @@ namespace Tabula
         public double Height => this.Top - this.Bottom; //return this.getBottom() - this.getTop();
 
         /// <summary>
-        /// Compute the angle. [0, +180].
+        /// Compute the angle.
+        /// <para>0 ≤ θ ≤ 360</para>
         /// </summary>
         public double GetAngle()
         {
-            double angle = Distances.Angle(this.P1, this.P2);
+            return Distances.BoundAngle0to360(Distances.Angle(this.P1, this.P2));
 
-            if (angle < 0)
-            {
-                angle += 360;
-            }
-            return angle;
+            //if (angle < 0)
+            //{
+            //    angle += 360;
+            //}
+            //return angle;
         }
 
         public override string ToString()
         {
-            /*
-            StringBuilder sb = new StringBuilder();
-            Formatter formatter = new Formatter(sb);
-            String rv = str formatter.format(Locale.US, "%s[x1=%f y1=%f x2=%f y2=%f]", this.GetType().toString(), this.x1, this.y1, this.x2, this.y2).toString();
-            formatter.close();
-            return rv;
-            */
             return $"{this.GetType()}[x1={this.X1:0.00} y1={this.Y1:0.00} x2={this.X2:0.00} y2={this.Y2:0.00}]";
         }
 
@@ -511,12 +510,10 @@ namespace Tabula
         {
             //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java#L312
 
-            List<SortObject> sos = new List<SortObject>(); //ArrayList<>();
+            List<SortObject> sos = new List<SortObject>();
             SortedDictionary<Ruling, bool> tree = new SortedDictionary<Ruling, bool>(new TreeMapRulingComparer()); // TreeMap<Ruling, Boolean> tree
-            // The SortedDictionary will throw ArgumentException on duplicate keys.
 
             SortedDictionary<PdfPoint, Ruling[]> rv = new SortedDictionary<PdfPoint, Ruling[]>(new TreeMapPdfPointComparer()); // TreeMap<Point2D, Ruling[]> rv
-            // The SortedDictionary will throw ArgumentException on duplicate keys.
 
             foreach (Ruling h in horizontals)
             {
@@ -536,7 +533,7 @@ namespace Tabula
                 switch (so.type)
                 {
                     case SOType.VERTICAL:
-                        foreach (var h in tree)//.entrySet()) 
+                        foreach (var h in tree)
                         {
                             PdfPoint? i = h.Key.IntersectionPoint(so.ruling);
                             if (!i.HasValue) continue;
@@ -574,6 +571,12 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="expandAmount"></param>
+        /// <returns></returns>
         public static List<Ruling> CollapseOrientedRulings(List<Ruling> lines, int expandAmount)
         {
             List<Ruling> rv = new List<Ruling>();
