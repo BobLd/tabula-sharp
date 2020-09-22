@@ -22,12 +22,20 @@ namespace Tabula
         public double totalHeight;
         public int countHeight;
 
+        /// <summary>
+        /// Create a TextStripper for the given page.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="pageNumber"></param>
         public TextStripper(PdfDocument document, int pageNumber)
         {
             this.document = document;
             this.pageNumber = pageNumber;
         }
 
+        /// <summary>
+        /// Process the page.
+        /// </summary>
         public void Process()
         {
             var page = document.GetPage(pageNumber);
@@ -48,14 +56,16 @@ namespace Tabula
 
                 double wos = GetExpectedWhitespaceSize(letter); //textPosition.getWidthOfSpace();
 
-                TextElement te = new TextElement(GetBbox(letter), letter.Font, letter.PointSize, c, wos, letter.GlyphRectangle.Rotation); // Rotation->The direction of the text(0, 90, 180, or 270)
-                te.letter = letter;
+                TextElement te = new TextElement(GetBbox(letter), letter.Font, letter.PointSize, c, wos, letter.GlyphRectangle.Rotation)
+                {
+                    letter = letter
+                };
 
                 this.minCharWidth = Math.Min(this.minCharWidth, te.Width);
-                this.minCharHeight = Math.Min(this.minCharHeight, te.Height);
+                this.minCharHeight = Math.Min(this.minCharHeight, Math.Max(te.Height, 1)); // added by bobld: min height value to 1
 
                 countHeight++;
-                totalHeight += te.Height;
+                totalHeight += Math.Max(te.Height, 1); // added by bobld: min height value to 1
                 double avgHeight = totalHeight / countHeight;
 
                 if (avgHeight > 0 && te.Height >= (avgHeight * AVG_HEIGHT_MULT_THRESHOLD) && (te.GetText()?.Trim().Equals("") != false))

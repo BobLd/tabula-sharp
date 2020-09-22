@@ -1,10 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netstandard2.0;net45;net451;net452;net46;net461;net462;net47</TargetFrameworks>
     <Description>Extract tables from PDF files (port of tabula-java using PdfPig). Json writer.</Description>
     <PackageProjectUrl>https://github.com/BobLd/tabula-sharp</PackageProjectUrl>
     <Version>0.1.0-alpha001</Version>
+    <Company>BobLd</Company>
+    <Authors>BobLd</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">

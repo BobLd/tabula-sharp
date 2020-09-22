@@ -78,6 +78,21 @@
             Helper container for relevant text edge info
             </summary>
         </member>
+        <member name="T:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.TextEdge">
+            <summary>
+            Helper class that encapsulates a text edge
+            </summary>
+        </member>
+        <member name="T:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.TextEdges">
+            <summary>
+            Helper container for all text edges on a page
+            </summary>
+        </member>
+        <member name="T:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.RelevantEdges">
+            <summary>
+            Helper container for relevant text edge info
+            </summary>
+        </member>
         <member name="T:Tabula.Detectors.SpreadsheetDetectionAlgorithm">
             <summary>
             This is the basic spreadsheet table detection algorithm currently implemented in tabula (web).
@@ -437,7 +452,7 @@
             Is the <see cref="T:Tabula.Ruling"/> horizontal?
             </summary>
         </member>
-        <member name="P:Tabula.Ruling.Oblique">
+        <member name="P:Tabula.Ruling.IsOblique">
             <summary>
             Is the <see cref="T:Tabula.Ruling"/> blique? Neither vertical nor horizontal.
             </summary>
@@ -847,6 +862,18 @@
             <param name="textElements"></param>
             <param name="verticalRulings"></param>
             <returns></returns>
+        </member>
+        <member name="M:Tabula.TextStripper.#ctor(UglyToad.PdfPig.PdfDocument,System.Int32)">
+            <summary>
+            Create a TextStripper for the given page.
+            </summary>
+            <param name="document"></param>
+            <param name="pageNumber"></param>
+        </member>
+        <member name="M:Tabula.TextStripper.Process">
+            <summary>
+            Process the page.
+            </summary>
         </member>
         <member name="T:Tabula.UnicodeExtensions">
             <summary>

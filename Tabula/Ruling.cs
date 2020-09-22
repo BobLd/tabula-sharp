@@ -85,7 +85,7 @@ namespace Tabula
         /// <summary>
         /// Is the <see cref="Ruling"/> blique? Neither vertical nor horizontal.
         /// </summary>
-        public bool Oblique => !(this.IsVertical || this.IsHorizontal);
+        public bool IsOblique => !(this.IsVertical || this.IsHorizontal);
     
         /// <summary>
         /// attributes that make sense only for non-oblique lines
@@ -95,7 +95,7 @@ namespace Tabula
         {
             get
             {
-                if (this.Oblique)
+                if (this.IsOblique)
                 {
                     throw new InvalidOperationException();
                 }
@@ -106,7 +106,7 @@ namespace Tabula
 
         public void SetPosition(float v)
         {
-            if (this.Oblique)
+            if (this.IsOblique)
             {
                 throw new InvalidOperationException();
             }
@@ -127,7 +127,7 @@ namespace Tabula
         {
             get
             {
-                if (this.Oblique)
+                if (this.IsOblique)
                 {
                     throw new InvalidOperationException();
                 }
@@ -138,7 +138,7 @@ namespace Tabula
 
         public void SetStart(double v)
         {
-            if (this.Oblique)
+            if (this.IsOblique)
             {
                 throw new InvalidOperationException();
             }
@@ -157,7 +157,7 @@ namespace Tabula
         {
             get
             {
-                if (this.Oblique)
+                if (this.IsOblique)
                 {
                     throw new InvalidOperationException();
                 }
@@ -168,7 +168,7 @@ namespace Tabula
 
         public void SetEnd(double v)
         {
-            if (this.Oblique)
+            if (this.IsOblique)
             {
                 throw new InvalidOperationException();
             }
@@ -185,7 +185,7 @@ namespace Tabula
 
         private void SetStartEnd(double start, double end)
         {
-            if (this.Oblique)
+            if (this.IsOblique)
             {
                 throw new InvalidOperationException();
             }
@@ -599,7 +599,7 @@ namespace Tabula
                     double newEnd = lastFlipped ? Math.Min(nextE, lastEnd) : Math.Max(nextE, lastEnd);
                     last.SetStartEnd(newStart, newEnd);
 
-                    Debug.Assert(!last.Oblique);
+                    Debug.Assert(!last.IsOblique);
                 }
                 else if (next_line.Length == 0)
                 {
