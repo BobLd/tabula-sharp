@@ -63,19 +63,10 @@
             Nurminen detection algorithm.
             </summary>
         </member>
-        <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm.TextEdge">
+        <member name="T:Tabula.Detectors.SimpleNurminenDetectionAlgorithm">
             <summary>
-            Helper class that encapsulates a text edge
-            </summary>
-        </member>
-        <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm.TextEdges">
-            <summary>
-            Helper container for all text edges on a page
-            </summary>
-        </member>
-        <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm.RelevantEdges">
-            <summary>
-            Helper container for relevant text edge info
+            Simplified Nurminen detection algorithm.
+            <para>Does not do any image processing.</para>
             </summary>
         </member>
         <member name="T:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.TextEdge">
@@ -93,9 +84,15 @@
             Helper container for relevant text edge info
             </summary>
         </member>
+        <member name="M:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.#ctor">
+            <summary>
+            Simplified Nurminen detection algorithm.
+            <para>Does not do any image processing.</para>
+            </summary>
+        </member>
         <member name="M:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.Detect(Tabula.PageArea)">
             <summary>
-            
+            Detects the tables in the page.
             </summary>
             <param name="page"></param>
         </member>

@@ -24,13 +24,10 @@ namespace Tabula.Detectors
         {
             List<Cell> cells = SpreadsheetExtractionAlgorithm.FindCells(page.HorizontalRulings, page.VerticalRulings);
 
-            //SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-
             List<TableRectangle> tables = SpreadsheetExtractionAlgorithm.FindSpreadsheetsFromCells(cells.Cast<TableRectangle>().ToList());
 
             // we want tables to be returned from top to bottom on the page
-            //Collections.sort(tables, TableRectangle.ILL_DEFINED_ORDER);
-            Utils.Sort(tables, new TableRectangle.ILL_DEFINED_ORDER()); // tables.Sort(new TableRectangle.ILL_DEFINED_ORDER());
+            Utils.Sort(tables, new TableRectangle.ILL_DEFINED_ORDER());
             return tables;
         }
     }
