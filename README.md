@@ -13,7 +13,7 @@ Port of [tabula-java](https://github.com/tabulapdf/tabula-java)
 ## Difference to tabula-java
 - Uses [PdfPig](https://github.com/UglyToad/PdfPig), and not PdfBox.
 - Coordinate system starts from the bottom left point of the page, and not from the top left point.
-- The `NurminenDetectionAlgorithm` is not yet implemented, because it requieres an image management library.
+- The `NurminenDetectionAlgorithm` is replaced by `SimpleNurminenDetectionAlgorithm`, because it requieres an image management library.
 - Table results might be different because of the way PdfPig builds Letter bounding box.
 
 # Usage
@@ -23,9 +23,13 @@ using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() {
 {
 	ObjectExtractor oe = new ObjectExtractor(document);
 	PageArea page = oe.Extract(1);
-
+	
+	// detect canditate table zones
+	SimpleNurminenDetectionAlgorithm detector = new SimpleNurminenDetectionAlgorithm();
+	var regions = detector.Detect(page);
+	
 	IExtractionAlgorithm ea = new BasicExtractionAlgorithm();
-	List<Table> tables = ea.Extract(page);
+	List<Table> tables = ea.Extract(page.GetArea(regions[0].BoundingBox)); // take first candidate area
 	var table = tables[0];
 	var rows = table.Rows;
 }
