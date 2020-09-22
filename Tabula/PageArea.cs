@@ -306,7 +306,7 @@ namespace Tabula
         /// <param name="r"></param>
         public void AddRuling(Ruling r)
         {
-            if (r.Oblique)
+            if (r.IsOblique)
             {
                 throw new InvalidOperationException("Can't add an oblique ruling");
             }

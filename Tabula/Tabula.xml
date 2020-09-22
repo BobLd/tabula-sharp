@@ -63,20 +63,38 @@
             Nurminen detection algorithm.
             </summary>
         </member>
-        <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm.TextEdge">
+        <member name="T:Tabula.Detectors.SimpleNurminenDetectionAlgorithm">
+            <summary>
+            Simplified Nurminen detection algorithm.
+            <para>Does not do any image processing.</para>
+            </summary>
+        </member>
+        <member name="T:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.TextEdge">
             <summary>
             Helper class that encapsulates a text edge
             </summary>
         </member>
-        <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm.TextEdges">
+        <member name="T:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.TextEdges">
             <summary>
             Helper container for all text edges on a page
             </summary>
         </member>
-        <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm.RelevantEdges">
+        <member name="T:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.RelevantEdges">
             <summary>
             Helper container for relevant text edge info
             </summary>
+        </member>
+        <member name="M:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.#ctor">
+            <summary>
+            Simplified Nurminen detection algorithm.
+            <para>Does not do any image processing.</para>
+            </summary>
+        </member>
+        <member name="M:Tabula.Detectors.SimpleNurminenDetectionAlgorithm.Detect(Tabula.PageArea)">
+            <summary>
+            Detects the tables in the page.
+            </summary>
+            <param name="page"></param>
         </member>
         <member name="T:Tabula.Detectors.SpreadsheetDetectionAlgorithm">
             <summary>
@@ -437,7 +455,7 @@
             Is the <see cref="T:Tabula.Ruling"/> horizontal?
             </summary>
         </member>
-        <member name="P:Tabula.Ruling.Oblique">
+        <member name="P:Tabula.Ruling.IsOblique">
             <summary>
             Is the <see cref="T:Tabula.Ruling"/> blique? Neither vertical nor horizontal.
             </summary>
@@ -660,6 +678,12 @@
             Counter-clockwise, starting from bottom left point.
             </summary>
         </member>
+        <member name="M:Tabula.TableRectangle.Expand(UglyToad.PdfPig.Core.PdfRectangle)">
+            <summary>
+            hack to include border
+            </summary>
+            <param name="rectangle"></param>
+        </member>
         <member name="P:Tabula.TableRectangle.X">
             <summary>
             The <see cref="T:Tabula.TableRectangle"/>'s top-left X coordinate.
@@ -847,6 +871,18 @@
             <param name="textElements"></param>
             <param name="verticalRulings"></param>
             <returns></returns>
+        </member>
+        <member name="M:Tabula.TextStripper.#ctor(UglyToad.PdfPig.PdfDocument,System.Int32)">
+            <summary>
+            Create a TextStripper for the given page.
+            </summary>
+            <param name="document"></param>
+            <param name="pageNumber"></param>
+        </member>
+        <member name="M:Tabula.TextStripper.Process">
+            <summary>
+            Process the page.
+            </summary>
         </member>
         <member name="T:Tabula.UnicodeExtensions">
             <summary>
