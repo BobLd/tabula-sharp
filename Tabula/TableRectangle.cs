@@ -249,9 +249,7 @@ namespace Tabula
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(this.GetType());
-            string s = this.BoundingBox.ToString();
-            sb.Append(s, 0, s.Length - 1);
-            sb.Append($",bottom={this.Bottom:0.00},right={this.Right:0.00}]");
+            sb.Append($",left={this.BoundingBox.BottomLeft.X:0.00},bottom={this.BoundingBox.BottomLeft.Y:0.00},right={this.BoundingBox.TopRight.X:0.00},top={this.BoundingBox.TopRight.Y:0.00}]");
             return sb.ToString();
         }
 
@@ -265,14 +263,19 @@ namespace Tabula
             return this.BoundingBox.IntersectsWith(tableRectangle.BoundingBox);
         }
 
+        /// <summary>
+        /// Returns true if the rectangle and the ruling intersect.
+        /// Takes in account the rectangle border by expanding its area by 1 on each side.
+        /// <para>Uses clipper.</para>
+        /// </summary>
+        /// <param name="ruling">The ruling to check.</param>
         public bool IntersectsLine(Ruling ruling)
         {
             return IntersectsLine(ruling.Line);
         }
 
-
         /// <summary>
-        /// hack to include border
+        /// hack to include border. Considers axis aligned.
         /// </summary>
         /// <param name="rectangle"></param>
         private PdfRectangle Expand(PdfRectangle rectangle)
@@ -280,6 +283,12 @@ namespace Tabula
             return new PdfRectangle(rectangle.Left - 1, rectangle.Bottom - 1, rectangle.Right + 1, rectangle.Top + 1);
         }
 
+        /// <summary>
+        /// Returns true if the rectangle and the line intersect.
+        /// Takes in account the rectangle border by expanding its area by 1 on each side.
+        /// <para>Uses clipper.</para>
+        /// </summary>
+        /// <param name="line">The line to check.</param>
         public bool IntersectsLine(PdfLine line)
         {
             var clipper = new Clipper();
@@ -296,6 +305,9 @@ namespace Tabula
         }
 
         #region helpers
+        /// <summary>
+        /// The TableRectangle's area.
+        /// </summary>
         public double Area => BoundingBox.Area;
 
         /// <summary>
@@ -353,16 +365,28 @@ namespace Tabula
             return Utils.Bounds(new[] { rectangle, other });
         }
 
+        /// <summary>
+        /// Returns true if the TableRectangle contains the point.
+        /// </summary>
+        /// <param name="point"></param>
         public bool Contains(PdfPoint point)
         {
             return this.BoundingBox.Contains(point, true);
         }
 
+        /// <summary>
+        /// Returns true if the TableRectangle contains the TableLine.
+        /// </summary>
+        /// <param name="tableLine"></param>
         public bool Contains(TableLine tableLine)
         {
             return this.BoundingBox.Contains(tableLine.BoundingBox, true);
         }
 
+        /// <summary>
+        /// Returns true if the TableRectangle contains the other TableRectangle.
+        /// </summary>
+        /// <param name="other"></param>
         public bool Contains(TableRectangle other)
         {
             return this.BoundingBox.Contains(other.BoundingBox, true);
