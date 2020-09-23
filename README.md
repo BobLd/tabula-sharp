@@ -34,7 +34,6 @@ using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() {
 	var rows = table.Rows;
 }
 ```
-
 ## Lattice mode - SpreadsheetExtractionAlgorithm
 ```csharp
 using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() { ClipPaths = true }))
@@ -48,3 +47,9 @@ using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() {
 	var rows = table.Rows;
 }
 ```
+
+# Results
+## Stream mode - BasicExtractionAlgorithm
+![example](images/stream-us-018.png)
+## Lattice mode - SpreadsheetExtractionAlgorithm
+![example](images/lattice-eu-004.png)
