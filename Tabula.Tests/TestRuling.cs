@@ -24,7 +24,7 @@ namespace Tabula.Tests
 		public void TestToString()
 		{
 			//Assert.Equal("class technology.tabula.Ruling[x1=0.000000 y1=0.000000 x2=10.000000 y2=10.000000]", ruling.ToString());
-			Assert.Equal("Tabula.Ruling[x1=0.00 y1=0.00 x2=10.00 y2=10.00]", ruling.ToString());
+			Assert.Equal("Tabula.Ruling[x1=0.00,y1=0.00,x2=10.00,y2=10.00]", ruling.ToString());
 		}
 
 		[Fact]

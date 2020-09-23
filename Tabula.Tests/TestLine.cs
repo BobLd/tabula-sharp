@@ -65,7 +65,7 @@ namespace Tabula.Tests
 			TextChunk tChunk = new TextChunk(tElement);
 			line.AddTextChunk(0, tChunk);
 			line.AddTextChunk(0, tChunk);
-			Assert.Equal("Tabula.TableLine[(x:0, y:0), 0, 0,bottom=0.00,right=0.00,chunks='testtest', ]", line.ToString());
+			Assert.Equal("Tabula.TableLine[left=0.00,bottom=0.00,right=0.00,top=0.00,chunks='testtest', ]", line.ToString());
 			//Assert.Equal("technology.tabula.Line[x=0.0,y=0.0,w=0.0,h=0.0,bottom=0.000000,right=0.000000,chunks='testtest', ]", line.ToString());
 		}
 	}

@@ -249,7 +249,7 @@ namespace Tabula
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(this.GetType());
-            sb.Append($",left={this.BoundingBox.BottomLeft.X:0.00},bottom={this.BoundingBox.BottomLeft.Y:0.00},right={this.BoundingBox.TopRight.X:0.00},top={this.BoundingBox.TopRight.Y:0.00}]");
+            sb.Append($"[left={this.BoundingBox.BottomLeft.X:0.00},bottom={this.BoundingBox.BottomLeft.Y:0.00},right={this.BoundingBox.TopRight.X:0.00},top={this.BoundingBox.TopRight.Y:0.00}]");
             return sb.ToString();
         }
 
