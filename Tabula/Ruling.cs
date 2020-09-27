@@ -8,7 +8,7 @@ using UglyToad.PdfPig.Geometry;
 
 namespace Tabula
 {
-    //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java
+    //ported from tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java
     public class Ruling
     {
         private static int PERPENDICULAR_PIXEL_EXPAND_AMOUNT = 2;

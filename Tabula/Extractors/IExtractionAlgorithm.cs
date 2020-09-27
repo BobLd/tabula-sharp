@@ -2,6 +2,7 @@
 
 namespace Tabula.Extractors
 {
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/extractors/ExtractionAlgorithm.java
     /// <summary>
     /// Table extraction algorithm.
     /// </summary>

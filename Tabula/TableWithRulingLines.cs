@@ -5,6 +5,7 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/TableWithRulingLines.java
     /// <summary>
     /// A tabula table with ruling lines.
     /// </summary>
@@ -63,7 +64,7 @@ namespace Tabula
                 si.Add(ce);
             }
 
-            List<List<Cell>> rowsOfCells = TableWithRulingLines.RowsOfCells(cells);
+            List<List<Cell>> rowsOfCells = RowsOfCells(cells);
             var siBounds = si.GetBounds();
 
             for (int i = 0; i < rowsOfCells.Count; i++)
@@ -75,7 +76,7 @@ namespace Tabula
                 Cell cell = rowCells.Current;
 
                 // BobLd: careaful here!!
-                List<List<Cell>> others = TableWithRulingLines.RowsOfCells(
+                List<List<Cell>> others = RowsOfCells(
                         si.Contains(
                                 //new TableRectangle(cell.getBottom(), //top
                                 //                   si.getBounds().getLeft(), // left
@@ -119,8 +120,7 @@ namespace Tabula
             c = iter.Current;
 
             lastTop = c.Top;
-            lastRow = new List<Cell>();
-            lastRow.Add(c);
+            lastRow = new List<Cell> { c };
             rv.Add(lastRow);
 
             while (iter.MoveNext())

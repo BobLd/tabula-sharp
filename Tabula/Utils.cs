@@ -8,8 +8,8 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
-    // https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Utils.java
-    /**
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/Utils.java
+    /*
      * @author manuel
      */
     public static class Utils
@@ -257,8 +257,10 @@ namespace Tabula
             // snap by Y
             points.Sort(new PointYComparer());
 
-            groupedPoints = new List<List<PdfPoint>>();
-            groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { points[0] }));
+            groupedPoints = new List<List<PdfPoint>>
+            {
+                new List<PdfPoint>(new PdfPoint[] { points[0] })
+            };
 
             foreach (PdfPoint p in points.SubList(1, points.Count)) // - 1)) error in the java version: the second bound is exclusive + https://github.com/tabulapdf/tabula-java/pull/311
             {

@@ -8,6 +8,7 @@ using UglyToad.PdfPig.PdfFonts;
 
 namespace Tabula
 {
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/TextElement.java
     /// <summary>
     /// A tabula, text element. Equivalent to a letter.
     /// </summary>
@@ -66,9 +67,9 @@ namespace Tabula
             int result = base.GetHashCode();
 
             result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(Direction), 0);
-            result = prime * result + ((Font == null) ? 0 : Font.GetHashCode());
+            result = prime * result + ((Font?.GetHashCode()) ?? 0);
             result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(FontSize), 0);
-            result = prime * result + ((text == null) ? 0 : text.GetHashCode());
+            result = prime * result + ((text?.GetHashCode()) ?? 0);
             result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(WidthOfSpace), 0);
             return result;
         }

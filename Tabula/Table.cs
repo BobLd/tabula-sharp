@@ -5,6 +5,7 @@ using Tabula.Extractors;
 
 namespace Tabula
 {
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/Table.java
     /// <summary>
     /// A tabula table.
     /// </summary>

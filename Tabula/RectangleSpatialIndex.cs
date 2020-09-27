@@ -6,7 +6,11 @@ using UglyToad.PdfPig.Geometry;
 
 namespace Tabula
 {
-    //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/RectangleSpatialIndex.java
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/RectangleSpatialIndex.java
+    /// <summary>
+    /// The original java implementation uses STR trees. This is not the case here so might be slower.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class RectangleSpatialIndex<T> where T : TableRectangle
     {
         //private STRtree si = new STRtree();

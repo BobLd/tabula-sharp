@@ -9,6 +9,7 @@
     <Version>0.1.0-alpha002</Version>
     <Authors>BobLd</Authors>
     <Company>BobLd</Company>
+    <PackageTags>pdf, extract, table, tabula, pdfpig, parse, extraction, export</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">

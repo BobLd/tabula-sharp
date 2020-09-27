@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Tabula.Writers
 {
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/writers/Writer.java
     /// <summary>
     /// Base interface for tabula writer.
     /// </summary>

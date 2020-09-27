@@ -5,7 +5,7 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula.Extractors
 {
-    //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/extractors/SpreadsheetExtractionAlgorithm.java
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/extractors/SpreadsheetExtractionAlgorithm.java
     /// <summary>
     /// Lattice extraction algorithm.
     /// </summary>

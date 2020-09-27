@@ -7,13 +7,16 @@ using UglyToad.PdfPig.Geometry;
 
 namespace Tabula
 {
-    // https://github.com/tabulapdf/tabula-java/blob/ebc83ac2bb1a1cbe54ab8081d70f3c9fe81886ea/src/main/java/technology/tabula/Rectangle.java
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/Rectangle.java
+    /// <summary>
+    /// A tabula rectangle.
+    /// </summary>
     public class TableRectangle : IComparable<TableRectangle>
     {
         /// <summary>
         /// Sort top to bottom (as in reading order).
         /// Ill-defined comparator, from when Rectangle was Comparable.
-        /// @see <a href="https://github.com/tabulapdf/tabula-java/issues/116">PR 116</a>
+        /// See <a href="https://github.com/tabulapdf/tabula-java/issues/116">PR 116</a>
         /// </summary>
         [Obsolete("with no replacement")]
         public class ILL_DEFINED_ORDER : IComparer<TableRectangle>
@@ -153,10 +156,6 @@ namespace Tabula
         /// </summary>
         public void SetTop(double top)
         {
-            //double deltaHeight = top - this.y;
-            //this.setRect(this.x, top, this.width, this.height - deltaHeight);
-
-            // BobLD: Not sure between top and bottom!
             this.SetRect(new PdfRectangle(this.Left, this.Bottom, this.Right, top));
         }
 
@@ -170,8 +169,6 @@ namespace Tabula
         /// </summary>
         public void SetRight(double right)
         {
-            //this.setRect(this.x, this.y, right - this.x, this.height);
-
             this.SetRect(new PdfRectangle(this.Left, this.Bottom, right, this.Top));
         }
 
@@ -185,9 +182,6 @@ namespace Tabula
         /// </summary>
         public void SetLeft(double left)
         {
-            //double deltaWidth = left - this.x;
-            //this.setRect(left, this.y, this.width - deltaWidth, this.height);
-
             this.SetRect(new PdfRectangle(left, this.Bottom, this.Right, this.Top));
         }
 
@@ -201,9 +195,6 @@ namespace Tabula
         /// </summary>
         public void SetBottom(double bottom)
         {
-            //this.SetRect(this.X, this.Y, this.Width, bottom - this.Y);
-
-            // BobLD: Not sure between top and bottom!
             this.SetRect(new PdfRectangle(this.Left, bottom, this.Right, this.Top));
         }
 

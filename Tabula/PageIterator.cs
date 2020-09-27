@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Tabula
 {
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/PageIterator.java
     /// <summary>
     /// A tabula page iterator.
     /// </summary>

@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Tabula.Extractors
 {
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/extractors/BasicExtractionAlgorithm.java
     /// <summary>
     /// Stream extraction algorithm.
     /// </summary>
@@ -42,7 +43,6 @@ namespace Tabula.Extractors
             this.verticalRulings = verticalRulings;
             return this.Extract(page);
         }
-
 
         /// <summary>
         /// Extracts the tables in the page.

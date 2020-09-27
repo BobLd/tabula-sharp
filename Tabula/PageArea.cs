@@ -7,9 +7,7 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
-    // https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Page.java
-    // TODO: this class should probably be called "PageArea" or something like that
-
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/Page.java
     /// <summary>
     /// A tabula page.
     /// </summary>

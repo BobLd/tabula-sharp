@@ -6,7 +6,7 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
-    // https://github.com/tabulapdf/tabula-java/blob/ebc83ac2bb1a1cbe54ab8081d70f3c9fe81886ea/src/main/java/technology/tabula/TextChunk.java#L11
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/TextChunk.java
     public class TextChunk : RectangularTextContainer<TextElement>, IHasText
     {
         /// <summary>
@@ -15,7 +15,7 @@ namespace Tabula
         public static TextChunk EMPTY => new TextChunk();
 
         /// <summary>
-        /// 
+        /// Create an empty text chunk.
         /// </summary>
         private TextChunk()
             : base(new PdfRectangle())
@@ -24,7 +24,7 @@ namespace Tabula
         }
 
         /// <summary>
-        /// 
+        /// Create a text chunk from the text element.
         /// </summary>
         /// <param name="textElement"></param>
         public TextChunk(TextElement textElement)
@@ -35,7 +35,7 @@ namespace Tabula
         }
 
         /// <summary>
-        /// 
+        /// Create a text chunk from the text elements.
         /// </summary>
         /// <param name="textElements"></param>
         public TextChunk(List<TextElement> textElements)
@@ -195,18 +195,31 @@ namespace Tabula
             return ltrCnt.CompareTo(rtlCnt);
         }
 
+        /// <summary>
+        /// Merges this TextChunk with the other.
+        /// <para>Also does it in place.</para>
+        /// </summary>
+        /// <param name="other"></param>
         public TextChunk Merge(TextChunk other)
         {
             base.Merge(other);
             return this;
         }
 
+        /// <summary>
+        /// Adds the text element to the TextChunk.
+        /// </summary>
+        /// <param name="textElement"></param>
         public void Add(TextElement textElement)
         {
             this.textElements.Add(textElement);
             this.Merge(textElement);
         }
 
+        /// <summary>
+        /// Adds the text elements to the TextChunk.
+        /// </summary>
+        /// <param name="elements"></param>
         public void Add(List<TextElement> elements)
         {
             foreach (TextElement te in elements)
@@ -215,6 +228,9 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// Gets the TextChunk's text.
+        /// </summary>
         public override string GetText()
         {
             if (this.textElements.Count == 0)
@@ -247,7 +263,6 @@ namespace Tabula
         /// Returns true if text contained in this TextChunk is the same repeated character
         /// </summary>
         /// <param name="c"></param>
-        /// <returns></returns>
         public bool IsSameChar(char c)
         {
             return IsSameChar(new char[] { c });
@@ -436,7 +451,7 @@ namespace Tabula
                 return lines;
             }
 
-            double bbwidth = TableRectangle.BoundingBoxOf(textChunks).Width;
+            double bbwidth = BoundingBoxOf(textChunks).Width;
 
             TableLine l = new TableLine();
             l.AddTextChunk(textChunks[0]);
@@ -448,7 +463,7 @@ namespace Tabula
             {
                 if (last.VerticalOverlapRatio(te) < 0.1)
                 {
-                    if (last.Width / bbwidth > 0.9 && TextChunk.AllSameChar(last.TextElements))
+                    if (last.Width / bbwidth > 0.9 && AllSameChar(last.TextElements))
                     {
                         lines.RemoveAt(lines.Count - 1);
                     }
@@ -458,7 +473,7 @@ namespace Tabula
                 last.AddTextChunk(te);
             }
 
-            if (last.Width / bbwidth > 0.9 && TextChunk.AllSameChar(last.TextElements))
+            if (last.Width / bbwidth > 0.9 && AllSameChar(last.TextElements))
             {
                 lines.RemoveAt(lines.Count - 1);
             }

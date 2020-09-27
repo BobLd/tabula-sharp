@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Tabula
 {
-    // https://github.com/tabulapdf/tabula-java/blob/ebc83ac2bb1a1cbe54ab8081d70f3c9fe81886ea/src/main/java/technology/tabula/Line.java#L9
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/Line.java
 
     // TODO this class seems superfluous - get rid of it
 
