@@ -5,9 +5,7 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
-    /*
-    * ** tabula/Cell.java **
-    */
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/Cell.java
     /// <summary>
     /// A cell in a table.
     /// </summary>

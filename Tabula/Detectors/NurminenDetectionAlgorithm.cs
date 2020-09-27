@@ -14,9 +14,13 @@ namespace Tabula.Detectors
 
     /// <summary>
     /// Nurminen detection algorithm.
+    /// <para>Not Implemented.</para>
     /// </summary>
     public class NurminenDetectionAlgorithm : IDetectionAlgorithm
     {
+        /// <summary>
+        /// Not Implemented.
+        /// </summary>
         public List<TableRectangle> Detect(PageArea page)
         {
             throw new NotImplementedException();

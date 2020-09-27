@@ -8,7 +8,7 @@ using UglyToad.PdfPig.Geometry;
 
 namespace Tabula
 {
-    //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java
+    //ported from tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java
     public class Ruling
     {
         private static int PERPENDICULAR_PIXEL_EXPAND_AMOUNT = 2;
@@ -24,18 +24,21 @@ namespace Tabula
 
         public void SetLine(PdfPoint p1, PdfPoint p2)
         {
+            /*
             if (Math.Round(p1.Y, 2) > Math.Round(p2.Y, 2)) // using round here to account for almost vert. or horiz. line before normalize
             {
                 throw new ArgumentException("Points order is wrong. p1 needs to be below p2 (p1.Y <= p2.Y)");
             }
+            */
 
             // test X?
+            Debug.Assert(Math.Round(p1.Y, 2) <= Math.Round(p2.Y, 2), "Points order is wrong. p1 needs to be below p2 (p1.Y <= p2.Y)");
 
             Line = new PdfLine(p1, p2);
         }
 
-        public Ruling(double top, double left, double width, double height)
-            : this(new PdfPoint(left, top), new PdfPoint(left + width, height + top))
+        public Ruling(double bottom, double left, double width, double height)
+            : this(new PdfPoint(left, bottom), new PdfPoint(left + width, height + bottom))
         {
         }
 
@@ -83,13 +86,48 @@ namespace Tabula
         public bool IsHorizontal => this.Length > 0 && Utils.Feq(this.Y1, this.Y2);
 
         /// <summary>
-        /// Is the <see cref="Ruling"/> blique? Neither vertical nor horizontal.
+        /// Is the <see cref="Ruling"/> oblique? Neither vertical nor horizontal.
         /// </summary>
         public bool IsOblique => !(this.IsVertical || this.IsHorizontal);
-    
+
         /// <summary>
-        /// attributes that make sense only for non-oblique lines
-        /// these are used to have a single collapse method (in page, currently)
+        /// Gets the ruling's length.
+        /// </summary>
+        public double Length => this.Line.Length;
+
+        /// <summary>
+        /// Point 1's X coordinate.
+        /// </summary>
+        public double X1 => this.P1.X;
+
+        /// <summary>
+        /// Point 2's X coordinate.
+        /// </summary>
+        public double X2 => this.P2.X;
+
+        /// <summary>
+        /// Point 1's Y coordinate.
+        /// </summary>
+        public double Y1 => this.P1.Y;
+
+        /// <summary>
+        /// Point 2's Y coordinate.
+        /// </summary>
+        public double Y2 => this.P2.Y;
+
+        /// <summary>
+        /// First ruling point.
+        /// </summary>
+        public PdfPoint P1 => Line.Point1;
+
+        /// <summary>
+        /// Second ruling point.
+        /// </summary>
+        public PdfPoint P2 => Line.Point2;
+
+        /// <summary>
+        /// Gets the ruling's position: The X coordinate if ruling is vertical or the Y coordinate if horizontal.
+        /// <para>Attributes that make sense only for non-oblique lines these are used to have a single collapse method (in page, currently).</para>
         /// </summary>
         public double Position
         {
@@ -104,6 +142,10 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// Sets the ruling's position: The X coordinate if ruling is vertical or the Y coordinate if horizontal.
+        /// </summary>
+        /// <param name="v"></param>
         public void SetPosition(float v)
         {
             if (this.IsOblique)
@@ -123,6 +165,9 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// Gets the ruling's start coordinate: The Top coordinate if ruling is vertical or the Right coordinate if horizontal.
+        /// </summary>
         public double Start
         {
             get
@@ -136,6 +181,10 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// Sets the ruling's start coordinate: The Top coordinate if ruling is vertical or the Right coordinate if horizontal.
+        /// </summary>
+        /// <param name="v"></param>
         public void SetStart(double v)
         {
             if (this.IsOblique)
@@ -153,6 +202,9 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// Gets the ruling's end coordinate: The Bottom coordinate if ruling is vertical or the Left coordinate if horizontal.
+        /// </summary>
         public double End
         {
             get
@@ -166,6 +218,10 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// Sets the ruling's end coordinate: The Bottom coordinate if ruling is vertical or the Left coordinate if horizontal.
+        /// </summary>
+        /// <param name="v"></param>
         public void SetEnd(double v)
         {
             if (this.IsOblique)
@@ -202,6 +258,12 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// Perpendicular?
+        /// <para>Confusing function: only checks if (this.IsVertical == other.IsHorizontal)</para>
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool IsPerpendicularTo(Ruling other)
         {
             return this.IsVertical == other.IsHorizontal;
@@ -252,26 +314,6 @@ namespace Tabula
             return rv;
         }
 
-        public Ruling Intersect(PdfRectangle clip)
-        {
-            // use clipper 
-            throw new NotImplementedException();
-
-            /*
-            Line2D.Float clipee = (Line2D.Float)this.clone();
-            boolean clipped = new CohenSutherlandClipping(clip).clip(clipee);
-
-            if (clipped)
-            {
-                return new Ruling(clipee.getP1(), clipee.getP2());
-            }
-            else
-            {
-                return this;
-            }
-            */
-        }
-
         public Ruling Expand(double amount)
         {
             Ruling r = this.Clone(); //.MemberwiseClone(); //??? .clone();
@@ -303,7 +345,7 @@ namespace Tabula
             }
             else
             {
-                throw new ArgumentException("lines must be orthogonal, vertical and horizontal");
+                throw new ArgumentException("lines must be orthogonal, vertical and horizontal", nameof(other));
             }
             return new PdfPoint(vertical.Left, horizontal.Top);
         }
@@ -323,66 +365,84 @@ namespace Tabula
         }
 
         /// <summary>
-        /// 
+        /// Gets the point 2's Y coordinate.
         /// </summary>
         public double Top => this.Y2; //.y1;
 
+        /// <summary>
+        /// Sets the point 2's Y coordinate.
+        /// </summary>
+        /// <param name="v"></param>
         public void SetTop(double v)
         {
-            //setLine(this.getLeft(), v, this.getRight(), this.getBottom());
             SetLine(this.Left, this.Bottom, this.Right, v);
         }
 
+        /// <summary>
+        /// Gets the point 1's X coordinate.
+        /// </summary>
         public double Left => this.X1; // not sure here!!
 
+        /// <summary>
+        /// Sets the point 1's X coordinate.
+        /// </summary>
+        /// <param name="v"></param>
         public void SetLeft(double v)
         {
             SetLine(v, this.Top, this.Right, this.Bottom);
         }
 
+        /// <summary>
+        /// Gets the point 1's Y coordinate.
+        /// </summary>
         public double Bottom => this.Y1; //.y2;
+
+        /// <summary>
+        /// Sets the point 1's Y coordinate.
+        /// </summary>
+        /// <param name="v"></param>
         public void SetBottom(double v)
         {
-            //setLine(this.getLeft(), this.getTop(), this.getRight(), v);
             SetLine(this.Left, v, this.Right, this.Top);
         }
 
+        /// <summary>
+        /// Gets the point 2's X coordinate.
+        /// </summary>
         public double Right => this.X2;  // not sure here!!
 
+        /// <summary>
+        /// Sets the point 2's X coordinate.
+        /// </summary>
+        /// <param name="v"></param>
         public void SetRight(double v)
         {
             SetLine(this.Left, this.Top, v, this.Bottom);
         }
 
         public double Width => this.Right - this.Left;
-        public double Height => this.Top - this.Bottom; //return this.getBottom() - this.getTop();
+        public double Height => this.Top - this.Bottom;
 
         /// <summary>
-        /// Compute the angle. [0, +180].
+        /// Computes the angle.
+        /// <para>0 ≤ θ ≤ 360</para>
         /// </summary>
         public double GetAngle()
         {
-            double angle = Distances.Angle(this.P1, this.P2);
-
-            if (angle < 0)
-            {
-                angle += 360;
-            }
-            return angle;
+            return Distances.BoundAngle0to360(Distances.Angle(this.P1, this.P2));
         }
 
         public override string ToString()
         {
-            /*
-            StringBuilder sb = new StringBuilder();
-            Formatter formatter = new Formatter(sb);
-            String rv = str formatter.format(Locale.US, "%s[x1=%f y1=%f x2=%f y2=%f]", this.GetType().toString(), this.x1, this.y1, this.x2, this.y2).toString();
-            formatter.close();
-            return rv;
-            */
-            return $"{this.GetType()}[x1={this.X1:0.00} y1={this.Y1:0.00} x2={this.X2:0.00} y2={this.Y2:0.00}]";
+            return $"{this.GetType()}[x1={this.X1:0.00},y1={this.Y1:0.00},x2={this.X2:0.00},y2={this.Y2:0.00}]";
         }
 
+        /// <summary>
+        /// Clips the rulings to the area.
+        /// <para>Warning: force xMin to be in p1, xMax to be in p2, might lead to odd stuff if not vertical or horizontal.</para>
+        /// </summary>
+        /// <param name="rulings"></param>
+        /// <param name="area"></param>
         public static List<Ruling> CropRulingsToArea(IReadOnlyList<Ruling> rulings, PdfRectangle area)
         {
             // use clipper
@@ -435,7 +495,6 @@ namespace Tabula
             public int Compare(Ruling o1, Ruling o2)
             {
                 return -o1.Top.CompareTo(o2.Top);  //bobld multiply by -1 to sort from top to bottom (reading order)
-                //return java.lang.Double.compare(o1.getTop(), o2.getTop());
             }
         }
 
@@ -511,12 +570,10 @@ namespace Tabula
         {
             //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java#L312
 
-            List<SortObject> sos = new List<SortObject>(); //ArrayList<>();
+            List<SortObject> sos = new List<SortObject>();
             SortedDictionary<Ruling, bool> tree = new SortedDictionary<Ruling, bool>(new TreeMapRulingComparer()); // TreeMap<Ruling, Boolean> tree
-            // The SortedDictionary will throw ArgumentException on duplicate keys.
 
             SortedDictionary<PdfPoint, Ruling[]> rv = new SortedDictionary<PdfPoint, Ruling[]>(new TreeMapPdfPointComparer()); // TreeMap<Point2D, Ruling[]> rv
-            // The SortedDictionary will throw ArgumentException on duplicate keys.
 
             foreach (Ruling h in horizontals)
             {
@@ -536,7 +593,7 @@ namespace Tabula
                 switch (so.type)
                 {
                     case SOType.VERTICAL:
-                        foreach (var h in tree)//.entrySet()) 
+                        foreach (var h in tree)
                         {
                             PdfPoint? i = h.Key.IntersectionPoint(so.ruling);
                             if (!i.HasValue) continue;
@@ -574,6 +631,11 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="expandAmount"></param>
         public static List<Ruling> CollapseOrientedRulings(List<Ruling> lines, int expandAmount)
         {
             List<Ruling> rv = new List<Ruling>();
@@ -615,15 +677,6 @@ namespace Tabula
         }
 
         #region helpers
-        public double Length => this.Line.Length;
-        public double X1 => this.P1.X;
-        public double X2 => this.P2.X;
-        public double Y1 => this.P1.Y;
-        public double Y2 => this.P2.Y;
-
-        public PdfPoint P1 => Line.Point1;
-        public PdfPoint P2 => Line.Point2;
-
         /// <summary>
         /// True if both horizontal, aligned and overlap (i.e. infinite intersection points).
         /// True if both vertical, aligned and overlap (i.e. infinite intersection points).
@@ -661,6 +714,11 @@ namespace Tabula
             return this.Line.IntersectsWith(other.Line);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rectangle"></param>
+        /// <returns></returns>
         public bool Intersects(TableRectangle rectangle)
         {
             // should be the same???

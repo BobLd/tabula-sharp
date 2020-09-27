@@ -4,6 +4,7 @@ using Tabula.Extractors;
 
 namespace Tabula.Detectors
 {
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/detectors/SpreadsheetDetectionAlgorithm.java
     /*
      * Created by matt on 2015-12-14.
      * This is the basic spreadsheet table detection algorithm currently implemented in tabula (web).

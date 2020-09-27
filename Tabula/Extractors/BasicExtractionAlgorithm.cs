@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Tabula.Extractors
 {
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/extractors/BasicExtractionAlgorithm.java
     /// <summary>
     /// Stream extraction algorithm.
     /// </summary>
@@ -37,6 +39,24 @@ namespace Tabula.Extractors
             foreach (float p in verticalRulingPositions)
             {
                 verticalRulings.Add(new Ruling(page.Height, p, 0.0f, page.Height)); // wrong here???
+            }
+            this.verticalRulings = verticalRulings;
+            return this.Extract(page);
+        }
+
+        /// <summary>
+        /// Extracts the tables in the page.
+        /// </summary>
+        /// <param name="page">The page where to extract the tables.</param>
+        /// <param name="verticalRulings">List of vertical rulings.</param>
+        public List<Table> Extract(PageArea page, IReadOnlyList<Ruling> verticalRulings)
+        {
+            foreach (var v in verticalRulings)
+            {
+                if (!v.IsVertical)
+                {
+                    throw new ArgumentException("BasicExtractionAlgorithm.Extract(): trying to use not vertical rulings", nameof(verticalRulings));
+                }
             }
             this.verticalRulings = verticalRulings;
             return this.Extract(page);

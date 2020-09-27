@@ -8,10 +8,8 @@ using static UglyToad.PdfPig.Core.PdfSubpath;
 
 namespace Tabula
 {
-    /*
-     * ** tabula/ObjectExtractor.java **
-     * ** tabula/ObjectExtractorStreamEngine.java **
-     */
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/ObjectExtractorStreamEngine.java
+    // and tabula-java/blob/master/src/main/java/technology/tabula/ObjectExtractor.java
 
     /// <summary>
     /// Tabula object extractor.
@@ -73,8 +71,15 @@ namespace Tabula
             //se.processPage(p);
 
             /**************** ObjectExtractorStreamEngine(PDPage page)*******************/
-            // https://github.com/tabulapdf/tabula-java/blob/ebc83ac2bb1a1cbe54ab8081d70f3c9fe81886ea/src/main/java/technology/tabula/ObjectExtractorStreamEngine.java#L138
             var rulings = new List<Ruling>();
+
+            foreach (var image in p.GetImages())
+            {
+                if (image.TryGetPng(out var png))
+                {
+
+                }
+            }
 
             foreach (var path in p.ExperimentalAccess.Paths)
             {
@@ -90,6 +95,7 @@ namespace Tabula
                     if (subpath.Commands.Any(c => c is BezierCurve))
                     {
                         // or contains operations other than LINETO, MOVETO or CLOSE
+                        // bobld: skip at subpath or path level?
                         continue;
                     }
 
@@ -101,11 +107,11 @@ namespace Tabula
                     PdfLine line;
                     PointComparer pc = new PointComparer();
 
-                    foreach (var command in subpath.Commands) //while (!pi.isDone())
+                    foreach (var command in subpath.Commands)
                     {
                         if (command is Line linePath)
                         {
-                            end_pos = RoundPdfPoint(linePath.To, rounding); // round it?
+                            end_pos = RoundPdfPoint(linePath.To, rounding);
                             if (!start_pos.HasValue || !end_pos.HasValue)
                             {
                                 break;
@@ -122,7 +128,7 @@ namespace Tabula
                         }
                         else if (command is Move move)
                         {
-                            start_pos = RoundPdfPoint(move.Location, rounding); // move.Location; // round it?
+                            start_pos = RoundPdfPoint(move.Location, rounding);
                             end_pos = start_pos;
                         }
                         else if (command is Close)

@@ -7,11 +7,9 @@ using UglyToad.PdfPig.DocumentLayoutAnalysis;
 
 namespace Tabula.Detectors
 {
+    // adapted from tabula-java/blob/master/src/main/java/technology/tabula/detectors/NurminenDetectionAlgorithm.java
+
     /*
-     * ** tabula/detectors/NurminenDetectionAlgorithm.java **
-     * Created by matt on 2015-12-17.
-     * <p>
-     * Attempt at an implementation of the table finding algorithm described by
      * Anssi Nurminen's master's thesis:
      * http://dspace.cc.tut.fi/dpub/bitstream/handle/123456789/21520/Nurminen.pdf?sequence=3
      */
@@ -206,7 +204,6 @@ namespace Tabula.Detectors
             //for (Iterator<Rectangle> iterator = tableAreas.iterator(); iterator.hasNext();)
             foreach (TableRectangle table in tableAreas.ToList()) // use tolist to be able to remove
             {
-
                 bool intersectsText = false;
                 foreach (TableLine textRow in lines)
                 {
@@ -253,9 +250,9 @@ namespace Tabula.Detectors
 
                 // get text edges from remaining lines in the document
                 TextEdges textEdges = getTextEdges(lines);
-                List<TextEdge> leftTextEdges = textEdges[TextEdge.LEFT];
-                List<TextEdge> midTextEdges = textEdges[TextEdge.MID];
-                List<TextEdge> rightTextEdges = textEdges[TextEdge.RIGHT];
+                //List<TextEdge> leftTextEdges = textEdges[TextEdge.LEFT];
+                //List<TextEdge> midTextEdges = textEdges[TextEdge.MID];
+                //List<TextEdge> rightTextEdges = textEdges[TextEdge.RIGHT];
 
                 // find the relevant text edges (the ones we think define where a table is)
                 RelevantEdges relevantEdgeInfo = getRelevantEdges(textEdges, lines);
@@ -267,13 +264,13 @@ namespace Tabula.Detectors
                     switch (relevantEdgeInfo.edgeType)
                     {
                         case TextEdge.LEFT:
-                            relevantEdges = leftTextEdges;
+                            relevantEdges = textEdges[TextEdge.LEFT];   // leftTextEdges;
                             break;
                         case TextEdge.MID:
-                            relevantEdges = midTextEdges;
+                            relevantEdges = textEdges[TextEdge.MID];    // midTextEdges;
                             break;
                         case TextEdge.RIGHT:
-                            relevantEdges = rightTextEdges;
+                            relevantEdges = textEdges[TextEdge.RIGHT];  // rightTextEdges;
                             break;
                     }
 
@@ -761,8 +758,7 @@ namespace Tabula.Detectors
                 cellCheck:
                 if (!addedToGroup)
                 {
-                    List<TableRectangle> cellGroup = new List<TableRectangle>();
-                    cellGroup.Add(cell);
+                    List<TableRectangle> cellGroup = new List<TableRectangle> { cell };
                     cellGroups.Add(cellGroup);
                 }
             }

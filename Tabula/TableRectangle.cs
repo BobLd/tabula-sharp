@@ -7,13 +7,16 @@ using UglyToad.PdfPig.Geometry;
 
 namespace Tabula
 {
-    // https://github.com/tabulapdf/tabula-java/blob/ebc83ac2bb1a1cbe54ab8081d70f3c9fe81886ea/src/main/java/technology/tabula/Rectangle.java
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/Rectangle.java
+    /// <summary>
+    /// A tabula rectangle.
+    /// </summary>
     public class TableRectangle : IComparable<TableRectangle>
     {
         /// <summary>
         /// Sort top to bottom (as in reading order).
         /// Ill-defined comparator, from when Rectangle was Comparable.
-        /// @see <a href="https://github.com/tabulapdf/tabula-java/issues/116">PR 116</a>
+        /// See <a href="https://github.com/tabulapdf/tabula-java/issues/116">PR 116</a>
         /// </summary>
         [Obsolete("with no replacement")]
         public class ILL_DEFINED_ORDER : IComparer<TableRectangle>
@@ -153,10 +156,6 @@ namespace Tabula
         /// </summary>
         public void SetTop(double top)
         {
-            //double deltaHeight = top - this.y;
-            //this.setRect(this.x, top, this.width, this.height - deltaHeight);
-
-            // BobLD: Not sure between top and bottom!
             this.SetRect(new PdfRectangle(this.Left, this.Bottom, this.Right, top));
         }
 
@@ -170,8 +169,6 @@ namespace Tabula
         /// </summary>
         public void SetRight(double right)
         {
-            //this.setRect(this.x, this.y, right - this.x, this.height);
-
             this.SetRect(new PdfRectangle(this.Left, this.Bottom, right, this.Top));
         }
 
@@ -185,9 +182,6 @@ namespace Tabula
         /// </summary>
         public void SetLeft(double left)
         {
-            //double deltaWidth = left - this.x;
-            //this.setRect(left, this.y, this.width - deltaWidth, this.height);
-
             this.SetRect(new PdfRectangle(left, this.Bottom, this.Right, this.Top));
         }
 
@@ -201,9 +195,6 @@ namespace Tabula
         /// </summary>
         public void SetBottom(double bottom)
         {
-            //this.SetRect(this.X, this.Y, this.Width, bottom - this.Y);
-
-            // BobLD: Not sure between top and bottom!
             this.SetRect(new PdfRectangle(this.Left, bottom, this.Right, this.Top));
         }
 
@@ -249,9 +240,7 @@ namespace Tabula
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(this.GetType());
-            string s = this.BoundingBox.ToString();
-            sb.Append(s, 0, s.Length - 1);
-            sb.Append($",bottom={this.Bottom:0.00},right={this.Right:0.00}]");
+            sb.Append($"[left={this.BoundingBox.BottomLeft.X:0.00},bottom={this.BoundingBox.BottomLeft.Y:0.00},right={this.BoundingBox.TopRight.X:0.00},top={this.BoundingBox.TopRight.Y:0.00}]");
             return sb.ToString();
         }
 
@@ -265,14 +254,19 @@ namespace Tabula
             return this.BoundingBox.IntersectsWith(tableRectangle.BoundingBox);
         }
 
+        /// <summary>
+        /// Returns true if the rectangle and the ruling intersect.
+        /// Takes in account the rectangle border by expanding its area by 1 on each side.
+        /// <para>Uses clipper.</para>
+        /// </summary>
+        /// <param name="ruling">The ruling to check.</param>
         public bool IntersectsLine(Ruling ruling)
         {
             return IntersectsLine(ruling.Line);
         }
 
-
         /// <summary>
-        /// hack to include border
+        /// hack to include border. Considers axis aligned.
         /// </summary>
         /// <param name="rectangle"></param>
         private PdfRectangle Expand(PdfRectangle rectangle)
@@ -280,6 +274,12 @@ namespace Tabula
             return new PdfRectangle(rectangle.Left - 1, rectangle.Bottom - 1, rectangle.Right + 1, rectangle.Top + 1);
         }
 
+        /// <summary>
+        /// Returns true if the rectangle and the line intersect.
+        /// Takes in account the rectangle border by expanding its area by 1 on each side.
+        /// <para>Uses clipper.</para>
+        /// </summary>
+        /// <param name="line">The line to check.</param>
         public bool IntersectsLine(PdfLine line)
         {
             var clipper = new Clipper();
@@ -296,6 +296,9 @@ namespace Tabula
         }
 
         #region helpers
+        /// <summary>
+        /// The TableRectangle's area.
+        /// </summary>
         public double Area => BoundingBox.Area;
 
         /// <summary>
@@ -353,16 +356,28 @@ namespace Tabula
             return Utils.Bounds(new[] { rectangle, other });
         }
 
+        /// <summary>
+        /// Returns true if the TableRectangle contains the point.
+        /// </summary>
+        /// <param name="point"></param>
         public bool Contains(PdfPoint point)
         {
             return this.BoundingBox.Contains(point, true);
         }
 
+        /// <summary>
+        /// Returns true if the TableRectangle contains the TableLine.
+        /// </summary>
+        /// <param name="tableLine"></param>
         public bool Contains(TableLine tableLine)
         {
             return this.BoundingBox.Contains(tableLine.BoundingBox, true);
         }
 
+        /// <summary>
+        /// Returns true if the TableRectangle contains the other TableRectangle.
+        /// </summary>
+        /// <param name="other"></param>
         public bool Contains(TableRectangle other)
         {
             return this.BoundingBox.Contains(other.BoundingBox, true);

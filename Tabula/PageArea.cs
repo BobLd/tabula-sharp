@@ -7,9 +7,7 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
-    // https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Page.java
-    // TODO: this class should probably be called "PageArea" or something like that
-
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/Page.java
     /// <summary>
     /// A tabula page.
     /// </summary>
@@ -96,44 +94,6 @@ namespace Tabula
         /// <para>This is a read-only list. Use <see cref="AddRuling(Ruling)"/> to add a <see cref="Ruling"/>.</para>
         /// </summary>
         public IReadOnlyList<Ruling> UnprocessedRulings => this.rulings;
-
-        /*
-        [Obsolete("Use PageArea(PdfRectangle, ...) instead.")]
-        public PageArea(double top, double left, double width, double height, int rotation, int page_number, Page pdPage, PdfDocument doc)
-            : base(top, left, width, height)
-        {
-            //super(top, left, width, height);
-            this.Rotation = rotation;
-            this.PageNumber = page_number;
-            this.PdfPage = pdPage;
-            this.PdfDocument = doc;
-            throw new ArgumentException("PageArea()");
-        }
-
-        [Obsolete("Use PageArea(PdfRectangle, ...) instead.")]
-        public PageArea(double top, double left, double width, double height, int rotation, int page_number, Page pdPage, PdfDocument doc,
-                    List<TextElement> characters, List<Ruling> rulings)
-            : this(top, left, width, height, rotation, page_number, pdPage, doc)
-        {
-            //this(top, left, width, height, rotation, page_number, pdPage, doc);
-            this.texts = characters;
-            this.rulings = rulings;
-            throw new ArgumentException("PageArea()");
-        }
-
-        [Obsolete("Use PageArea(PdfRectangle, ...) instead.")]
-        public PageArea(double top, double left, double width, double height, int rotation, int page_number, Page pdPage, PdfDocument doc,
-             List<TextElement> characters, List<Ruling> rulings,
-             double minCharWidth, double minCharHeight, RectangleSpatialIndex<TextElement> index)
-            : this(top, left, width, height, rotation, page_number, pdPage, doc, characters, rulings)
-        {
-            //this(top, left, width, height, rotation, page_number, pdPage, doc, characters, rulings);
-            this.MinCharHeight = minCharHeight;
-            this.MinCharWidth = minCharWidth;
-            this.spatial_index = index;
-            throw new ArgumentException("PageArea()");
-        }
-        */
 
         /// <summary>
         /// Create a new page area.

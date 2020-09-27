@@ -8,8 +8,8 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
-    // https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/Utils.java
-    /**
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/Utils.java
+    /*
      * @author manuel
      */
     public static class Utils
@@ -257,8 +257,10 @@ namespace Tabula
             // snap by Y
             points.Sort(new PointYComparer());
 
-            groupedPoints = new List<List<PdfPoint>>();
-            groupedPoints.Add(new List<PdfPoint>(new PdfPoint[] { points[0] }));
+            groupedPoints = new List<List<PdfPoint>>
+            {
+                new List<PdfPoint>(new PdfPoint[] { points[0] })
+            };
 
             foreach (PdfPoint p in points.SubList(1, points.Count)) // - 1)) error in the java version: the second bound is exclusive + https://github.com/tabulapdf/tabula-java/pull/311
             {
@@ -298,6 +300,11 @@ namespace Tabula
             }
         }
 
+        /// <summary>
+        /// Not Implemented.
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="dpi"></param>
         public static object PageConvertToImage(Page page, int dpi) //, ImageType imageType) // BufferedImage
         {
             throw new NotImplementedException();
@@ -312,6 +319,12 @@ namespace Tabula
             */
         }
 
+        /// <summary>
+        /// Not Implemented.
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="page"></param>
+        /// <param name="dpi"></param>
         public static object PageConvertToImage(PdfDocument doc, Page page, int dpi) //, ImageType imageType) // BufferedImage
         {
             throw new NotImplementedException();
@@ -328,7 +341,6 @@ namespace Tabula
         /// <param name="toIndex">High endpoint (exclusive) of the subList</param>
         public static List<T> SubList<T>(this IReadOnlyList<T> list, int fromIndex, int toIndex)
         {
-            //int count = toIndex - fromIndex; // - 1;
             return list.ToList().GetRange(fromIndex, toIndex - fromIndex);
         }
     }

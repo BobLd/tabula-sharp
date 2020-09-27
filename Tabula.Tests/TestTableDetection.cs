@@ -320,7 +320,7 @@ namespace Tabula.Tests
 
         private List<string> comparePages(int page, List<TableRectangle> detected, List<TableRectangle> expected)
         {
-            List<string> errors = new List<string>(); // ArrayList<>();
+            List<string> errors = new List<string>();
 
             // go through the detected tables and try to match them with expected tables
             // from http://www.orsigiorgio.net/wp-content/papercite-data/pdf/gho*12.pdf (comparing regions):

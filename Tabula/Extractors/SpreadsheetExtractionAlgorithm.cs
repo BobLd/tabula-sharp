@@ -5,7 +5,7 @@ using UglyToad.PdfPig.Core;
 
 namespace Tabula.Extractors
 {
-    //https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/extractors/SpreadsheetExtractionAlgorithm.java
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/extractors/SpreadsheetExtractionAlgorithm.java
     /// <summary>
     /// Lattice extraction algorithm.
     /// </summary>
@@ -127,11 +127,6 @@ namespace Tabula.Extractors
                 {
                     if (c.Intersects(area))
                     {
-                        var text = page.GetText(c.BoundingBox);
-                        if (text.Count == 0)
-                        {
-                            Console.WriteLine("");
-                        }
                         c.SetTextElements(TextElement.MergeWords(page.GetText(c.BoundingBox)));
                         overlappingCells.Add(c);
                     }

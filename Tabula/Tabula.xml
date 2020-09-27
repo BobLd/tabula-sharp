@@ -61,6 +61,12 @@
         <member name="T:Tabula.Detectors.NurminenDetectionAlgorithm">
             <summary>
             Nurminen detection algorithm.
+            <para>Not Implemented.</para>
+            </summary>
+        </member>
+        <member name="M:Tabula.Detectors.NurminenDetectionAlgorithm.Detect(Tabula.PageArea)">
+            <summary>
+            Not Implemented.
             </summary>
         </member>
         <member name="T:Tabula.Detectors.SimpleNurminenDetectionAlgorithm">
@@ -130,6 +136,13 @@
             </summary>
             <param name="page">The page where to extract the tables.</param>
             <param name="verticalRulingPositions">List of vertical rulings, indicated by there x position.</param>
+        </member>
+        <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.Extract(Tabula.PageArea,System.Collections.Generic.IReadOnlyList{Tabula.Ruling})">
+            <summary>
+            Extracts the tables in the page.
+            </summary>
+            <param name="page">The page where to extract the tables.</param>
+            <param name="verticalRulings">List of vertical rulings.</param>
         </member>
         <member name="M:Tabula.Extractors.BasicExtractionAlgorithm.Extract(Tabula.PageArea)">
             <summary>
@@ -457,14 +470,85 @@
         </member>
         <member name="P:Tabula.Ruling.IsOblique">
             <summary>
-            Is the <see cref="T:Tabula.Ruling"/> blique? Neither vertical nor horizontal.
+            Is the <see cref="T:Tabula.Ruling"/> oblique? Neither vertical nor horizontal.
+            </summary>
+        </member>
+        <member name="P:Tabula.Ruling.Length">
+            <summary>
+            Gets the ruling's length.
+            </summary>
+        </member>
+        <member name="P:Tabula.Ruling.X1">
+            <summary>
+            Point 1's X coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.Ruling.X2">
+            <summary>
+            Point 2's X coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.Ruling.Y1">
+            <summary>
+            Point 1's Y coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.Ruling.Y2">
+            <summary>
+            Point 2's Y coordinate.
+            </summary>
+        </member>
+        <member name="P:Tabula.Ruling.P1">
+            <summary>
+            First ruling point.
+            </summary>
+        </member>
+        <member name="P:Tabula.Ruling.P2">
+            <summary>
+            Second ruling point.
             </summary>
         </member>
         <member name="P:Tabula.Ruling.Position">
             <summary>
-            attributes that make sense only for non-oblique lines
-            these are used to have a single collapse method (in page, currently)
+            Gets the ruling's position: The X coordinate if ruling is vertical or the Y coordinate if horizontal.
+            <para>Attributes that make sense only for non-oblique lines these are used to have a single collapse method (in page, currently).</para>
             </summary>
+        </member>
+        <member name="M:Tabula.Ruling.SetPosition(System.Single)">
+            <summary>
+            Sets the ruling's position: The X coordinate if ruling is vertical or the Y coordinate if horizontal.
+            </summary>
+            <param name="v"></param>
+        </member>
+        <member name="P:Tabula.Ruling.Start">
+            <summary>
+            Gets the ruling's start coordinate: The Top coordinate if ruling is vertical or the Right coordinate if horizontal.
+            </summary>
+        </member>
+        <member name="M:Tabula.Ruling.SetStart(System.Double)">
+            <summary>
+            Sets the ruling's start coordinate: The Top coordinate if ruling is vertical or the Right coordinate if horizontal.
+            </summary>
+            <param name="v"></param>
+        </member>
+        <member name="P:Tabula.Ruling.End">
+            <summary>
+            Gets the ruling's end coordinate: The Bottom coordinate if ruling is vertical or the Left coordinate if horizontal.
+            </summary>
+        </member>
+        <member name="M:Tabula.Ruling.SetEnd(System.Double)">
+            <summary>
+            Sets the ruling's end coordinate: The Bottom coordinate if ruling is vertical or the Left coordinate if horizontal.
+            </summary>
+            <param name="v"></param>
+        </member>
+        <member name="M:Tabula.Ruling.IsPerpendicularTo(Tabula.Ruling)">
+            <summary>
+            Perpendicular?
+            <para>Confusing function: only checks if (this.IsVertical == other.IsHorizontal)</para>
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
         </member>
         <member name="M:Tabula.Ruling.NearlyIntersects(Tabula.Ruling)">
             <summary>
@@ -481,13 +565,61 @@
         </member>
         <member name="P:Tabula.Ruling.Top">
             <summary>
-            
+            Gets the point 2's Y coordinate.
             </summary>
+        </member>
+        <member name="M:Tabula.Ruling.SetTop(System.Double)">
+            <summary>
+            Sets the point 2's Y coordinate.
+            </summary>
+            <param name="v"></param>
+        </member>
+        <member name="P:Tabula.Ruling.Left">
+            <summary>
+            Gets the point 1's X coordinate.
+            </summary>
+        </member>
+        <member name="M:Tabula.Ruling.SetLeft(System.Double)">
+            <summary>
+            Sets the point 1's X coordinate.
+            </summary>
+            <param name="v"></param>
+        </member>
+        <member name="P:Tabula.Ruling.Bottom">
+            <summary>
+            Gets the point 1's Y coordinate.
+            </summary>
+        </member>
+        <member name="M:Tabula.Ruling.SetBottom(System.Double)">
+            <summary>
+            Sets the point 1's Y coordinate.
+            </summary>
+            <param name="v"></param>
+        </member>
+        <member name="P:Tabula.Ruling.Right">
+            <summary>
+            Gets the point 2's X coordinate.
+            </summary>
+        </member>
+        <member name="M:Tabula.Ruling.SetRight(System.Double)">
+            <summary>
+            Sets the point 2's X coordinate.
+            </summary>
+            <param name="v"></param>
         </member>
         <member name="M:Tabula.Ruling.GetAngle">
             <summary>
-            Compute the angle. [0, +180].
+            Computes the angle.
+            <para>0 ≤ θ ≤ 360</para>
             </summary>
+        </member>
+        <member name="M:Tabula.Ruling.CropRulingsToArea(System.Collections.Generic.IReadOnlyList{Tabula.Ruling},UglyToad.PdfPig.Core.PdfRectangle)">
+            <summary>
+            Clips the rulings to the area.
+            <para>Warning: force xMin to be in p1, xMax to be in p2, might lead to odd stuff if not vertical or horizontal.</para>
+            </summary>
+            <param name="rulings"></param>
+            <param name="area"></param>
         </member>
         <member name="M:Tabula.Ruling.FindIntersections(System.Collections.Generic.IReadOnlyList{Tabula.Ruling},System.Collections.Generic.IReadOnlyList{Tabula.Ruling})">
             <summary>
@@ -497,6 +629,13 @@
             <param name="horizontals"></param>
             <param name="verticals"></param>
         </member>
+        <member name="M:Tabula.Ruling.CollapseOrientedRulings(System.Collections.Generic.List{Tabula.Ruling},System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="lines"></param>
+            <param name="expandAmount"></param>
+        </member>
         <member name="M:Tabula.Ruling.IntersectsLine(Tabula.Ruling)">
             <summary>
             True if both horizontal, aligned and overlap (i.e. infinite intersection points).
@@ -504,6 +643,13 @@
             True if not parallel and intersect (i.e. in intersection point).
             </summary>
             <param name="other"></param>
+        </member>
+        <member name="M:Tabula.Ruling.Intersects(Tabula.TableRectangle)">
+            <summary>
+            
+            </summary>
+            <param name="rectangle"></param>
+            <returns></returns>
         </member>
         <member name="M:Tabula.Ruling.Clone">
             <summary>
@@ -678,11 +824,32 @@
             Counter-clockwise, starting from bottom left point.
             </summary>
         </member>
+        <member name="M:Tabula.TableRectangle.IntersectsLine(Tabula.Ruling)">
+            <summary>
+            Returns true if the rectangle and the ruling intersect.
+            Takes in account the rectangle border by expanding its area by 1 on each side.
+            <para>Uses clipper.</para>
+            </summary>
+            <param name="ruling">The ruling to check.</param>
+        </member>
         <member name="M:Tabula.TableRectangle.Expand(UglyToad.PdfPig.Core.PdfRectangle)">
             <summary>
-            hack to include border
+            hack to include border. Considers axis aligned.
             </summary>
             <param name="rectangle"></param>
+        </member>
+        <member name="M:Tabula.TableRectangle.IntersectsLine(UglyToad.PdfPig.Core.PdfLine)">
+            <summary>
+            Returns true if the rectangle and the line intersect.
+            Takes in account the rectangle border by expanding its area by 1 on each side.
+            <para>Uses clipper.</para>
+            </summary>
+            <param name="line">The line to check.</param>
+        </member>
+        <member name="P:Tabula.TableRectangle.Area">
+            <summary>
+            The TableRectangle's area.
+            </summary>
         </member>
         <member name="P:Tabula.TableRectangle.X">
             <summary>
@@ -723,6 +890,24 @@
             <summary>
             The <see cref="T:Tabula.TableRectangle"/>'s top coordinate.
             </summary>
+        </member>
+        <member name="M:Tabula.TableRectangle.Contains(UglyToad.PdfPig.Core.PdfPoint)">
+            <summary>
+            Returns true if the TableRectangle contains the point.
+            </summary>
+            <param name="point"></param>
+        </member>
+        <member name="M:Tabula.TableRectangle.Contains(Tabula.TableLine)">
+            <summary>
+            Returns true if the TableRectangle contains the TableLine.
+            </summary>
+            <param name="tableLine"></param>
+        </member>
+        <member name="M:Tabula.TableRectangle.Contains(Tabula.TableRectangle)">
+            <summary>
+            Returns true if the TableRectangle contains the other TableRectangle.
+            </summary>
+            <param name="other"></param>
         </member>
         <member name="T:Tabula.TableWithRulingLines">
             <summary>
@@ -917,6 +1102,21 @@
             <param name="rulings"></param>
             <param name="xThreshold"></param>
             <param name="yThreshold"></param>
+        </member>
+        <member name="M:Tabula.Utils.PageConvertToImage(UglyToad.PdfPig.Content.Page,System.Int32)">
+            <summary>
+            Not Implemented.
+            </summary>
+            <param name="page"></param>
+            <param name="dpi"></param>
+        </member>
+        <member name="M:Tabula.Utils.PageConvertToImage(UglyToad.PdfPig.PdfDocument,UglyToad.PdfPig.Content.Page,System.Int32)">
+            <summary>
+            Not Implemented.
+            </summary>
+            <param name="doc"></param>
+            <param name="page"></param>
+            <param name="dpi"></param>
         </member>
         <member name="M:Tabula.Utils.SubList``1(System.Collections.Generic.IReadOnlyList{``0},System.Int32,System.Int32)">
             <summary>

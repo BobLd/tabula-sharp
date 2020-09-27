@@ -9,6 +9,7 @@ using UglyToad.PdfPig.Util;
 
 namespace Tabula
 {
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/TextStripper.java
     public class TextStripper
     {
         private static readonly string NBSP = "\u00A0";
