@@ -15,24 +15,24 @@ namespace Tabula.Detectors
      */
 
     /// <summary>
-    /// Simplified Nurminen detection algorithm.
+    /// Simplified Nurminen table detection algorithm.
     /// <para>Does not do any image processing.</para>
     /// </summary>
     public class SimpleNurminenDetectionAlgorithm : IDetectionAlgorithm
     {
-        private static int HORIZONTAL_EDGE_WIDTH_MINIMUM = 50;
-        private static int VERTICAL_EDGE_HEIGHT_MINIMUM = 10;
-        private static int CELL_CORNER_DISTANCE_MAXIMUM = 10;
-        private static double POINT_SNAP_DISTANCE_THRESHOLD = 8.0;
-        private static double TABLE_PADDING_AMOUNT = 1.0;
-        private static int REQUIRED_TEXT_LINES_FOR_EDGE = 4;
-        private static int REQUIRED_CELLS_FOR_TABLE = 4;
-        private static double IDENTICAL_TABLE_OVERLAP_RATIO = 0.9;
+        protected static int HORIZONTAL_EDGE_WIDTH_MINIMUM = 50;
+        protected static int VERTICAL_EDGE_HEIGHT_MINIMUM = 10;
+        protected static int CELL_CORNER_DISTANCE_MAXIMUM = 10;
+        protected static double POINT_SNAP_DISTANCE_THRESHOLD = 8.0;
+        protected static double TABLE_PADDING_AMOUNT = 1.0;
+        protected static int REQUIRED_TEXT_LINES_FOR_EDGE = 4;
+        protected static int REQUIRED_CELLS_FOR_TABLE = 4;
+        protected static double IDENTICAL_TABLE_OVERLAP_RATIO = 0.9;
 
         /// <summary>
         /// Helper class that encapsulates a text edge
         /// </summary>
-        private class TextEdge
+        protected class TextEdge
         {
             public PdfLine Line;
 
@@ -59,7 +59,7 @@ namespace Tabula.Detectors
         /// <summary>
         /// Helper container for all text edges on a page
         /// </summary>
-        private class TextEdges : List<List<TextEdge>>
+        protected class TextEdges : List<List<TextEdge>>
         {
             public TextEdges(List<TextEdge> leftEdges, List<TextEdge> midEdges, List<TextEdge> rightEdges) : base(3)
             {
@@ -72,7 +72,7 @@ namespace Tabula.Detectors
         /// <summary>
         /// Helper container for relevant text edge info
         /// </summary>
-        private class RelevantEdges
+        protected class RelevantEdges
         {
             public int edgeType;
             public int edgeCount;
@@ -85,7 +85,7 @@ namespace Tabula.Detectors
         }
 
         /// <summary>
-        /// Simplified Nurminen detection algorithm.
+        /// Simplified Nurminen table detection algorithm.
         /// <para>Does not do any image processing.</para>
         /// </summary>
         public SimpleNurminenDetectionAlgorithm()
@@ -95,7 +95,7 @@ namespace Tabula.Detectors
         /// Detects the tables in the page.
         /// </summary>
         /// <param name="page"></param>
-        public List<TableRectangle> Detect(PageArea page)
+        public virtual List<TableRectangle> Detect(PageArea page)
         {
             // get horizontal & vertical lines
             // we get these from an image of the PDF and not the PDF itself because sometimes there are invisible PDF
@@ -107,6 +107,11 @@ namespace Tabula.Detectors
             List<Ruling> verticalRulings = this.getVerticalRulings(pageRulings);
             // end hack here
 
+            return Process(page, horizontalRulings, verticalRulings);
+        }
+
+        protected List<TableRectangle> Process(PageArea page, List<Ruling> horizontalRulings, List<Ruling> verticalRulings)
+        {
             List<Ruling> allEdges = new List<Ruling>(horizontalRulings);
             allEdges.AddRange(verticalRulings);
 
@@ -121,7 +126,6 @@ namespace Tabula.Detectors
                 // normalize the rulings to make sure snapping didn't create any wacky non-horizontal/vertical rulings
                 foreach (List<Ruling> rulings in new[] { horizontalRulings, verticalRulings }) //Arrays.asList(horizontalRulings, verticalRulings))
                 {
-                    //for (Iterator<Ruling> iterator = rulings.iterator(); iterator.hasNext();)
                     foreach (var ruling in rulings.ToList()) // use ToList to be able to remove
                     {
                         ruling.Normalize();
@@ -148,7 +152,7 @@ namespace Tabula.Detectors
             // next find any vertical rulings that intersect tables - sometimes these won't have completely been captured as
             // cells if there are missing horizontal lines (which there often are)
             // let's assume though that these lines should be part of the table
-            foreach (Ruling verticalRuling in verticalRulings) // Line2D.Float
+            foreach (Ruling verticalRuling in verticalRulings)
             {
                 foreach (TableRectangle tableArea in tableAreas)
                 {
@@ -161,27 +165,6 @@ namespace Tabula.Detectors
                     }
                 }
             }
-
-            /* BobLd: not sure this is the case in tabula-sharp/PdfPig
-            // the tabula Page coordinate space is half the size of the PDFBox image coordinate space
-            // so halve the table area size before proceeding and add a bit of padding to make sure we capture everything
-            foreach (TableRectangle area in tableAreas)
-            {
-                area.x = (float)Math.floor(area.x / 2) - TABLE_PADDING_AMOUNT;
-                area.y = (float)Math.floor(area.y / 2) - TABLE_PADDING_AMOUNT;
-                area.width = (float)Math.ceil(area.width / 2) + TABLE_PADDING_AMOUNT;
-                area.height = (float)Math.ceil(area.height / 2) + TABLE_PADDING_AMOUNT;
-            }
-
-            // we're going to want halved horizontal lines later too
-            foreach (Ruling ruling in horizontalRulings) // Line2D.Float 
-            {
-                ruling.x1 = ruling.x1 / 2;
-                ruling.y1 = ruling.y1 / 2;
-                ruling.x2 = ruling.x2 / 2;
-                ruling.y2 = ruling.y2 / 2;
-            }
-            */
 
             // now look at text rows to help us find more tables and flesh out existing ones
             List<TextChunk> textChunks = TextElement.MergeWords(page.GetText());
@@ -201,7 +184,6 @@ namespace Tabula.Detectors
             }
 
             // get rid of tables that DO NOT intersect any text areas - these are likely graphs or some sort of graphic
-            //for (Iterator<Rectangle> iterator = tableAreas.iterator(); iterator.hasNext();)
             foreach (TableRectangle table in tableAreas.ToList()) // use tolist to be able to remove
             {
                 bool intersectsText = false;
@@ -235,7 +217,6 @@ namespace Tabula.Detectors
                 foundTable = false;
 
                 // get rid of any text lines contained within existing tables, this allows us to find more tables
-                //for (Iterator<TableLine> iterator = lines.iterator(); iterator.hasNext();)
                 foreach (var textRow in lines.ToList())
                 {
                     foreach (TableRectangle table in tableAreas)
@@ -250,9 +231,6 @@ namespace Tabula.Detectors
 
                 // get text edges from remaining lines in the document
                 TextEdges textEdges = getTextEdges(lines);
-                //List<TextEdge> leftTextEdges = textEdges[TextEdge.LEFT];
-                //List<TextEdge> midTextEdges = textEdges[TextEdge.MID];
-                //List<TextEdge> rightTextEdges = textEdges[TextEdge.RIGHT];
 
                 // find the relevant text edges (the ones we think define where a table is)
                 RelevantEdges relevantEdgeInfo = getRelevantEdges(textEdges, lines);
@@ -264,13 +242,13 @@ namespace Tabula.Detectors
                     switch (relevantEdgeInfo.edgeType)
                     {
                         case TextEdge.LEFT:
-                            relevantEdges = textEdges[TextEdge.LEFT];   // leftTextEdges;
+                            relevantEdges = textEdges[TextEdge.LEFT];
                             break;
                         case TextEdge.MID:
-                            relevantEdges = textEdges[TextEdge.MID];    // midTextEdges;
+                            relevantEdges = textEdges[TextEdge.MID];
                             break;
                         case TextEdge.RIGHT:
-                            relevantEdges = textEdges[TextEdge.RIGHT];  // rightTextEdges;
+                            relevantEdges = textEdges[TextEdge.RIGHT];
                             break;
                     }
 
@@ -294,7 +272,8 @@ namespace Tabula.Detectors
             return tableSet.ToList();
         }
 
-        private class TreeSetComparer : IComparer<TableRectangle>
+
+        protected class TreeSetComparer : IComparer<TableRectangle>
         {
             public int Compare(TableRectangle o1, TableRectangle o2)
             {
@@ -327,7 +306,7 @@ namespace Tabula.Detectors
             }
         }
 
-        private TableRectangle getTableFromText(List<TableLine> lines, List<TextEdge> relevantEdges, int relevantEdgeCount, List<Ruling> horizontalRulings)
+        protected TableRectangle getTableFromText(List<TableLine> lines, List<TextEdge> relevantEdges, int relevantEdgeCount, List<Ruling> horizontalRulings)
         {
             TableRectangle table = new TableRectangle();
 
@@ -438,7 +417,6 @@ namespace Tabula.Detectors
             double rowHeightThreshold = avgRowHeight * 1.5;
 
             // check lines after the bottom of the table
-            //foreach (Ruling ruling in sortedHorizontalRulings) //Line2D.Float
             for (int i = horizontalRulings.Count - 1; i >= 0; i--) // reverse order
             {
                 var ruling = horizontalRulings[i];
@@ -467,7 +445,6 @@ namespace Tabula.Detectors
             // larger to fit up to three-ish rows of text (at least but we don't want to grab too much)
             rowHeightThreshold = avgRowHeight * 3.8;
 
-            //for (int i = horizontalRulings.Count - 1; i >= 0; i--)
             for (int i = 0; i < horizontalRulings.Count; i++)
             {
                 Ruling ruling = horizontalRulings[i];
@@ -500,7 +477,7 @@ namespace Tabula.Detectors
             return table;
         }
 
-        private RelevantEdges getRelevantEdges(TextEdges textEdges, List<TableLine> lines)
+        protected RelevantEdges getRelevantEdges(TextEdges textEdges, List<TableLine> lines)
         {
             List<TextEdge> leftTextEdges = textEdges[TextEdge.LEFT];
             List<TextEdge> midTextEdges = textEdges[TextEdge.MID];
@@ -565,7 +542,7 @@ namespace Tabula.Detectors
             return new RelevantEdges(relevantEdgeType, relevantEdgeCount);
         }
 
-        private TextEdges getTextEdges(List<TableLine> lines)
+        protected TextEdges getTextEdges(List<TableLine> lines)
         {
             // get all text edges (lines that align with the left, middle and right of chunks of text) that extend
             // uninterrupted over at least REQUIRED_TEXT_LINES_FOR_EDGE lines of text
@@ -611,7 +588,6 @@ namespace Tabula.Detectors
                     rightEdge.Add(text);
 
                     // now see if this text chunk blows up any other edges
-                    //for (Iterator<Map.Entry<Integer, List<TextChunk>>> iterator = currLeftEdges.entrySet().iterator(); iterator.hasNext();)
                     foreach (var entry in currLeftEdges.ToList()) // use tolist to be able to remove
                     {
                         int key = entry.Key;
@@ -632,7 +608,6 @@ namespace Tabula.Detectors
                         }
                     }
 
-                    //for (Iterator<Map.Entry<Integer, List<TextChunk>>> iterator = currMidEdges.entrySet().iterator(); iterator.hasNext();)
                     foreach (var entry in currMidEdges.ToList())
                     {
                         int key = entry.Key;
@@ -653,7 +628,6 @@ namespace Tabula.Detectors
                         }
                     }
 
-                    //for (Iterator<Map.Entry<Integer, List<TextChunk>>> iterator = currRightEdges.entrySet().iterator(); iterator.hasNext();)
                     foreach (var entry in currRightEdges.ToList())
                     {
                         int key = entry.Key;
@@ -725,7 +699,7 @@ namespace Tabula.Detectors
             return new TextEdges(leftTextEdges, midTextEdges, rightTextEdges);
         }
 
-        private List<TableRectangle> getTableAreasFromCells(List<TableRectangle> cells)
+        protected List<TableRectangle> getTableAreasFromCells(List<TableRectangle> cells)
         {
             List<List<TableRectangle>> cellGroups = new List<List<TableRectangle>>();
             foreach (TableRectangle cell in cells)
@@ -743,7 +717,6 @@ namespace Tabula.Detectors
                         {
                             for (int j = 0; j < groupCellCorners.Length; j++)
                             {
-                                //if (candidateCorners[i].distance(groupCellCorners[j]) < CELL_CORNER_DISTANCE_MAXIMUM)
                                 if (Distances.Euclidean(candidateCorners[i], groupCellCorners[j]) < CELL_CORNER_DISTANCE_MAXIMUM)
                                 {
                                     cellGroup.Add(cell);
@@ -792,7 +765,7 @@ namespace Tabula.Detectors
             return tableAreas;
         }
 
-        private List<Ruling> getHorizontalRulings(IReadOnlyList<Ruling> rulings)
+        protected List<Ruling> getHorizontalRulings(IReadOnlyList<Ruling> rulings)
         {
             List<Ruling> horizontalR = new List<Ruling>();
             foreach (Ruling r in rulings)
@@ -817,7 +790,7 @@ namespace Tabula.Detectors
             return horizontalRulings;
         }
 
-        private List<Ruling> getVerticalRulings(IReadOnlyList<Ruling> rulings)
+        protected List<Ruling> getVerticalRulings(IReadOnlyList<Ruling> rulings)
         {
             List<Ruling> verticalR = new List<Ruling>();
             foreach (Ruling r in rulings)
