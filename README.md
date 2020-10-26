@@ -1,4 +1,4 @@
-NuGet packages available on www.nuget.org and on the [releases](https://github.com/BobLd/tabula-sharp/releases) page.
+NuGet packages (pre-release) available on www.nuget.org and on the [releases](https://github.com/BobLd/tabula-sharp/releases) page.
 
 # tabula-sharp
 Port of [tabula-java](https://github.com/tabulapdf/tabula-java)
