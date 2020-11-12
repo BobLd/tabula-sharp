@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using UglyToad.PdfPig.Core;
 
 namespace Tabula
 {
-	// ported from tabula-java/blob/master/src/main/java/technology/tabula/RectangularTextContainer.java
-	public abstract class RectangularTextContainer : TableRectangle
+    // ported from tabula-java/blob/master/src/main/java/technology/tabula/RectangularTextContainer.java
+    public abstract class RectangularTextContainer : TableRectangle
 	{
 		public RectangularTextContainer(PdfRectangle pdfRectangle) : base(pdfRectangle)
 		{ }

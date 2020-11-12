@@ -14,7 +14,7 @@ namespace Tabula
     /// </summary>
     public class TextElement : TableRectangle, IHasText
     {
-        internal Letter letter; // do we really use it?
+        internal Letter letter;
 
         private string text;
         private static double AVERAGE_CHAR_TOLERANCE = 0.3;
@@ -55,8 +55,8 @@ namespace Tabula
         {
             StringBuilder sb = new StringBuilder();
             string s = base.ToString();
-            sb.Append(s.Substring(0, s.Length - 1));
-            sb.Append($",text={this.GetText()}]");
+            sb.Append(s, 0, s.Length - 1);
+            sb.Append(",text=").Append(this.GetText()).Append(']');
             return sb.ToString();
         }
 
@@ -124,7 +124,6 @@ namespace Tabula
         /// </summary>
         /// <param name="textElements"></param>
         /// <param name="verticalRulings"></param>
-        /// <returns></returns>
         public static List<TextChunk> MergeWords(IReadOnlyList<TextElement> textElements, IReadOnlyList<Ruling> verticalRulings)
         {
             List<TextChunk> textChunks = new List<TextChunk>();

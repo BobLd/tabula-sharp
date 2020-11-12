@@ -14,14 +14,16 @@ namespace Tabula
     {
         private static readonly string NBSP = "\u00A0";
         private static float AVG_HEIGHT_MULT_THRESHOLD = 6.0f;
+
         public List<TextElement> textElements;
         public double minCharWidth = double.MaxValue;
         public double minCharHeight = double.MaxValue;
         public RectangleSpatialIndex<TextElement> spatialIndex;
         public int pageNumber;
+
         private PdfDocument document;
-        public double totalHeight;
-        public int countHeight;
+        private double totalHeight;
+        private int countHeight;
 
         /// <summary>
         /// Create a TextStripper for the given page.
@@ -45,7 +47,7 @@ namespace Tabula
 
             foreach (var letter in page.Letters)
             {
-                string c = letter.Value; //textPosition.getUnicode();
+                string c = letter.Value;
 
                 // if c not printable, return
                 if (!IsPrintable(c)) continue;

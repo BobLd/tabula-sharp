@@ -394,7 +394,6 @@
             <summary>
             Helper function that does MoveNext() + Current;
             </summary>
-            <returns></returns>
         </member>
         <member name="M:Tabula.PageIterator.Dispose">
             <inheritdoc/>
@@ -1089,7 +1088,6 @@
             </summary>
             <param name="textElements"></param>
             <param name="verticalRulings"></param>
-            <returns></returns>
         </member>
         <member name="M:Tabula.TextStripper.#ctor(UglyToad.PdfPig.PdfDocument,System.Int32)">
             <summary>
