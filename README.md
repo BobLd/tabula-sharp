@@ -17,11 +17,11 @@ Port of [tabula-java](https://github.com/tabulapdf/tabula-java)
 - The original java implementation uses STR trees in [`RectangleSpatialIndex`](https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/RectangleSpatialIndex.java). This is not the case here so it might be a bit slower. Any help implementing a similar approach is welcome.
 
 
-## Difference to tabula-java
+## Differences with tabula-java
 - Uses [PdfPig](https://github.com/UglyToad/PdfPig), and not PdfBox.
-- Coordinate system starts from the bottom left point of the page, and not from the top left point.
+- Coordinate system starts from the bottom left point (going up) of the page, and not from the top left point (going down).
 - The `NurminenDetectionAlgorithm` is replaced by `SimpleNurminenDetectionAlgorithm`, because it requieres an image management library.
-- Table results might be different because of the way PdfPig builds Letter bounding box.
+- Table results might be different because of the way PdfPig builds Letters bounding box.
 
 # Usage
 ## Stream mode - BasicExtractionAlgorithm
