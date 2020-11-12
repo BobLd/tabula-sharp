@@ -20,6 +20,8 @@ namespace Tabula
 
         private PdfDocument pdfDocument;
 
+        private const float RULING_MINIMUM_LENGTH = 0.01f;
+
         /// <summary>
         /// Create a Tabula object extractor.
         /// </summary>
@@ -67,23 +69,17 @@ namespace Tabula
             }
 
             Page p = this.pdfDocument.GetPage(pageNumber);
-            //ObjectExtractorStreamEngine se = new ObjectExtractorStreamEngine(p);
-            //se.processPage(p);
 
             /**************** ObjectExtractorStreamEngine(PDPage page)*******************/
+            // Replaces:
+            // ObjectExtractorStreamEngine se = new ObjectExtractorStreamEngine(p);
+            // se.processPage(p);
             var rulings = new List<Ruling>();
-
-            foreach (var image in p.GetImages())
-            {
-                if (image.TryGetPng(out var png))
-                {
-
-                }
-            }
 
             foreach (var path in p.ExperimentalAccess.Paths)
             {
                 if (!path.IsFilled && !path.IsStroked) continue; // strokeOrFillPath operator => filter stroke and filled
+
                 foreach (var subpath in path)
                 {
                     if (!(subpath.Commands[0] is Move first))
@@ -121,7 +117,7 @@ namespace Tabula
 
                             // already clipped
                             Ruling r = new Ruling(line.Point1, line.Point2);
-                            if (r.Length > 0.01)
+                            if (r.Length > RULING_MINIMUM_LENGTH)
                             {
                                 rulings.Add(r);
                             }

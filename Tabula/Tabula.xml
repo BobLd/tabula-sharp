@@ -405,6 +405,12 @@
         <member name="M:Tabula.PageIterator.Reset">
             <inheritdoc/>
         </member>
+        <member name="T:Tabula.RectangleSpatialIndex`1">
+            <summary>
+            The original java implementation uses STR trees. This is not the case here so might be slower.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
         <member name="M:Tabula.RectangleSpatialIndex`1.Add(`0)">
             <summary>
             
@@ -443,7 +449,7 @@
         </member>
         <member name="P:Tabula.RectangularTextContainer`1.TextElements">
             <summary>
-            
+            Gets the RectangularTextContainer's TextElements.
             </summary>
         </member>
         <member name="M:Tabula.Ruling.#ctor(UglyToad.PdfPig.Core.PdfPoint,UglyToad.PdfPig.Core.PdfPoint)">
@@ -757,11 +763,16 @@
         <member name="M:Tabula.TableLine.ToString">
             <inheritdoc/>
         </member>
+        <member name="T:Tabula.TableRectangle">
+            <summary>
+            A tabula rectangle.
+            </summary>
+        </member>
         <member name="T:Tabula.TableRectangle.ILL_DEFINED_ORDER">
             <summary>
             Sort top to bottom (as in reading order).
             Ill-defined comparator, from when Rectangle was Comparable.
-            @see <a href="https://github.com/tabulapdf/tabula-java/issues/116">PR 116</a>
+            See <a href="https://github.com/tabulapdf/tabula-java/issues/116">PR 116</a>
             </summary>
         </member>
         <member name="M:Tabula.TableRectangle.ILL_DEFINED_ORDER.Compare(Tabula.TableRectangle,Tabula.TableRectangle)">
@@ -943,18 +954,18 @@
         </member>
         <member name="M:Tabula.TextChunk.#ctor">
             <summary>
-            
+            Create an empty text chunk.
             </summary>
         </member>
         <member name="M:Tabula.TextChunk.#ctor(Tabula.TextElement)">
             <summary>
-            
+            Create a text chunk from the text element.
             </summary>
             <param name="textElement"></param>
         </member>
         <member name="M:Tabula.TextChunk.#ctor(System.Collections.Generic.List{Tabula.TextElement})">
             <summary>
-            
+            Create a text chunk from the text elements.
             </summary>
             <param name="textElements"></param>
         </member>
@@ -973,6 +984,30 @@
             1 is Left-to-Right, 0 is neutral, -1 is Right-to-Left.
             </summary>
         </member>
+        <member name="M:Tabula.TextChunk.Merge(Tabula.TextChunk)">
+            <summary>
+            Merges this TextChunk with the other.
+            <para>Also does it in place.</para>
+            </summary>
+            <param name="other"></param>
+        </member>
+        <member name="M:Tabula.TextChunk.Add(Tabula.TextElement)">
+            <summary>
+            Adds the text element to the TextChunk.
+            </summary>
+            <param name="textElement"></param>
+        </member>
+        <member name="M:Tabula.TextChunk.Add(System.Collections.Generic.List{Tabula.TextElement})">
+            <summary>
+            Adds the text elements to the TextChunk.
+            </summary>
+            <param name="elements"></param>
+        </member>
+        <member name="M:Tabula.TextChunk.GetText">
+            <summary>
+            Gets the TextChunk's text.
+            </summary>
+        </member>
         <member name="M:Tabula.TextChunk.GetText(System.Boolean)">
             <summary>
             Returns null.
@@ -986,7 +1021,6 @@
             Returns true if text contained in this TextChunk is the same repeated character
             </summary>
             <param name="c"></param>
-            <returns></returns>
         </member>
         <member name="M:Tabula.TextChunk.SplitAt(System.Int32)">
             <summary>
@@ -1087,9 +1121,6 @@
             </summary>
             <param name="val">The integer value of a char.</param>
             <returns></returns>
-        </member>
-        <member name="T:Tabula.Utils">
-            @author manuel
         </member>
         <member name="M:Tabula.Utils.Sort``1(System.Collections.Generic.List{``0})">
             Wrap Collections.sort so we can fallback to a non-stable quicksort if we're

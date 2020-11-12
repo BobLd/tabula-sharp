@@ -46,7 +46,6 @@ namespace Tabula
         /// <summary>
         /// Helper function that does MoveNext() + Current;
         /// </summary>
-        /// <returns></returns>
         public PageArea Next()
         {
             if (MoveNext())

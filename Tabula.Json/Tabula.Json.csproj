@@ -8,6 +8,8 @@
     <Company>BobLd</Company>
     <Authors>BobLd</Authors>
     <PackageTags>pdf, extract, table, tabula, pdfpig, parse, extraction, json, export</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/BobLd/tabula-sharp</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
