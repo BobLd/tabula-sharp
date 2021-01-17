@@ -307,7 +307,7 @@ namespace Tabula.Tests
             IReadOnlyList<Ruling> rulings = page.VerticalRulings;
             Assert.Equal(6, rulings.Count);
 
-            double[] expectedRulings = new double[] { 105.554812, 107.522417, 160.568521, 377.172662, 434.963828, 488.229949 };
+            double[] expectedRulings = new double[] { 105.554812, 107.522417, 160.57705, 377.172662, 434.963828, 488.268507 };
 
             var lefts = rulings.Select(x => x.Left).ToArray();
             for (int i = 0; i < rulings.Count; i++)
