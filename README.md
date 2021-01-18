@@ -1,7 +1,7 @@
-NuGet packages (pre-release) available on the [releases](https://github.com/BobLd/tabula-sharp/releases) page and on www.nuget.org:
-- [Tabula](https://www.nuget.org/packages/Tabula/0.1.0-alpha002)
-- [Tabula.Json](https://www.nuget.org/packages/Tabula.Json/0.1.0-alpha002)
-- [Tabula.Csv](https://www.nuget.org/packages/Tabula.Csv/0.1.0-alpha002)
+NuGet packages available on the [releases](https://github.com/BobLd/tabula-sharp/releases) page and on www.nuget.org:
+- [Tabula](https://www.nuget.org/packages/Tabula)
+- [Tabula.Json](https://www.nuget.org/packages/Tabula.Json)
+- [Tabula.Csv](https://www.nuget.org/packages/Tabula.Csv)
 
 # tabula-sharp
 Port of [tabula-java](https://github.com/tabulapdf/tabula-java)
