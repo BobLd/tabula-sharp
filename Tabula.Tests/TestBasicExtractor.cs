@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -126,7 +125,7 @@ namespace Tabula.Tests
         [Fact]
         public void TestRemoveSequentialSpaces()
         {
-            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/m27.pdf", new PdfRectangle(28.28, 532 - (103.04 - 79.2), 732.6, 532)); // 79.2f, 28.28f, 103.04f, 732.6f);
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/m27.pdf", new PdfRectangle(28.28, 532 - (103.04 - 79.2), 732.6, 532));
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.Extract(page)[0];
             var firstRow = table.Rows[0];
@@ -138,7 +137,7 @@ namespace Tabula.Tests
         [Fact]
         public void TestColumnRecognition()
         {
-            PageArea page = UtilsForTesting.GetAreaFromFirstPage(ARGENTINA_DIPUTADOS_VOTING_RECORD_PDF, new PdfRectangle(12.75, 55, 557, 567)); // 269.875f, 12.75f, 790.5f, 561f);
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage(ARGENTINA_DIPUTADOS_VOTING_RECORD_PDF, new PdfRectangle(12.75, 55, 557, 567));
 
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.Extract(page)[0];
@@ -170,7 +169,7 @@ namespace Tabula.Tests
                 rulings.Add(new Ruling(new PdfPoint(rulingsVerticalPositions[i], 40.43), new PdfPoint(rulingsVerticalPositions[i], 755)));
             }
 
-            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/campaign_donors.pdf", new PdfRectangle(40.43, 755 - (398.76 - 255.57), 557.35, 755)); //255.57f, 40.43f, 398.76f, 557.35f);
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/campaign_donors.pdf", new PdfRectangle(40.43, 755 - (398.76 - 255.57), 557.35, 755));
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(rulings);
             Table table = bea.Extract(page)[0];
             var sixthRow = table.Rows[5];
@@ -184,7 +183,7 @@ namespace Tabula.Tests
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                PageArea page = UtilsForTesting.GetAreaFromPage(EU_002_PDF, 1, new PdfRectangle(70.0, 725 - (233 - 115), 510.0, 725)); // 115.0f, 70.0f, 233.0f, 510.0f);
+                PageArea page = UtilsForTesting.GetAreaFromPage(EU_002_PDF, 1, new PdfRectangle(70.0, 725 - (233 - 115), 510.0, 725));
                 BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
                 Table table = bea.Extract(page)[0];
 
@@ -219,7 +218,7 @@ namespace Tabula.Tests
             {
                 PageArea page = UtilsForTesting.GetPage(EU_017_PDF, 3);
                 BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.VerticalRulings);
-                Table table = bea.Extract(page.GetArea(new PdfRectangle(148.44, 543 - (711.875 - 299.625), 452.32, 543)))[0]; //299.625f, 148.44f, 711.875f, 452.32f))[0];
+                Table table = bea.Extract(page.GetArea(new PdfRectangle(148.44, 543 - (711.875 - 299.625), 452.32, 543)))[0];
 
                 var result = UtilsForTesting.TableToArrayOfRows(table);
 
@@ -248,7 +247,7 @@ namespace Tabula.Tests
         [Fact]
         public void TestExtractColumnsCorrectly3()
         {
-            PageArea page = UtilsForTesting.GetAreaFromFirstPage(FRX_2012_DISCLOSURE_PDF, new PdfRectangle(48.09, 563, 551.89, 685.5)); // 106.01f, 48.09f, 227.31f, 551.89f);
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage(FRX_2012_DISCLOSURE_PDF, new PdfRectangle(48.09, 563, 551.89, 685.5));
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.Extract(page)[0];
             var result = UtilsForTesting.TableToArrayOfRows(table);
@@ -271,7 +270,7 @@ namespace Tabula.Tests
         [Fact]
         public void TestCheckSqueezeDoesntBreak()
         {
-            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/12s0324.pdf", new PdfRectangle(17.25, 342, 410.25, 560.5)); // 99.0f, 17.25f, 316.5f, 410.25f);
+            PageArea page = UtilsForTesting.GetAreaFromFirstPage("Resources/12s0324.pdf", new PdfRectangle(17.25, 342, 410.25, 560.5));
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.Extract(page)[0];
             var rows = table.Rows;
@@ -284,18 +283,20 @@ namespace Tabula.Tests
             Assert.Equal("(X)", lastRowLastCell);
         }
 
-        [Fact()]
+        [Fact]
         public void TestNaturalOrderOfRectangles()
         {
-            PageArea page = UtilsForTesting.GetPage("Resources/us-017.pdf", 2).GetArea(new PdfRectangle(90, 97, 532, 352)); //446.0f, 97.0f, 685.0f, 520.0f);
+            PageArea page = UtilsForTesting.GetPage("Resources/us-017.pdf", 2).GetArea(new PdfRectangle(90, 97, 532, 352));
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm(page.VerticalRulings);
             Table table = bea.Extract(page)[0];
 
-            IReadOnlyList<Cell> cells = table.Cells; //new List<RectangularTextContainer>(table.cells.Values);
+            IReadOnlyList<Cell> cells = table.Cells;
             foreach (var rectangularTextContainer in cells)
             {
                 Debug.Print(rectangularTextContainer.GetText());
             }
+
+            // Now different form tabula-java, since PdfPig 0.1.5-alpha001
 
             //Column headers
             Assert.Equal("Project", cells[0].GetText());
@@ -308,54 +309,51 @@ namespace Tabula.Tests
             Assert.Equal("Pennsylvania State University", cells[5].GetText());
 
             //Second row
-            Assert.Equal("Public information and deliberation in nanoscience and", cells[6].GetText());
-            Assert.Equal("North Carolina State", cells[7].GetText());
-            Assert.Equal("Interagency", cells[8].GetText());
-            Assert.Equal("nanotechnology policy (SGER)", cells[9].GetText());
-            Assert.Equal("University", cells[10].GetText());
+            Assert.Equal("Public information and deliberation in nanoscience and\rnanotechnology policy (SGER)", cells[6].GetText());
+            Assert.Equal("Interagency", cells[7].GetText());
+            Assert.Equal("North Carolina State\rUniversity", cells[8].GetText());
 
             //Third row
-            Assert.Equal("Social and ethical research and education in agrifood", cells[11].GetText());
-            Assert.Equal("NSF", cells[12].GetText());
-            Assert.Equal("Michigan State University", cells[13].GetText());
-            Assert.Equal("nanotechnology (NIRT)", cells[14].GetText());
+            Assert.Equal("Social and ethical research and education in agrifood", cells[9].GetText());
+            Assert.Equal("nanotechnology (NIRT)", cells[10].GetText());
+            Assert.Equal("NSF", cells[11].GetText());
+            Assert.Equal("Michigan State University", cells[12].GetText());
 
             //Fourth row
-            Assert.Equal("From laboratory to society: developing an informed", cells[15].GetText());
-            Assert.Equal("NSF", cells[16].GetText());
-            Assert.Equal("University of South Carolina", cells[17].GetText());
-            Assert.Equal("approach to nanoscale science and engineering (NIRT)", cells[18].GetText());
+            Assert.Equal("From laboratory to society: developing an informed", cells[13].GetText());
+            Assert.Equal("approach to nanoscale science and engineering (NIRT)", cells[14].GetText());
+            Assert.Equal("NSF", cells[15].GetText());
+            Assert.Equal("University of South Carolina", cells[16].GetText());
 
             //Fifth row
-            Assert.Equal("Database and innovation timeline for nanotechnology", cells[19].GetText());
-            Assert.Equal("NSF", cells[20].GetText());
-            Assert.Equal("UCLA", cells[21].GetText());
+            Assert.Equal("Database and innovation timeline for nanotechnology", cells[17].GetText());
+            Assert.Equal("NSF", cells[18].GetText());
+            Assert.Equal("UCLA", cells[19].GetText());
 
             //Sixth row
-            Assert.Equal("Social and ethical dimensions of nanotechnology", cells[22].GetText());
-            Assert.Equal("NSF", cells[23].GetText());
-            Assert.Equal("University of Virginia", cells[24].GetText());
+            Assert.Equal("Social and ethical dimensions of nanotechnology", cells[20].GetText());
+            Assert.Equal("NSF", cells[21].GetText());
+            Assert.Equal("University of Virginia", cells[22].GetText());
 
             //Seventh row
-            Assert.Equal("Undergraduate exploration of nanoscience,", cells[25].GetText());
-            Assert.Equal("Michigan Technological", cells[26].GetText());
-            Assert.Equal("NSF", cells[27].GetText());
-            Assert.Equal("applications and societal implications (NUE)", cells[28].GetText());
-            Assert.Equal("University", cells[29].GetText());
+            Assert.Equal("Undergraduate exploration of nanoscience,", cells[23].GetText());
+            Assert.Equal("applications and societal implications (NUE)", cells[24].GetText());
+            Assert.Equal("NSF", cells[25].GetText());
+            Assert.Equal("Michigan Technological\rUniversity", cells[26].GetText());
 
             //Eighth row
-            Assert.Equal("Ethics and belief inside the development of", cells[30].GetText());
-            Assert.Equal("NSF", cells[31].GetText());
-            Assert.Equal("University of Virginia", cells[32].GetText());
-            Assert.Equal("nanotechnology (CAREER)", cells[33].GetText());
+            Assert.Equal("Ethics and belief inside the development of", cells[27].GetText());
+            Assert.Equal("nanotechnology (CAREER)", cells[28].GetText());
+            Assert.Equal("NSF", cells[29].GetText());
+            Assert.Equal("University of Virginia", cells[30].GetText());
 
             //Ninth row
-            Assert.Equal("All centers, NNIN and NCN have a societal", cells[34].GetText());
-            Assert.Equal("NSF, DOE,", cells[35].GetText());
-            Assert.Equal("All nanotechnology centers", cells[36].GetText());
-            Assert.Equal("implications components", cells[37].GetText());
-            Assert.Equal("DOD, and NIH", cells[38].GetText());
-            Assert.Equal("and networks", cells[39].GetText());
+            Assert.Equal("All centers, NNIN and NCN have a societal", cells[31].GetText());
+            Assert.Equal("NSF, DOE,", cells[32].GetText());
+            Assert.Equal("All nanotechnology centers", cells[33].GetText());
+            Assert.Equal("implications components", cells[34].GetText());
+            Assert.Equal("DOD, and NIH", cells[35].GetText());
+            Assert.Equal("and networks", cells[36].GetText());
         }
 
         [Fact]
@@ -388,7 +386,7 @@ namespace Tabula.Tests
         public void TestRealLifeRTL2()
         {
             string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/indictb1h_14.csv");
-            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/indictb1h_14.pdf", 1, new PdfRectangle(120.0, 842 - 622.82, 459.9, 842 - 120.0)); // 205.0f, 120.0f, 622.82f, 459.9f);
+            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/indictb1h_14.pdf", 1, new PdfRectangle(120.0, 842 - 622.82, 459.9, 842 - 120.0));
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.Extract(page)[0];
 
@@ -408,7 +406,7 @@ namespace Tabula.Tests
         [Fact]
         public void TestEmptyRegion()
         {
-            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/indictb1h_14.pdf", 1, new PdfRectangle(0, 700, 100.9, 800));  //0, 0, 80.82f, 100.9f); // an empty area
+            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/indictb1h_14.pdf", 1, new PdfRectangle(0, 700, 100.9, 800));
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.Extract(page)[0];
             Assert.Equal(EXPECTED_EMPTY_TABLE, UtilsForTesting.TableToArrayOfRows(table));
@@ -418,7 +416,7 @@ namespace Tabula.Tests
         public void TestTableWithMultilineHeader()
         {
             string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/us-020.csv");
-            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/us-020.pdf", 2, new PdfRectangle(35.0, 151, 560, 688.5)); //103.0f, 35.0f, 641.0f, 560.0f);
+            PageArea page = UtilsForTesting.GetAreaFromPage("Resources/us-020.pdf", 2, new PdfRectangle(35.0, 151, 560, 688.5));
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
             Table table = bea.Extract(page)[0];
 

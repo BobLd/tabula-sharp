@@ -1,4 +1,6 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -6,13 +8,18 @@ using System.Text;
 
 namespace Tabula.Writers
 {
-    public class CSVWriter : IWriter
+    public class CSVWriter : IWriter, IDisposable
     {
         public readonly string delimiter;
 
         public CSVWriter(string delimiter = ",")
         {
             this.delimiter = delimiter;
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
 
         public void Write(StreamWriter sw, Table table)
@@ -22,24 +29,17 @@ namespace Tabula.Writers
 
         public void Write(StreamWriter sw, IReadOnlyList<Table> tables)
         {
-            var csv = new CsvWriter(sw, CultureInfo.InvariantCulture);
-
-            csv.Configuration.Delimiter = delimiter;
-            csv.Configuration.NewLine = CsvHelper.Configuration.NewLine.CRLF;
+            // the CsvWriter is not disposed here as it would also dispose the StreamWriter
+            var csv = new CsvWriter(sw, new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = delimiter });
 
             foreach (Table table in tables)
             {
                 foreach (var row in table.Rows)
                 {
-                    //List<string> cells = new List<string>(row.Count);
-                    //bool isfirst = true;
                     foreach (RectangularTextContainer tc in row)
                     {
-                        //cells.Add(tc.getText());
-                        csv.WriteField(tc.GetText()); //, (string.IsNullOrEmpty(tc.getText()) && isfirst) || tc.getText().Contains(delimiter));
-                        //isfirst = false;
+                        csv.WriteField(tc.GetText());
                     }
-                    //csv.WriteField(cells);
                     csv.NextRecord();
                 }
             }

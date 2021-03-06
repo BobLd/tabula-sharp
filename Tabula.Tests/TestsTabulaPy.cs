@@ -11,8 +11,6 @@ namespace Tabula.Tests
         [Fact]
         public void Latice1()
         {
-            // tabula.read_pdf(pdf_path, stream=False)
-
             PageArea page = UtilsForTesting.GetPage("Resources/data.pdf", 1);
             // data_lattice.csv was modified to add the last row, missing in tabula_py
             string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/data_lattice.csv");
@@ -28,13 +26,11 @@ namespace Tabula.Tests
             Assert.Equal(expectedCsv, sb.ToString().Replace("\r\n", "\n"));
         }
 
-        [Fact(Skip = "see PdfPig issue #217")]
+        [Fact]
         public void StreamNoGuess1()
         {
-            // tabula.read_pdf(pdf_path, stream=True, guess=False)
-
             PageArea page = UtilsForTesting.GetPage("Resources/data.pdf", 1);
-            // 
+            // data_stream_noguess.csv was modified for decimal precision
             string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/data_stream_noguess.csv");
 
             BasicExtractionAlgorithm se = new BasicExtractionAlgorithm();

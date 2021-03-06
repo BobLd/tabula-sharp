@@ -13,7 +13,7 @@ namespace Tabula.Tests
         [Fact(Skip = "TO DO")]
         public void TestLinesToCells()
         {
-            using (PdfDocument document = PdfDocument.Open(@"test3.pdf", new ParsingOptions() { ClipPaths = true }))
+            using (PdfDocument document = PdfDocument.Open("test3.pdf", new ParsingOptions() { ClipPaths = true }))
             {
                 ObjectExtractor oe = new ObjectExtractor(document);
                 PageArea page = oe.Extract(1);
