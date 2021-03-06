@@ -4,9 +4,9 @@
     <TargetFrameworks>netcoreapp3.1;netstandard2.0;net45;net451;net452;net46;net461;net462;net47</TargetFrameworks>
     <Description>Extract tables from PDF files (port of tabula-java using PdfPig).</Description>
     <PackageProjectUrl>https://github.com/BobLd/tabula-sharp</PackageProjectUrl>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
-    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.1.0</AssemblyVersion>
+    <FileVersion>0.1.1.0</FileVersion>
+    <Version>0.1.1-alpha001</Version>
     <Authors>BobLd</Authors>
     <Company>BobLd</Company>
     <PackageTags>pdf, extract, table, tabula, pdfpig, parse, extraction, export</PackageTags>
