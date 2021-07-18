@@ -16,10 +16,10 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.301
+        dotnet-version: 5.0.302
     - name: Install dependencies
       run: dotnet restore
     - name: Build netcoreapp3.1
-      run: dotnet build --configuration Release --no-restore --framework netcoreapp3.1
+      run: dotnet build --configuration Release --no-restore --framework net5.0
     - name: Test netcoreapp3.1
-      run: dotnet test --no-restore --verbosity minimal --framework netcoreapp3.1
+      run: dotnet test --no-restore --verbosity minimal --framework net5.0
