@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
-    <DocumentationFile>D:\VS2017\source\repos\tabula-sharp\Tabula.Csv\Tabula.Csv.xml</DocumentationFile>
+    <DocumentationFile>C:\Users\Bob\Source\Repos\BobLd\tabula-sharp\Tabula.Csv\Tabula.Csv.xml</DocumentationFile>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
 
