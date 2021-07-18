@@ -10,7 +10,7 @@ Port of [tabula-java](https://github.com/tabulapdf/tabula-java)
 ![Linux](https://github.com/BobLd/tabula-sharp/workflows/Linux/badge.svg)
 ![Mac OS](https://github.com/BobLd/tabula-sharp/workflows/Mac%20OS/badge.svg)
 
-- Supports .NET Core 3.1; .NET Standard 2.0; .NET Framework 4.5, 4.51, 4.52, 4.6, 4.61, 4.62, 4.7
+- Supports .NET 5, .NET Core 3.1, .NET Standard 2.0, .NET Framework 4.5, 4.51, 4.52, 4.6, 4.61, 4.62, 4.7
 - No java bindings
 
 ## Differences with tabula-java
