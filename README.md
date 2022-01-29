@@ -1,10 +1,5 @@
-NuGet packages available on the [releases](https://github.com/BobLd/tabula-sharp/releases) page and on www.nuget.org:
-- [Tabula](https://www.nuget.org/packages/Tabula)
-- [Tabula.Json](https://www.nuget.org/packages/Tabula.Json)
-- [Tabula.Csv](https://www.nuget.org/packages/Tabula.Csv)
-
 # tabula-sharp
-Port of [tabula-java](https://github.com/tabulapdf/tabula-java)
+`tabula-sharp` is a library for extracting tables from PDF files — it is a port of [tabula-java](https://github.com/tabulapdf/tabula-java)
 
 ![Windows](https://github.com/BobLd/tabula-sharp/workflows/Windows/badge.svg)
 ![Linux](https://github.com/BobLd/tabula-sharp/workflows/Linux/badge.svg)
@@ -12,6 +7,11 @@ Port of [tabula-java](https://github.com/tabulapdf/tabula-java)
 
 - Supports .NET 5, .NET Core 3.1, .NET Standard 2.0, .NET Framework 4.5, 4.51, 4.52, 4.6, 4.61, 4.62, 4.7
 - No java bindings
+
+NuGet packages available on the [releases](https://github.com/BobLd/tabula-sharp/releases) page and on www.nuget.org:
+- [Tabula](https://www.nuget.org/packages/Tabula)
+- [Tabula.Json](https://www.nuget.org/packages/Tabula.Json)
+- [Tabula.Csv](https://www.nuget.org/packages/Tabula.Csv)
 
 ## Differences with tabula-java
 - Uses [PdfPig](https://github.com/UglyToad/PdfPig), and not PdfBox.
