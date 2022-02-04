@@ -9,12 +9,17 @@
     <PackageTags>pdf, extract, table, tabula, pdfpig, parse, extraction, csv, tsv, excel, export</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/BobLd/tabula-sharp</RepositoryUrl>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
-    <DocumentationFile>C:\Users\Bob\Source\Repos\BobLd\tabula-sharp\Tabula.Csv\Tabula.Csv.xml</DocumentationFile>
-    <WarningLevel>3</WarningLevel>
-  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.2.1" />
