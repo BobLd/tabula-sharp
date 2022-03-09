@@ -1,29 +1,85 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;netstandard2.0;net452;net46;net461;net462;net47;net5.0;net6.0</TargetFrameworks>
-    <Description>Extract tables from PDF files (port of tabula-java using PdfPig).</Description>
-    <PackageProjectUrl>https://github.com/BobLd/tabula-sharp</PackageProjectUrl>
-    <Version>0.1.2</Version>
-    <Authors>BobLd</Authors>
-    <Company>BobLd</Company>
-    <PackageTags>pdf, extract, table, tabula, pdfpig, parse, extraction, export</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/BobLd/tabula-sharp</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netcoreapp3.1;netstandard2.0;net452;net46;net461;net462;net47;net5.0;net6.0</TargetFrameworks>
+		<Description>Extract tables from PDF files (port of tabula-java using PdfPig).</Description>
+		<PackageProjectUrl>https://github.com/BobLd/tabula-sharp</PackageProjectUrl>
+		<Version>0.1.2</Version>
+		<Authors>BobLd</Authors>
+		<Company>BobLd</Company>
+		<PackageTags>pdf, extract, table, tabula, pdfpig, parse, extraction, export</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/BobLd/tabula-sharp</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="RectangleSpatialIndex.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="PdfPig" Version="0.1.5" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="PdfPig" Version="0.1.5" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<PackageReference Include="NetTopologySuite">
+			<Version>2.4.0</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="NetTopologySuite">
+			<Version>2.4.0</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+		<Compile Include="RectangleSpatialIndex.cs" />
+		<Compile Remove="RectangleSpatialIndex.Str.cs" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net46'">
+		<Compile Include="RectangleSpatialIndex.cs" />
+		<Compile Remove="RectangleSpatialIndex.Str.cs" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+		<PackageReference Include="NetTopologySuite">
+			<Version>2.4.0</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+		<PackageReference Include="NetTopologySuite">
+			<Version>2.4.0</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net47'">
+		<PackageReference Include="NetTopologySuite">
+			<Version>2.4.0</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<PackageReference Include="NetTopologySuite">
+			<Version>2.4.0</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="NetTopologySuite">
+			<Version>2.4.0</Version>
+		</PackageReference>
+	</ItemGroup>
 
 </Project>
