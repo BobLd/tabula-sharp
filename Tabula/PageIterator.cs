@@ -1,26 +1,29 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UglyToad.PdfPig;
 
 namespace Tabula
 {
     // ported from tabula-java/blob/master/src/main/java/technology/tabula/PageIterator.java
+
     /// <summary>
     /// A tabula page iterator.
     /// </summary>
-    public class PageIterator : IEnumerator<PageArea>
+    public sealed class PageIterator : IEnumerator<PageArea>
     {
-        private ObjectExtractor oe;
-        private IEnumerator<int> pageIndexIterator;
+        //private readonly ObjectExtractor oe;
+        private readonly IEnumerator<int> pageIndexIterator;
+        private readonly PdfDocument pdfDocument;
 
         /// <summary>
         /// Create a tabula page iterator.
         /// </summary>
-        /// <param name="oe"></param>
+        /// <param name="pdfDocument"></param>
         /// <param name="pages"></param>
-        public PageIterator(ObjectExtractor oe, IEnumerable<int> pages) : base()
+        public PageIterator(PdfDocument pdfDocument, IEnumerable<int> pages) : base()
         {
-            this.oe = oe;
+            this.pdfDocument = pdfDocument;
             this.pageIndexIterator = pages.GetEnumerator();
         }
 
@@ -31,7 +34,7 @@ namespace Tabula
             {
                 try
                 {
-                    return oe.ExtractPage(pageIndexIterator.Current);
+                    return ObjectExtractor.ExtractPage(this.pdfDocument, pageIndexIterator.Current);
                 }
                 catch (Exception ex)
                 {
@@ -61,7 +64,6 @@ namespace Tabula
         /// <inheritdoc/>
         public void Dispose()
         {
-            this.oe.Close();
             this.pageIndexIterator.Dispose();
         }
 

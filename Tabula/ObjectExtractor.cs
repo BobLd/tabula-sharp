@@ -14,24 +14,13 @@ namespace Tabula
     /// <summary>
     /// Tabula object extractor.
     /// </summary>
-    public class ObjectExtractor
+    public static class ObjectExtractor
     {
         private const int rounding = 6;
 
-        private PdfDocument pdfDocument;
-
         private const float RULING_MINIMUM_LENGTH = 0.01f;
 
-        /// <summary>
-        /// Create a Tabula object extractor.
-        /// </summary>
-        /// <param name="pdfDocument"></param>
-        public ObjectExtractor(PdfDocument pdfDocument)
-        {
-            this.pdfDocument = pdfDocument;
-        }
-
-        private class PointComparer : IComparer<PdfPoint>
+        private sealed class PointComparer : IComparer<PdfPoint>
         {
             public int Compare(PdfPoint o1, PdfPoint o2)
             {
@@ -52,7 +41,7 @@ namespace Tabula
             }
         }
 
-        private PdfPoint RoundPdfPoint(PdfPoint pdfPoint, int decimalPlace)
+        private static PdfPoint RoundPdfPoint(PdfPoint pdfPoint, int decimalPlace)
         {
             return new PdfPoint(Utils.Round(pdfPoint.X, decimalPlace), Utils.Round(pdfPoint.Y, decimalPlace));
         }
@@ -60,15 +49,25 @@ namespace Tabula
         /// <summary>
         /// Extract the <see cref="PageArea"/>, with its text elements (letters) and rulings (processed PdfPath and PdfSubpath).
         /// </summary>
+        /// <param name="pdfDocument">The pdf document/param>
         /// <param name="pageNumber">The page number to extract.</param>
-        public PageArea ExtractPage(int pageNumber)
+        public static PageArea ExtractPage(PdfDocument pdfDocument, int pageNumber)
         {
-            if (pageNumber > this.pdfDocument.NumberOfPages || pageNumber < 1)
+            if (pageNumber > pdfDocument.NumberOfPages || pageNumber < 1)
             {
                 throw new IndexOutOfRangeException("Page number does not exist");
             }
 
-            Page p = this.pdfDocument.GetPage(pageNumber);
+            Page p = pdfDocument.GetPage(pageNumber);
+            return ExtractPage(p);
+        }
+
+        /// <summary>
+        /// Extract the <see cref="PageArea"/>, with its text elements (letters) and rulings (processed PdfPath and PdfSubpath).
+        /// </summary>
+        public static PageArea ExtractPage(Page page)
+        {
+            PointComparer pc = new PointComparer();
 
             /**************** ObjectExtractorStreamEngine(PDPage page)*******************/
             // Replaces:
@@ -76,7 +75,7 @@ namespace Tabula
             // se.processPage(p);
             var rulings = new List<Ruling>();
 
-            foreach (var path in p.ExperimentalAccess.Paths)
+            foreach (var path in page.ExperimentalAccess.Paths)
             {
                 if (!path.IsFilled && !path.IsStroked) continue; // strokeOrFillPath operator => filter stroke and filled
 
@@ -101,7 +100,6 @@ namespace Tabula
                     PdfPoint? last_move = start_pos;
                     PdfPoint? end_pos = null;
                     PdfLine line;
-                    PointComparer pc = new PointComparer();
 
                     foreach (var command in subpath.Commands)
                     {
@@ -142,7 +140,7 @@ namespace Tabula
                             line = pc.Compare(end_pos.Value, last_move.Value) == -1 ? new PdfLine(end_pos.Value, last_move.Value) : new PdfLine(last_move.Value, end_pos.Value);
 
                             // already clipped
-                            Ruling r = new Ruling(line.Point1, line.Point2); //.intersect(this.currentClippingPath());
+                            Ruling r = new Ruling(line.Point1, line.Point2);
                             if (r.Length > 0.01)
                             {
                                 rulings.Add(r);
@@ -154,54 +152,44 @@ namespace Tabula
             }
             /****************************************************************************/
 
-            TextStripper pdfTextStripper = new TextStripper(this.pdfDocument, pageNumber);
-            pdfTextStripper.Process();
-            Utils.Sort(pdfTextStripper.textElements, new TableRectangle.ILL_DEFINED_ORDER());
+            TextStripperResult textStripperResult = TextStripper.Process(page);
+            Utils.Sort(textStripperResult.TextElements, new TableRectangle.ILL_DEFINED_ORDER());
 
-            return new PageArea(p.CropBox.Bounds,
-                p.Rotation.Value,
-                pageNumber,
-                p,
-                this.pdfDocument,
-                pdfTextStripper.textElements,
+            return new PageArea(page.CropBox.Bounds,
+                page.Rotation.Value,
+                page.Number,
+                page,
+                textStripperResult.TextElements,
                 rulings,
-                pdfTextStripper.minCharWidth,
-                pdfTextStripper.minCharHeight,
-                pdfTextStripper.spatialIndex);
+                textStripperResult.MinCharWidth,
+                textStripperResult.MinCharHeight,
+                textStripperResult.SpatialIndex);
         }
 
         /// <summary>
         /// Enumerate and extract over the given pages.
         /// </summary>
         /// <param name="pages"></param>
-        public PageIterator Extract(IEnumerable<int> pages)
+        public static PageIterator Extract(PdfDocument pdfDocument, IEnumerable<int> pages)
         {
-            return new PageIterator(this, pages);
+            return new PageIterator(pdfDocument, pages);
         }
 
         /// <summary>
         /// Enumerate and extract over all the pages.
         /// </summary>
-        public PageIterator Extract()
+        public static PageIterator Extract(PdfDocument pdfDocument)
         {
-            return Extract(Utils.Range(1, this.pdfDocument.NumberOfPages + 1));
+            return Extract(pdfDocument, Utils.Range(1, pdfDocument.NumberOfPages + 1));
         }
 
         /// <summary>
         /// Extract the <see cref="PageArea"/>, with its text elements (letters) and rulings (processed PdfPath and PdfSubpath).
         /// </summary>
         /// <param name="pageNumber">The page number to extract.</param>
-        public PageArea Extract(int pageNumber)
+        public static PageArea Extract(PdfDocument pdfDocument, int pageNumber)
         {
-            return Extract(Utils.Range(pageNumber, pageNumber + 1)).Next();
-        }
-
-        /// <summary>
-        /// Close the ObjectExtractor.
-        /// </summary>
-        public void Close()
-        {
-            this.pdfDocument.Dispose();
+            return Extract(pdfDocument, Utils.Range(pageNumber, pageNumber + 1)).Next();
         }
     }
 }

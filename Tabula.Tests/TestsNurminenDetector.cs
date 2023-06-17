@@ -15,8 +15,7 @@ namespace Tabula.Tests
         {
             using (PdfDocument document = PdfDocument.Open("test3.pdf", new ParsingOptions() { ClipPaths = true }))
             {
-                ObjectExtractor oe = new ObjectExtractor(document);
-                PageArea page = oe.Extract(1);
+                PageArea page = ObjectExtractor.Extract(document, 1);
 
                 SimpleNurminenDetectionAlgorithm detector = new SimpleNurminenDetectionAlgorithm();
                 var regions = detector.Detect(page);
@@ -25,7 +24,7 @@ namespace Tabula.Tests
                 {
                     IExtractionAlgorithm ea = new BasicExtractionAlgorithm();
                     var newArea = page.GetArea(a.BoundingBox);
-                    List<Table> tables = ea.Extract(newArea);
+                    IReadOnlyList<Table> tables = ea.Extract(newArea);
                 }
             }
         }

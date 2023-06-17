@@ -24,20 +24,9 @@ namespace Tabula.Tests
 
         public static PageArea GetPage(string path, int pageNumber)
         {
-            ObjectExtractor oe = null;
-            try
+            using (PdfDocument document = PdfDocument.Open(path, new ParsingOptions() { ClipPaths = true }))
             {
-                PageArea page;
-                using (PdfDocument document = PdfDocument.Open(path, new ParsingOptions() { ClipPaths = true }))
-                {
-                    oe = new ObjectExtractor(document);
-                    page = oe.Extract(pageNumber);
-                }
-                return page;
-            }
-            finally
-            {
-                oe?.Close();
+                return ObjectExtractor.Extract(document, pageNumber);
             }
         }
 

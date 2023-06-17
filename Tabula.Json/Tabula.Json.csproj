@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;netstandard2.0;net452;net46;net461;net462;net47;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.0;net452;net46;net461;net462;net47;net6.0</TargetFrameworks>
     <Description>Extract tables from PDF files (port of tabula-java using PdfPig). Json writer.</Description>
     <PackageProjectUrl>https://github.com/BobLd/tabula-sharp</PackageProjectUrl>
-    <Version>0.1.3</Version>
+    <Version>0.1.4-alpha001</Version>
     <Company>BobLd</Company>
     <Authors>BobLd</Authors>
     <PackageTags>pdf, extract, table, tabula, pdfpig, parse, extraction, json, export</PackageTags>
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,7 +12,7 @@ namespace Tabula
     /// <summary>
     /// A tabula, text element. Equivalent to a letter.
     /// </summary>
-    public class TextElement : TableRectangle, IHasText
+    public sealed class TextElement : TableRectangle, IHasText
     {
         internal Letter letter;
 

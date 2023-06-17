@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UglyToad.PdfPig;
-using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 
 namespace Tabula
@@ -29,7 +27,8 @@ namespace Tabula
             return Overlap(y1, height1, y2, height2, 0.1f);
         }
 
-        private static float EPSILON = 0.01f;
+        private const float EPSILON = 0.01f;
+
         public static bool Feq(double f1, double f2)
         {
             return Math.Abs(f1 - f2) < EPSILON;
@@ -184,7 +183,7 @@ namespace Tabula
             return rv;
         }
 
-        private class PointXComparer : IComparer<PdfPoint>
+        private sealed class PointXComparer : IComparer<PdfPoint>
         {
             public int Compare(PdfPoint arg0, PdfPoint arg1)
             {
@@ -192,7 +191,7 @@ namespace Tabula
             }
         }
 
-        private class PointYComparer : IComparer<PdfPoint>
+        private sealed class PointYComparer : IComparer<PdfPoint>
         {
             public int Compare(PdfPoint arg0, PdfPoint arg1)
             {
@@ -300,6 +299,7 @@ namespace Tabula
             }
         }
 
+        /*
         /// <summary>
         /// Not Implemented.
         /// </summary>
@@ -308,15 +308,13 @@ namespace Tabula
         public static object PageConvertToImage(Page page, int dpi) //, ImageType imageType) // BufferedImage
         {
             throw new NotImplementedException();
-            /*
-            using (PdfDocument document = new PdfDocument())
-            {
-                document.addPage(page);
-                PDFRenderer renderer = new PDFRenderer(document);
-                document.close();
-                return renderer.renderImageWithDPI(0, dpi, imageType);
-            }
-            */
+            //using (PdfDocument document = new PdfDocument())
+            //{
+            //    document.addPage(page);
+            //    PDFRenderer renderer = new PDFRenderer(document);
+            //    document.close();
+            //    return renderer.renderImageWithDPI(0, dpi, imageType);
+            //}
         }
 
         /// <summary>
@@ -331,6 +329,7 @@ namespace Tabula
             //PDFRenderer renderer = new PDFRenderer(doc);
             //return renderer.renderImageWithDPI(doc.getPages().indexOf(page), dpi, imageType);
         }
+        */
 
         /// <summary>
         /// 

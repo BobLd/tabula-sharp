@@ -212,7 +212,7 @@ namespace Tabula.Tests
             PageArea page = UtilsForTesting.GetPage("Resources/spanning_cells.pdf", 1);
             string expectedJson = UtilsForTesting.LoadJson("Resources/json/spanning_cells.json");
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = se.Extract(page);
+            IReadOnlyList<Table> tables = se.Extract(page);
             Assert.Equal(2, tables.Count);
 
             var expectedJObject = (JArray)JsonConvert.DeserializeObject(expectedJson);
@@ -268,7 +268,7 @@ namespace Tabula.Tests
             PageArea page = UtilsForTesting.GetPage("Resources/spanning_cells.pdf", 1);
             string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/spanning_cells.csv");
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = se.Extract(page);
+            IReadOnlyList<Table> tables = se.Extract(page);
             Assert.Equal(2, tables.Count);
 
             StringBuilder sb = new StringBuilder();
@@ -281,7 +281,7 @@ namespace Tabula.Tests
         {
             PageArea page = UtilsForTesting.GetPage("Resources/china.pdf", 1);
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = se.Extract(page);
+            IReadOnlyList<Table> tables = se.Extract(page);
             Assert.Equal(2, tables.Count);
         }
 
@@ -290,7 +290,7 @@ namespace Tabula.Tests
         {
             PageArea page = UtilsForTesting.GetPage("Resources/us-017.pdf", 2);
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = se.Extract(page);
+            IReadOnlyList<Table> tables = se.Extract(page);
 
             string expected = "Project,Agency,Institution\r\nNanotechnology and its publics,NSF,Pennsylvania State University\r\n\"Public information and deliberation in nanoscience and\rnanotechnology policy (SGER)\",Interagency,\"North Carolina State\rUniversity\"\r\n\"Social and ethical research and education in agrifood\rnanotechnology (NIRT)\",NSF,Michigan State University\r\n\"From laboratory to society: developing an informed\rapproach to nanoscale science and engineering (NIRT)\",NSF,University of South Carolina\r\nDatabase and innovation timeline for nanotechnology,NSF,UCLA\r\nSocial and ethical dimensions of nanotechnology,NSF,University of Virginia\r\n\"Undergraduate exploration of nanoscience,\rapplications and societal implications (NUE)\",NSF,\"Michigan Technological\rUniversity\"\r\n\"Ethics and belief inside the development of\rnanotechnology (CAREER)\",NSF,University of Virginia\r\n\"All centers, NNIN and NCN have a societal\rimplications components\",\"NSF, DOE,\rDOD, and NIH\",\"All nanotechnology centers\rand networks\""; // \r\n
 
@@ -325,7 +325,7 @@ namespace Tabula.Tests
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
             bool isTabular = se.IsTabular(page);
             Assert.True(isTabular);
-            List<Table> tables = se.Extract(page);
+            IReadOnlyList<Table> tables = se.Extract(page);
 
             StringBuilder sb = new StringBuilder();
             (new CSVWriter()).Write(sb, tables[0]);
@@ -337,7 +337,7 @@ namespace Tabula.Tests
         {
             PageArea page = UtilsForTesting.GetAreaFromPage("Resources/puertos1.pdf", 1, new PdfRectangle(30.32142857142857, 793 - 554.8821428571429, 546.7964285714286, 793 - 273.9035714285714)); // 273.9035714285714f, 30.32142857142857f, 554.8821428571429f, 546.7964285714286f);
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = se.Extract(page);
+            IReadOnlyList<Table> tables = se.Extract(page);
             Table table = tables[0];
             Assert.Equal(15, table.Rows.Count);
 
@@ -417,7 +417,7 @@ namespace Tabula.Tests
         {
             PageArea page = UtilsForTesting.GetAreaFromPage("Resources/offense.pdf", 1, new PdfRectangle(16.44, 792 - 680.85, 597.84, 792 - 16.44)); // 68.08f, 16.44f, 680.85f, 597.84f);
             SpreadsheetExtractionAlgorithm bea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = bea.Extract(page);
+            IReadOnlyList<Table> tables = bea.Extract(page);
             Assert.Single(tables);
         }
 
@@ -426,7 +426,7 @@ namespace Tabula.Tests
         {
             PageArea page = UtilsForTesting.GetPage("Resources/us-007.pdf", 1);
             SpreadsheetExtractionAlgorithm bea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = bea.Extract(page, EXTERNALLY_DEFINED_RULINGS.ToList());
+            IReadOnlyList<Table> tables = bea.Extract(page, EXTERNALLY_DEFINED_RULINGS.ToList());
             Assert.Single(tables);
             Table table = tables[0];
             Assert.Equal(18, table.Cells.Count);
@@ -458,7 +458,7 @@ namespace Tabula.Tests
         {
             PageArea page = UtilsForTesting.GetPage("Resources/us-024.pdf", 1);
             SpreadsheetExtractionAlgorithm bea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = bea.Extract(page, EXTERNALLY_DEFINED_RULINGS2.ToList());
+            IReadOnlyList<Table> tables = bea.Extract(page, EXTERNALLY_DEFINED_RULINGS2.ToList());
             Assert.Single(tables);
             Table table = tables[0];
 
@@ -472,7 +472,7 @@ namespace Tabula.Tests
             PageArea page = UtilsForTesting.GetPage("Resources/sydney_disclosure_contract.pdf", 1);
 
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = sea.Extract(page);
+            IReadOnlyList<Table> tables = sea.Extract(page);
             for (int i = 1; i < tables.Count; i++)
             {
                 Assert.True(tables[i - 1].Top >= tables[i].Top); // Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
@@ -485,7 +485,7 @@ namespace Tabula.Tests
             PageArea page = UtilsForTesting.GetPage("Resources/failing_sort.pdf", 1);
 
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = sea.Extract(page);
+            IReadOnlyList<Table> tables = sea.Extract(page);
             for (int i = 1; i < tables.Count; i++)
             {
                 Assert.True(tables[i - 1].Top >= tables[i].Top); //Assert.True(tables[i - 1].getTop() <= tables[i].getTop());
@@ -497,7 +497,7 @@ namespace Tabula.Tests
         {
             PageArea page = UtilsForTesting.GetPage("Resources/arabic.pdf", 1);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = sea.Extract(page);
+            IReadOnlyList<Table> tables = sea.Extract(page);
             // Assert.Equal(1, tables.size());
             Table table = tables[0];
 
@@ -528,7 +528,7 @@ namespace Tabula.Tests
         {
             PageArea page = UtilsForTesting.GetPage("Resources/mednine.pdf", 1);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = sea.Extract(page);
+            IReadOnlyList<Table> tables = sea.Extract(page);
             Assert.Single(tables);
             Table table = tables[0];
             var rows = table.Rows;
@@ -580,7 +580,7 @@ namespace Tabula.Tests
             string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/Publication_of_award_of_Bids_for_Transport_Sector__August_2016.csv");
 
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
-            List<Table> tables = sea.Extract(page);
+            IReadOnlyList<Table> tables = sea.Extract(page);
             Assert.Single(tables);
             Table table = tables[0];
 

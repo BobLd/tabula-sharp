@@ -17,7 +17,7 @@ namespace Tabula.Tests
 
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
 
-            List<Table> tables = se.Extract(page);
+            IReadOnlyList<Table> tables = se.Extract(page);
 
             Assert.Single(tables);
 
@@ -35,7 +35,7 @@ namespace Tabula.Tests
 
             BasicExtractionAlgorithm se = new BasicExtractionAlgorithm();
 
-            List<Table> tables = se.Extract(page);
+            IReadOnlyList<Table> tables = se.Extract(page);
 
             StringBuilder sb = new StringBuilder();
             (new CSVWriter()).Write(sb, tables[0]);

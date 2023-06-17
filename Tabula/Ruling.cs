@@ -1,7 +1,7 @@
-﻿using ClipperLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using ClipperLib;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.DocumentLayoutAnalysis;
 using UglyToad.PdfPig.Geometry;
@@ -9,10 +9,10 @@ using UglyToad.PdfPig.Geometry;
 namespace Tabula
 {
     //ported from tabula-java/blob/master/src/main/java/technology/tabula/Ruling.java
-    public class Ruling
+    public sealed class Ruling
     {
-        private static int PERPENDICULAR_PIXEL_EXPAND_AMOUNT = 2;
-        private static int COLINEAR_OR_PARALLEL_PIXEL_EXPAND_AMOUNT = 1;
+        private const int PERPENDICULAR_PIXEL_EXPAND_AMOUNT = 2;
+        private const int COLINEAR_OR_PARALLEL_PIXEL_EXPAND_AMOUNT = 1;
         private enum SOType { VERTICAL, HRIGHT, HLEFT }
 
         public PdfLine Line { get; private set; }
@@ -138,7 +138,7 @@ namespace Tabula
                     throw new InvalidOperationException();
                 }
 
-                return this.IsVertical ? this.Left : this.Bottom; //this.getTop();
+                return this.IsVertical ? this.Left : this.Bottom;
             }
         }
 
@@ -177,7 +177,7 @@ namespace Tabula
                     throw new InvalidOperationException();
                 }
 
-                return this.IsVertical ? this.Top : this.Right; //this.getLeft();
+                return this.IsVertical ? this.Top : this.Right;
             }
         }
 
@@ -198,7 +198,7 @@ namespace Tabula
             }
             else
             {
-                this.SetRight(v); //this.setLeft(v);
+                this.SetRight(v);
             }
         }
 
@@ -214,7 +214,7 @@ namespace Tabula
                     throw new InvalidOperationException();
                 }
 
-                return this.IsVertical ? this.Bottom : this.Left; //this.getRight();
+                return this.IsVertical ? this.Bottom : this.Left;
             }
         }
 
@@ -235,7 +235,7 @@ namespace Tabula
             }
             else
             {
-                this.SetLeft(v); //this.setRight(v);
+                this.SetLeft(v);
             }
         }
 
@@ -253,8 +253,8 @@ namespace Tabula
             }
             else
             {
-                this.SetRight(start);//this.setLeft(start);
-                this.SetLeft(end);//this.setRight(end);
+                this.SetRight(start);
+                this.SetLeft(end);
             }
         }
 
@@ -262,8 +262,6 @@ namespace Tabula
         /// Perpendicular?
         /// <para>Confusing function: only checks if (this.IsVertical == other.IsHorizontal)</para>
         /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
         public bool IsPerpendicularTo(Ruling other)
         {
             return this.IsVertical == other.IsHorizontal;
@@ -286,8 +284,6 @@ namespace Tabula
         /// A total expansion amount of 2 is empirically verified to work sometimes. It's not a magic number from any
         /// source other than a little bit of experience.)
         /// </summary>
-        /// <param name="another"></param>
-        /// <returns></returns>
         public bool NearlyIntersects(Ruling another)
         {
             return this.NearlyIntersects(another, COLINEAR_OR_PARALLEL_PIXEL_EXPAND_AMOUNT);
@@ -316,9 +312,9 @@ namespace Tabula
 
         public Ruling Expand(double amount)
         {
-            Ruling r = this.Clone(); //.MemberwiseClone(); //??? .clone();
-            r.SetStart(this.Start + amount); //- amount);
-            r.SetEnd(this.End - amount); //+ amount);
+            Ruling r = this.Clone();
+            r.SetStart(this.Start + amount);
+            r.SetEnd(this.End - amount);
             return r;
         }
 
@@ -350,6 +346,7 @@ namespace Tabula
             return new PdfPoint(vertical.Left, horizontal.Top);
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object other)
         {
             if (other is Ruling o)
@@ -359,6 +356,7 @@ namespace Tabula
             return false;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return Line.GetHashCode();
@@ -432,6 +430,7 @@ namespace Tabula
             return Distances.BoundAngle0to360(Distances.Angle(this.P1, this.P2));
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return $"{this.GetType()}[x1={this.X1:0.00},y1={this.Y1:0.00},x2={this.X2:0.00},y2={this.Y2:0.00}]";
@@ -490,7 +489,7 @@ namespace Tabula
             //return rv;
         }
 
-        private class TreeMapRulingComparer : IComparer<Ruling>
+        private sealed class TreeMapRulingComparer : IComparer<Ruling>
         {
             public int Compare(Ruling o1, Ruling o2)
             {
@@ -498,19 +497,19 @@ namespace Tabula
             }
         }
 
-        private class TreeMapPdfPointComparer : IComparer<PdfPoint>
+        private sealed class TreeMapPdfPointComparer : IComparer<PdfPoint>
         {
             public int Compare(PdfPoint o1, PdfPoint o2)
             {
-                if (o1.Y < o2.Y) return 1;  // (o1.Y > o2.Y)
-                if (o1.Y > o2.Y) return -1; // (o1.Y < o2.Y)
+                if (o1.Y < o2.Y) return 1;
+                if (o1.Y > o2.Y) return -1;
                 if (o1.X > o2.X) return 1;
                 if (o1.X < o2.X) return -1;
                 return 0;
             }
         }
 
-        private class SortObjectComparer : IComparer<SortObject>
+        private sealed class SortObjectComparer : IComparer<SortObject>
         {
             public int Compare(SortObject a, SortObject b)
             {
@@ -546,7 +545,7 @@ namespace Tabula
             }
         }
 
-        private class SortObject
+        private sealed class SortObject
         {
             internal SOType type;      //protected
             internal double position;  //protected
@@ -622,7 +621,7 @@ namespace Tabula
             return CollapseOrientedRulings(lines, COLINEAR_OR_PARALLEL_PIXEL_EXPAND_AMOUNT);
         }
 
-        private class RulingComparer : IComparer<Ruling>
+        private sealed class RulingComparer : IComparer<Ruling>
         {
             public int Compare(Ruling a, Ruling b)
             {
@@ -634,8 +633,6 @@ namespace Tabula
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="lines"></param>
-        /// <param name="expandAmount"></param>
         public static List<Ruling> CollapseOrientedRulings(List<Ruling> lines, int expandAmount)
         {
             List<Ruling> rv = new List<Ruling>();
@@ -717,8 +714,6 @@ namespace Tabula
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="rectangle"></param>
-        /// <returns></returns>
         public bool Intersects(TableRectangle rectangle)
         {
             // should be the same???

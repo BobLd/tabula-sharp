@@ -7,7 +7,7 @@ using UglyToad.PdfPig.Core;
 namespace Tabula
 {
     // ported from tabula-java/blob/master/src/main/java/technology/tabula/TextChunk.java
-    public class TextChunk : RectangularTextContainer<TextElement>, IHasText
+    public sealed class TextChunk : RectangularTextContainer<TextElement>, IHasText
     {
         /// <summary>
         /// An empty text chunk.

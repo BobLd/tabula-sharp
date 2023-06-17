@@ -6,12 +6,13 @@ using UglyToad.PdfPig.Core;
 namespace Tabula
 {
     // ported from tabula-java/blob/master/src/main/java/technology/tabula/TableWithRulingLines.java
+
     /// <summary>
     /// A tabula table with ruling lines.
     /// </summary>
-    public class TableWithRulingLines : Table
+    public sealed class TableWithRulingLines : Table
     {
-        private class CellComparer : IComparer<Cell>
+        private sealed class CellComparer : IComparer<Cell>
         {
             public int Compare(Cell arg0, Cell arg1)
             {

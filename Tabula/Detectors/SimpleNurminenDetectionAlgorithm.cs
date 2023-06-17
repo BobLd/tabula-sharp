@@ -32,7 +32,7 @@ namespace Tabula.Detectors
         /// <summary>
         /// Helper class that encapsulates a text edge
         /// </summary>
-        private class TextEdge
+        private sealed class TextEdge
         {
             public PdfLine Line;
 
@@ -59,7 +59,7 @@ namespace Tabula.Detectors
         /// <summary>
         /// Helper container for all text edges on a page
         /// </summary>
-        private class TextEdges : List<List<TextEdge>>
+        private sealed class TextEdges : List<List<TextEdge>>
         {
             public TextEdges(List<TextEdge> leftEdges, List<TextEdge> midEdges, List<TextEdge> rightEdges) : base(3)
             {
@@ -72,7 +72,7 @@ namespace Tabula.Detectors
         /// <summary>
         /// Helper container for relevant text edge info
         /// </summary>
-        private class RelevantEdges
+        private sealed class RelevantEdges
         {
             public int edgeType;
             public int edgeCount;
@@ -95,7 +95,7 @@ namespace Tabula.Detectors
         /// Detects the tables in the page.
         /// </summary>
         /// <param name="page"></param>
-        public List<TableRectangle> Detect(PageArea page)
+        public IReadOnlyList<TableRectangle> Detect(PageArea page)
         {
             // get horizontal & vertical lines
             // we get these from an image of the PDF and not the PDF itself because sometimes there are invisible PDF
@@ -285,7 +285,7 @@ namespace Tabula.Detectors
             } while (foundTable);
 
             // create a set of our current tables that will eliminate duplicate tables
-            SortedSet<TableRectangle> tableSet = new SortedSet<TableRectangle>(new TreeSetComparer()); //Set<Rectangle> tableSet = new TreeSet<>(new Comparator<Rectangle>() {...
+            SortedSet<TableRectangle> tableSet = new SortedSet<TableRectangle>(new TreeSetComparer());
             foreach (var table in tableAreas.OrderByDescending(t => t.Area))
             {
                 tableSet.Add(table);
@@ -294,7 +294,7 @@ namespace Tabula.Detectors
             return tableSet.ToList();
         }
 
-        private class TreeSetComparer : IComparer<TableRectangle>
+        private sealed class TreeSetComparer : IComparer<TableRectangle>
         {
             public int Compare(TableRectangle o1, TableRectangle o2)
             {

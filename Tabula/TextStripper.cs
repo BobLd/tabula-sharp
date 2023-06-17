@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.DocumentLayoutAnalysis;
@@ -10,40 +9,24 @@ using UglyToad.PdfPig.Util;
 namespace Tabula
 {
     // ported from tabula-java/blob/master/src/main/java/technology/tabula/TextStripper.java
-    public class TextStripper
+
+    public sealed class TextStripper
     {
-        private static readonly string NBSP = "\u00A0";
+        private const string NBSP = "\u00A0";
         private static float AVG_HEIGHT_MULT_THRESHOLD = 6.0f;
-
-        public List<TextElement> textElements;
-        public double minCharWidth = double.MaxValue;
-        public double minCharHeight = double.MaxValue;
-        public RectangleSpatialIndex<TextElement> spatialIndex;
-        public int pageNumber;
-
-        private PdfDocument document;
-        private double totalHeight;
-        private int countHeight;
-
-        /// <summary>
-        /// Create a TextStripper for the given page.
-        /// </summary>
-        /// <param name="document"></param>
-        /// <param name="pageNumber"></param>
-        public TextStripper(PdfDocument document, int pageNumber)
-        {
-            this.document = document;
-            this.pageNumber = pageNumber;
-        }
 
         /// <summary>
         /// Process the page.
         /// </summary>
-        public void Process()
+        public static TextStripperResult Process(Page page)
         {
-            var page = document.GetPage(pageNumber);
-            textElements = new List<TextElement>();
-            spatialIndex = new RectangleSpatialIndex<TextElement>();
+            double totalHeight = 0;
+            int countHeight = 0;
+            double minCharWidth = double.MaxValue;
+            double minCharHeight = double.MaxValue;
+
+            var textElements = new List<TextElement>();
+            var spatialIndex = new RectangleSpatialIndex<TextElement>();
 
             foreach (var letter in page.Letters)
             {
@@ -57,15 +40,15 @@ namespace Tabula
                     c = " "; // replace non-breaking space for space
                 }
 
-                double wos = GetExpectedWhitespaceSize(letter); //textPosition.getWidthOfSpace();
+                double wos = GetExpectedWhitespaceSize(letter);
 
                 TextElement te = new TextElement(GetBbox(letter), letter.Font, letter.PointSize, c, wos, letter.GlyphRectangle.Rotation)
                 {
                     letter = letter
                 };
 
-                if (!string.IsNullOrWhiteSpace(c)) this.minCharWidth = Math.Min(this.minCharWidth, te.Width);
-                if (!string.IsNullOrWhiteSpace(c)) this.minCharHeight = Math.Min(this.minCharHeight, Math.Max(te.Height, 1)); // added by bobld: min height value to 1
+                if (!string.IsNullOrWhiteSpace(c)) minCharWidth = Math.Min(minCharWidth, te.Width);
+                if (!string.IsNullOrWhiteSpace(c)) minCharHeight = Math.Min(minCharHeight, Math.Max(te.Height, 1)); // added by bobld: min height value to 1
 
                 countHeight++;
                 totalHeight += Math.Max(te.Height, 1); // added by bobld: min height value to 1
@@ -79,9 +62,11 @@ namespace Tabula
                 textElements.Add(te);
                 spatialIndex.Add(te);
             }
+
+            return new TextStripperResult(minCharWidth, minCharHeight, textElements, spatialIndex);
         }
 
-        private bool IsPrintable(string s)
+        private static bool IsPrintable(string s)
         {
             char c;
             bool printable = false;
@@ -93,7 +78,7 @@ namespace Tabula
             return printable;
         }
 
-        private bool IsSpecial(char c)
+        private static bool IsSpecial(char c)
         {
 #if NETCOREAPP3_1
             return c >= System.Text.Unicode.UnicodeRanges.Specials.FirstCodePoint && c < (System.Text.Unicode.UnicodeRanges.Specials.FirstCodePoint + System.Text.Unicode.UnicodeRanges.Specials.Length);

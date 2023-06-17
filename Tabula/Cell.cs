@@ -6,10 +6,11 @@ using UglyToad.PdfPig.Core;
 namespace Tabula
 {
     // ported from tabula-java/blob/master/src/main/java/technology/tabula/Cell.java
+
     /// <summary>
     /// A cell in a table.
     /// </summary>
-    public class Cell : RectangularTextContainer<TextChunk>
+    public sealed class Cell : RectangularTextContainer<TextChunk>
     {
         /// <summary>
         /// An empty Cell, with coordinates [0, 0, 0, 0].
@@ -73,7 +74,7 @@ namespace Tabula
             double curTop = this.textElements[0].Bottom;
             foreach (TextChunk tc in this.textElements)
             {
-                if (useLineReturns && tc.Bottom < curTop) //.getTop() < curTop)
+                if (useLineReturns && tc.Bottom < curTop)
                 {
                     sb.Append('\r');
                 }

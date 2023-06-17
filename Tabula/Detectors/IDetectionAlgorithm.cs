@@ -17,6 +17,6 @@ namespace Tabula.Detectors
         /// Detects the tables in the page.
         /// </summary>
         /// <param name="page">The page where to detect the tables.</param>
-        List<TableRectangle> Detect(PageArea page);
+        IReadOnlyList<TableRectangle> Detect(PageArea page);
     }
 }
