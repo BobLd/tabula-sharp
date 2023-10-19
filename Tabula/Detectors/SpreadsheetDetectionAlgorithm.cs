@@ -21,7 +21,7 @@ namespace Tabula.Detectors
         /// Detects the tables in the page.
         /// </summary>
         /// <param name="page">The page where to detect the tables.</param>
-        public List<TableRectangle> Detect(PageArea page)
+        public IReadOnlyList<TableRectangle> Detect(PageArea page)
         {
             List<Cell> cells = SpreadsheetExtractionAlgorithm.FindCells(page.HorizontalRulings, page.VerticalRulings);
 

@@ -20,7 +20,7 @@ namespace Tabula.Tests
             return bea.Extract(page)[0];
         }
 
-        private List<Table> GetTables()
+        private IReadOnlyList<Table> GetTables()
         {
             PageArea page = UtilsForTesting.GetPage("Resources/twotables.pdf", 1);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
@@ -144,7 +144,7 @@ namespace Tabula.Tests
         public void TestJSONSerializeTwoTables()
         {
             string expectedJson = UtilsForTesting.LoadJson("Resources/json/twotables.json");
-            List<Table> tables = this.GetTables();
+            IReadOnlyList<Table> tables = this.GetTables();
 
             StringBuilder sb = new StringBuilder();
             (new JSONWriter()).Write(sb, tables);
@@ -178,7 +178,7 @@ namespace Tabula.Tests
         public void TestCSVSerializeTwoTables()
         {
             string expectedCsv = UtilsForTesting.LoadCsv("Resources/csv/twotables.csv");
-            List<Table> tables = this.GetTables();
+            IReadOnlyList<Table> tables = this.GetTables();
 
             /*
             StringBuilder sb = new StringBuilder();

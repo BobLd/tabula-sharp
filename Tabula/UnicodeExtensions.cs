@@ -22,7 +22,6 @@ namespace Tabula
         /// Gets the character abbreviated type (i.e. 'BN', 'S', 'NSM', 'LRO'), used in the Unicode Bidirectional Algorithm.
         /// </summary>
         /// <param name="val">The integer value of a char.</param>
-        /// <returns></returns>
         public static string GetDirectionality(int val)
         {
             if (val < 0)

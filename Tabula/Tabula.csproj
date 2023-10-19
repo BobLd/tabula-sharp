@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;netstandard2.0;net452;net46;net461;net462;net47;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.0;net452;net46;net461;net462;net47;net6.0</TargetFrameworks>
     <Description>Extract tables from PDF files (port of tabula-java using PdfPig).</Description>
     <PackageProjectUrl>https://github.com/BobLd/tabula-sharp</PackageProjectUrl>
-    <Version>0.1.3</Version>
+    <Version>0.1.4-alpha001</Version>
     <Authors>BobLd</Authors>
     <Company>BobLd</Company>
     <PackageTags>pdf, extract, table, tabula, pdfpig, parse, extraction, export</PackageTags>
@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="PdfPig" Version="0.1.6" />
+    <PackageReference Include="PdfPig" Version="0.1.9-alpha-20231019-c6e2d" />
   </ItemGroup>
 
 </Project>

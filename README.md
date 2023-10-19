@@ -5,7 +5,7 @@
 ![Linux](https://github.com/BobLd/tabula-sharp/workflows/Linux/badge.svg)
 ![Mac OS](https://github.com/BobLd/tabula-sharp/workflows/Mac%20OS/badge.svg)
 
-- Supports .NET 5, .NET Core 3.1, .NET Standard 2.0, .NET Framework 4.5, 4.51, 4.52, 4.6, 4.61, 4.62, 4.7
+- Supports .NET 6, .NET Core 3.1, .NET Standard 2.0, .NET Framework 4.52, 4.6, 4.61, 4.62, 4.7
 - No java bindings
 
 NuGet packages available on the [releases](https://github.com/BobLd/tabula-sharp/releases) page and on www.nuget.org:
@@ -56,7 +56,3 @@ using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() {
 ![example](images/stream-us-018.png)
 ## Lattice mode - SpreadsheetExtractionAlgorithm
 ![example](images/lattice-eu-004.png)
-
-# HELP WANTED
-- The original java implementation uses STR trees in [`RectangleSpatialIndex`](https://github.com/tabulapdf/tabula-java/blob/master/src/main/java/technology/tabula/RectangleSpatialIndex.java). This is not the case here so it might be a bit slower. Any help implementing a similar approach is welcome.
-

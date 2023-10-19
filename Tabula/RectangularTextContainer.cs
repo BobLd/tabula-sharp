@@ -5,6 +5,7 @@ using UglyToad.PdfPig.Core;
 namespace Tabula
 {
     // ported from tabula-java/blob/master/src/main/java/technology/tabula/RectangularTextContainer.java
+
     public abstract class RectangularTextContainer : TableRectangle
 	{
 		public RectangularTextContainer(PdfRectangle pdfRectangle) : base(pdfRectangle)
@@ -14,7 +15,8 @@ namespace Tabula
 
 		public abstract string GetText(bool useLineReturns);
 
-		public override string ToString()
+        /// <inheritdoc/>
+        public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
 			string s = base.ToString();

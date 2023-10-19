@@ -7,14 +7,15 @@ using UglyToad.PdfPig.Geometry;
 namespace Tabula
 {
     // ported from tabula-java/blob/master/src/main/java/technology/tabula/RectangleSpatialIndex.java
+
     /// <summary>
     /// The original java implementation uses STR trees. This is not the case here so might be slower.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class RectangleSpatialIndex<T> where T : TableRectangle
+    public sealed class RectangleSpatialIndex<T> where T : TableRectangle
     {
         //private STRtree si = new STRtree();
-        private List<T> rectangles = new List<T>();
+        private readonly List<T> rectangles = new List<T>();
 
         /// <summary>
         /// 

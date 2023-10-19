@@ -8,10 +8,11 @@ using UglyToad.PdfPig.Core;
 namespace Tabula
 {
     // ported from tabula-java/blob/master/src/main/java/technology/tabula/Page.java
+
     /// <summary>
     /// A tabula page.
     /// </summary>
-    public class PageArea : TableRectangle
+    public sealed class PageArea : TableRectangle
     {
         private readonly List<Ruling> rulings;
         private readonly List<TextElement> texts;
@@ -102,20 +103,18 @@ namespace Tabula
         /// <param name="rotation"></param>
         /// <param name="pageNumber"></param>
         /// <param name="pdPage"></param>
-        /// <param name="doc"></param>
         /// <param name="characters"></param>
         /// <param name="rulings"></param>
         /// <param name="minCharWidth"></param>
         /// <param name="minCharHeight"></param>
         /// <param name="index"></param>
-        public PageArea(PdfRectangle area, int rotation, int pageNumber, Page pdPage, PdfDocument doc,
+        public PageArea(PdfRectangle area, int rotation, int pageNumber, Page pdPage,
              List<TextElement> characters, List<Ruling> rulings,
              double minCharWidth, double minCharHeight, RectangleSpatialIndex<TextElement> index) : base(area)
         {
             this.Rotation = rotation;
             this.PageNumber = pageNumber;
             this.PdfPage = pdPage;
-            this.PdfDocument = doc;
             this.texts = characters;
             this.rulings = rulings;
             this.MinCharHeight = minCharHeight;
@@ -143,7 +142,6 @@ namespace Tabula
                                        Rotation,
                                        PageNumber,
                                        PdfPage,
-                                       PdfDocument,
                                        t,
                                        Ruling.CropRulingsToArea(GetRulings(), area),
                                        min_char_width,
@@ -155,8 +153,8 @@ namespace Tabula
                 new PdfPoint(rv.Right, rv.Top)));
 
             rv.AddRuling(new Ruling(
-                new PdfPoint(rv.Right, rv.Bottom),    // getTop
-                new PdfPoint(rv.Right, rv.Top)));     // getBottom
+                new PdfPoint(rv.Right, rv.Bottom),
+                new PdfPoint(rv.Right, rv.Top)));
 
             rv.AddRuling(new Ruling(
                 new PdfPoint(rv.Right, rv.Bottom),

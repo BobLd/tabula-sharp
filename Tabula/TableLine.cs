@@ -11,7 +11,7 @@ namespace Tabula
     /// <summary>
     /// A Tabula Line.
     /// </summary>
-    public class TableLine : TableRectangle
+    public sealed class TableLine : TableRectangle
     {
         /// <summary>
         /// List of white space characters.

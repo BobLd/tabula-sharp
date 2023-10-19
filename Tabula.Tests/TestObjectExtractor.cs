@@ -23,8 +23,7 @@ namespace Tabula.Tests
         {
             using (PdfDocument pdf_document = PdfDocument.Open("Resources/S2MNCEbirdisland.pdf"))
             {
-                ObjectExtractor oe = new ObjectExtractor(pdf_document);
-                PageIterator pi = oe.Extract();
+                PageIterator pi = ObjectExtractor.Extract(pdf_document);
                 int i = 0;
                 while (pi.MoveNext())
                 {
@@ -39,9 +38,8 @@ namespace Tabula.Tests
         {
             using (PdfDocument pdf_document = PdfDocument.Open("Resources/encrypted.pdf", new ParsingOptions() { Password = "userpassword" }))
             {
-                ObjectExtractor oe = new ObjectExtractor(pdf_document);
                 List<PageArea> pages = new List<PageArea>();
-                PageIterator pi = oe.Extract();
+                PageIterator pi = ObjectExtractor.Extract(pdf_document);
                 while (pi.MoveNext())
                 {
                     pages.Add(pi.Current);
@@ -55,8 +53,7 @@ namespace Tabula.Tests
         {
             using (PdfDocument pdf_document = PdfDocument.Open("Resources/rotated_page.pdf", new ParsingOptions() { ClipPaths = true }))
             {
-                ObjectExtractor oe = new ObjectExtractor(pdf_document);
-                PageIterator pi = oe.Extract();
+                PageIterator pi = ObjectExtractor.Extract(pdf_document);
 
                 Assert.True(pi.MoveNext());
                 Assert.NotNull(pi.Current);
@@ -69,8 +66,7 @@ namespace Tabula.Tests
         {
             using (PdfDocument pdf_document = PdfDocument.Open("Resources/should_detect_rulings.pdf", new ParsingOptions() { ClipPaths = true }))
             {
-                ObjectExtractor oe = new ObjectExtractor(pdf_document);
-                PageIterator pi = oe.Extract();
+                PageIterator pi = ObjectExtractor.Extract(pdf_document);
 
                 PageArea page = pi.Next();
                 IReadOnlyList<Ruling> rulings = page.GetRulings();
@@ -87,8 +83,7 @@ namespace Tabula.Tests
         {
             using (PdfDocument pdf_document = PdfDocument.Open("Resources/labor.pdf", new ParsingOptions() { ClipPaths = true }))
             {
-                ObjectExtractor oe = new ObjectExtractor(pdf_document);
-                PageIterator pi = oe.Extract();
+                PageIterator pi = ObjectExtractor.Extract(pdf_document);
                 Assert.True(pi.MoveNext());
 
                 PageArea p = pi.Current;
@@ -103,8 +98,7 @@ namespace Tabula.Tests
             {
                 Assert.Equal(2, pdf_document.NumberOfPages);
 
-                ObjectExtractor oe = new ObjectExtractor(pdf_document);
-                PageArea page = oe.Extract(2);
+                PageArea page = ObjectExtractor.Extract(pdf_document, 2);
 
                 Assert.NotNull(page);
             }
@@ -117,8 +111,7 @@ namespace Tabula.Tests
             {
                 Assert.Equal(2, pdf_document.NumberOfPages);
 
-                ObjectExtractor oe = new ObjectExtractor(pdf_document);
-                Assert.Throws<IndexOutOfRangeException>(() => oe.Extract(3));
+                Assert.Throws<IndexOutOfRangeException>(() => ObjectExtractor.Extract(pdf_document, 3));
             }
         }
 
@@ -127,9 +120,7 @@ namespace Tabula.Tests
         {
             using (PdfDocument pdf_document = PdfDocument.Open("Resources/cs-en-us-pbms.pdf", new ParsingOptions() { ClipPaths = true }))
             {
-                ObjectExtractor oe = new ObjectExtractor(pdf_document);
-
-                PageArea page = oe.ExtractPage(1);
+                PageArea page = ObjectExtractor.ExtractPage(pdf_document, 1);
 
                 foreach (TextElement te in page.GetText())
                 {
@@ -143,9 +134,7 @@ namespace Tabula.Tests
         {
             using (PdfDocument pdf_document = PdfDocument.Open("Resources/npe_issue_206.pdf", new ParsingOptions() { ClipPaths = true }))
             {
-                ObjectExtractor oe = new ObjectExtractor(pdf_document);
-
-                PageArea p = oe.ExtractPage(1);
+                PageArea p = ObjectExtractor.ExtractPage(pdf_document, 1);
                 Assert.NotNull(p);
             }
         }

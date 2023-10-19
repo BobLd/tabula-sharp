@@ -21,7 +21,7 @@ namespace Tabula.Detectors
         /// <summary>
         /// Not Implemented.
         /// </summary>
-        public List<TableRectangle> Detect(PageArea page)
+        public IReadOnlyList<TableRectangle> Detect(PageArea page)
         {
             throw new NotImplementedException();
         }

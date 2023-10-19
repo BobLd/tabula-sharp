@@ -16,7 +16,7 @@ namespace Tabula.Tests
 
         //private static Level defaultLogLevel;
 
-        private class TestStatus
+        private sealed class TestStatus
         {
             public int numExpectedTables;
             public int numCorrectlyDetectedTables;

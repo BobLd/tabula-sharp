@@ -6,6 +6,7 @@ using Tabula.Extractors;
 namespace Tabula
 {
     // ported from tabula-java/blob/master/src/main/java/technology/tabula/Table.java
+
     /// <summary>
     /// A tabula table.
     /// </summary>
@@ -34,7 +35,7 @@ namespace Tabula
         { }
 
         //TreeMap<CellPosition, RectangularTextContainer> cells = new TreeMap<>();
-        private SortedDictionary<CellPosition, Cell> cells = new SortedDictionary<CellPosition, Cell>();
+        private readonly SortedDictionary<CellPosition, Cell> cells = new SortedDictionary<CellPosition, Cell>();
 
         /// <summary>
         /// Get the list of cells.
@@ -138,7 +139,7 @@ namespace Tabula
             }
         }
 
-        private class CellPosition : IComparable<CellPosition>
+        private sealed class CellPosition : IComparable<CellPosition>
         {
             private readonly int row, col;
 

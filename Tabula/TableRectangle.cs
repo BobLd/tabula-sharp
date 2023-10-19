@@ -19,7 +19,7 @@ namespace Tabula
         /// See <a href="https://github.com/tabulapdf/tabula-java/issues/116">PR 116</a>
         /// </summary>
         [Obsolete("with no replacement")]
-        public class ILL_DEFINED_ORDER : IComparer<TableRectangle>
+        public sealed class ILL_DEFINED_ORDER : IComparer<TableRectangle>
         {
             /// <summary>
             /// Sort top to bottom (as in reading order).

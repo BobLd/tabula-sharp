@@ -6,6 +6,7 @@ using UglyToad.PdfPig.Core;
 namespace Tabula.Extractors
 {
     // ported from tabula-java/blob/master/src/main/java/technology/tabula/extractors/SpreadsheetExtractionAlgorithm.java
+
     /// <summary>
     /// Lattice extraction algorithm.
     /// </summary>
@@ -85,7 +86,7 @@ namespace Tabula.Extractors
         /// Extracts the tables in the page.
         /// </summary>
         /// <param name="page">The page where to extract the tables.</param>
-        public List<Table> Extract(PageArea page)
+        public IReadOnlyList<Table> Extract(PageArea page)
         {
             return Extract(page, page.GetRulings());
         }
@@ -95,7 +96,7 @@ namespace Tabula.Extractors
         /// </summary>
         /// <param name="page"></param>
         /// <param name="rulings"></param>
-        public List<Table> Extract(PageArea page, IReadOnlyList<Ruling> rulings)
+        public IReadOnlyList<Table> Extract(PageArea page, IReadOnlyList<Ruling> rulings)
         {
             // split rulings into horizontal and vertical
             List<Ruling> horizontalR = new List<Ruling>();
@@ -173,9 +174,9 @@ namespace Tabula.Extractors
 
             // get minimal region of page that contains every character (in effect,
             // removes white "margins")
-            PageArea minimalRegion = page.GetArea(Utils.Bounds(page.GetText().Select(t => t.BoundingBox).ToList()));
+            PageArea minimalRegion = page.GetArea(Utils.Bounds(page.GetText().Select(t => t.BoundingBox)));
 
-            List<Table> tables = new SpreadsheetExtractionAlgorithm().Extract(minimalRegion);
+            IReadOnlyList<Table> tables = new SpreadsheetExtractionAlgorithm().Extract(minimalRegion);
             if (tables.Count == 0)
             {
                 return false;
@@ -188,8 +189,8 @@ namespace Tabula.Extractors
             tables = new BasicExtractionAlgorithm().Extract(minimalRegion);
             if (tables.Count == 0)
             {
-                // TODO WHAT DO WE DO HERE?
                 System.Diagnostics.Debug.Write("SpreadsheetExtractionAlgorithm.isTabular(): no table found.");
+                return false;
             }
 
             table = tables[0];
@@ -219,9 +220,7 @@ namespace Tabula.Extractors
                 Ruling[] hv = intersectionPoints[topLeft];
                 bool doBreak = false;
 
-                // CrossingPointsDirectlyBelow( topLeft );
                 List<PdfPoint> xPoints = new List<PdfPoint>();
-                // CrossingPointsDirectlyToTheRight( topLeft );
                 List<PdfPoint> yPoints = new List<PdfPoint>();
 
                 foreach (PdfPoint p in intersectionPointsList.SubList(i, intersectionPointsList.Count))
@@ -388,18 +387,18 @@ namespace Tabula.Extractors
             // calculate axis-aligned minimum area rectangles for each found polygon
             foreach (List<PolygonVertex> poly in polygons)
             {
-                double top = double.MinValue;       //java.lang.Float.MAX_VALUE;
-                double left = double.MaxValue;      //java.lang.Float.MAX_VALUE;
-                double bottom = double.MaxValue;    //java.lang.Float.MIN_VALUE;
-                double right = double.MinValue;     //java.lang.Float.MIN_VALUE;
+                double top = double.MinValue;
+                double left = double.MaxValue;
+                double bottom = double.MaxValue;
+                double right = double.MinValue;
                 foreach (PolygonVertex pt in poly)
                 {
-                    top = Math.Max(top, pt.point.Y); // Min
+                    top = Math.Max(top, pt.point.Y);
                     left = Math.Min(left, pt.point.X);
-                    bottom = Math.Min(bottom, pt.point.Y); // Max
+                    bottom = Math.Min(bottom, pt.point.Y);
                     right = Math.Max(right, pt.point.X);
                 }
-                rectangles.Add(new TableRectangle(new PdfRectangle(left, bottom, right, top))); // top, left, right - left, bottom - top));
+                rectangles.Add(new TableRectangle(new PdfRectangle(left, bottom, right, top)));
             }
 
             return rectangles;
@@ -417,7 +416,7 @@ namespace Tabula.Extractors
             VERTICAL
         }
 
-        private class PolygonVertex
+        private sealed class PolygonVertex
         {
             public PdfPoint point;
             public Direction direction;

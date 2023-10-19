@@ -15,8 +15,7 @@ namespace Tabula.Tests
         {
             using (PdfDocument document = PdfDocument.Open("Resources/icdar2013-dataset/competition-dataset-eu/eu-004.pdf", new ParsingOptions() { ClipPaths = true }))
             {
-                ObjectExtractor oe = new ObjectExtractor(document);
-                PageArea page = oe.Extract(3);
+                PageArea page = ObjectExtractor.Extract(document, 3);
 
                 var detector = new SimpleNurminenDetectionAlgorithm();
                 var regions = detector.Detect(page);
