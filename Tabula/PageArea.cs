@@ -159,8 +159,8 @@ namespace Tabula
                 new PdfPoint(rv.Right, rv.Top)));     // getBottom
 
             rv.AddRuling(new Ruling(
-                new PdfPoint(rv.Right, rv.Bottom),
-                new PdfPoint(rv.Left, rv.Bottom)));
+                new PdfPoint(rv.Left, rv.Bottom),
+                new PdfPoint(rv.Right, rv.Bottom)));
 
             rv.AddRuling(new Ruling(
                 new PdfPoint(rv.Left, rv.Bottom),
