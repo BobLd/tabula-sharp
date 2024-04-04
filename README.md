@@ -1,4 +1,7 @@
-# tabula-sharp
+# tabula-sharp fix https://github.com/BobLd/tabula-sharp/issues/25
+
+THIS REPOSITORY CONTAINS THE v.0.1.3 version of lib with https://github.com/BobLd/tabula-sharp/issues/25 fixed and will be deleted once mantainer releases the library version with proper fix. 
+
 `tabula-sharp` is a library for extracting tables from PDF files — it is a port of [tabula-java](https://github.com/tabulapdf/tabula-java)
 
 ![Windows](https://github.com/BobLd/tabula-sharp/workflows/Windows/badge.svg)
