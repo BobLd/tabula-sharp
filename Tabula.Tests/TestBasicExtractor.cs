@@ -314,46 +314,42 @@ namespace Tabula.Tests
             Assert.Equal("North Carolina State\rUniversity", cells[8].GetText());
 
             //Third row
-            Assert.Equal("Social and ethical research and education in agrifood", cells[9].GetText());
-            Assert.Equal("nanotechnology (NIRT)", cells[10].GetText());
-            Assert.Equal("NSF", cells[11].GetText());
-            Assert.Equal("Michigan State University", cells[12].GetText());
+            Assert.Equal("Social and ethical research and education in agrifood\rnanotechnology (NIRT)", cells[9].GetText());
+            Assert.Equal("NSF", cells[10].GetText());
+            Assert.Equal("Michigan State University", cells[11].GetText());
 
             //Fourth row
-            Assert.Equal("From laboratory to society: developing an informed", cells[13].GetText());
-            Assert.Equal("approach to nanoscale science and engineering (NIRT)", cells[14].GetText());
-            Assert.Equal("NSF", cells[15].GetText());
-            Assert.Equal("University of South Carolina", cells[16].GetText());
+            Assert.Equal("From laboratory to society: developing an informed\rapproach to nanoscale science and engineering (NIRT)", cells[12].GetText());
+            Assert.Equal("NSF", cells[13].GetText());
+            Assert.Equal("University of South Carolina", cells[14].GetText());
 
             //Fifth row
-            Assert.Equal("Database and innovation timeline for nanotechnology", cells[17].GetText());
-            Assert.Equal("NSF", cells[18].GetText());
-            Assert.Equal("UCLA", cells[19].GetText());
+            Assert.Equal("Database and innovation timeline for nanotechnology", cells[15].GetText());
+            Assert.Equal("NSF", cells[16].GetText());
+            Assert.Equal("UCLA", cells[17].GetText());
 
             //Sixth row
-            Assert.Equal("Social and ethical dimensions of nanotechnology", cells[20].GetText());
-            Assert.Equal("NSF", cells[21].GetText());
-            Assert.Equal("University of Virginia", cells[22].GetText());
+            Assert.Equal("Social and ethical dimensions of nanotechnology", cells[18].GetText());
+            Assert.Equal("NSF", cells[19].GetText());
+            Assert.Equal("University of Virginia", cells[20].GetText());
 
             //Seventh row
-            Assert.Equal("Undergraduate exploration of nanoscience,", cells[23].GetText());
-            Assert.Equal("applications and societal implications (NUE)", cells[24].GetText());
-            Assert.Equal("NSF", cells[25].GetText());
-            Assert.Equal("Michigan Technological\rUniversity", cells[26].GetText());
+            Assert.Equal("Undergraduate exploration of nanoscience,\rapplications and societal implications (NUE)", cells[21].GetText());
+            Assert.Equal("NSF", cells[22].GetText());
+            Assert.Equal("Michigan Technological\rUniversity", cells[23].GetText());
 
             //Eighth row
-            Assert.Equal("Ethics and belief inside the development of", cells[27].GetText());
-            Assert.Equal("nanotechnology (CAREER)", cells[28].GetText());
-            Assert.Equal("NSF", cells[29].GetText());
-            Assert.Equal("University of Virginia", cells[30].GetText());
+            Assert.Equal("Ethics and belief inside the development of\rnanotechnology (CAREER)", cells[24].GetText());
+            Assert.Equal("NSF", cells[25].GetText());
+            Assert.Equal("University of Virginia", cells[26].GetText());
 
             //Ninth row
-            Assert.Equal("All centers, NNIN and NCN have a societal", cells[31].GetText());
-            Assert.Equal("NSF, DOE,", cells[32].GetText());
-            Assert.Equal("All nanotechnology centers", cells[33].GetText());
-            Assert.Equal("implications components", cells[34].GetText());
-            Assert.Equal("DOD, and NIH", cells[35].GetText());
-            Assert.Equal("and networks", cells[36].GetText());
+            Assert.Equal("All centers, NNIN and NCN have a societal", cells[27].GetText());
+            Assert.Equal("NSF, DOE,", cells[28].GetText());
+            Assert.Equal("All nanotechnology centers", cells[29].GetText());
+            Assert.Equal("implications components", cells[30].GetText());
+            Assert.Equal("DOD, and NIH", cells[31].GetText());
+            Assert.Equal("and networks", cells[32].GetText());
         }
 
         [Fact]
