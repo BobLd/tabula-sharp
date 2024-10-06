@@ -14,10 +14,10 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
     - name: Install dependencies
       run: dotnet restore
-    - name: Build net6.0
-      run: dotnet build --configuration Release --no-restore --framework net6.0
-    - name: Test net6.0
-      run: dotnet test --no-restore --verbosity minimal --framework net6.0
+    - name: Build net8.0
+      run: dotnet build --configuration Release --no-restore --framework net8.0
+    - name: Test net8.0
+      run: dotnet test --no-restore --verbosity minimal --framework net8.0
