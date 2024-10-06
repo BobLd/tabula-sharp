@@ -21,7 +21,7 @@ jobs:
       run: sudo apt-get -y install ttf-mscorefonts-installer
     - name: Install dependencies
       run: dotnet restore
-    - name: Build net6.0
-      run: dotnet build --configuration Release --no-restore --framework net6.0
-    - name: Test net6.0
-      run: dotnet test --no-restore --verbosity minimal --framework net6.0
+    - name: Build net8.0
+      run: dotnet build --configuration Release --no-restore --framework net8.0
+    - name: Test net8.0
+      run: dotnet test --no-restore --verbosity minimal --framework net8.0
