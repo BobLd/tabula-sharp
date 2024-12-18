@@ -24,15 +24,14 @@ NuGet packages available on the [releases](https://github.com/BobLd/tabula-sharp
 ```csharp
 using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() { ClipPaths = true }))
 {
-	ObjectExtractor oe = new ObjectExtractor(document);
-	PageArea page = oe.Extract(1);
+	PageArea page = ObjectExtractor.Extract(document, 1);
 	
 	// detect canditate table zones
 	SimpleNurminenDetectionAlgorithm detector = new SimpleNurminenDetectionAlgorithm();
 	var regions = detector.Detect(page);
 	
 	IExtractionAlgorithm ea = new BasicExtractionAlgorithm();
-	List<Table> tables = ea.Extract(page.GetArea(regions[0].BoundingBox)); // take first candidate area
+	IReadOnlyList<Table> tables = ea.Extract(page.GetArea(regions[0].BoundingBox)); // take first candidate area
 	var table = tables[0];
 	var rows = table.Rows;
 }
@@ -41,11 +40,10 @@ using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() {
 ```csharp
 using (PdfDocument document = PdfDocument.Open("doc.pdf", new ParsingOptions() { ClipPaths = true }))
 {
-	ObjectExtractor oe = new ObjectExtractor(document);
-	PageArea page = oe.Extract(1);
+	PageArea page = ObjectExtractor.Extract(document, 1);
 
 	IExtractionAlgorithm ea = new SpreadsheetExtractionAlgorithm();
-	List<Table> tables = ea.Extract(page);
+	IReadOnlyList<Table> tables = ea.Extract(page);
 	var table = tables[0];
 	var rows = table.Rows;
 }
