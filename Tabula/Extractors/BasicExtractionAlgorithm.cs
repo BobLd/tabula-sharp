@@ -39,7 +39,7 @@ namespace Tabula.Extractors
             List<Ruling> verticalRulings = new List<Ruling>(verticalRulingPositions.Count);
             foreach (float p in verticalRulingPositions)
             {
-                verticalRulings.Add(new Ruling(page.Height, p, 0.0f, page.Height));
+                verticalRulings.Add(new Ruling(page.Bottom, p, 0.0f, page.Height));
             }
             this.verticalRulings = verticalRulings;
             return this.Extract(page);
