@@ -230,7 +230,7 @@ namespace Tabula.Detectors
 
             bool foundTable;
 
-            do
+            //    do
             {
                 foundTable = false;
 
@@ -282,7 +282,10 @@ namespace Tabula.Detectors
                         tableAreas.Add(table);
                     }
                 }
-            } while (foundTable);
+            // removed following line. It's unclear how this code exit's the loop. When a table is found,
+            // there is nothing to advance to the next set of criteria, so a table will always be found.
+            // } while (foundTable);
+            }   
 
             // create a set of our current tables that will eliminate duplicate tables
             SortedSet<TableRectangle> tableSet = new SortedSet<TableRectangle>(new TreeSetComparer());
