@@ -244,7 +244,7 @@ namespace Tabula
                 sb.Append(te.GetText());
             }
 
-            return sb.ToString().Normalize(NormalizationForm.FormKC).Trim();
+            return sb.ToString().Normalize(NormalizationForm.FormKC);
         }
 
         /// <summary>
