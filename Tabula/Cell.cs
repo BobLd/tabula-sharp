@@ -81,7 +81,7 @@ namespace Tabula
                 sb.Append(tc.GetText());
                 curTop = tc.Bottom;
             }
-            return sb.ToString().Trim();
+            return sb.ToString();
         }
 
         /// <summary>
