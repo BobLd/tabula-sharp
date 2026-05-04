@@ -12,6 +12,8 @@
 		<RepositoryUrl>https://github.com/BobLd/tabula-sharp</RepositoryUrl>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\Tabula.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<ItemGroup>

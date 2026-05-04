@@ -12,6 +12,8 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\Tabula.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<ItemGroup>
