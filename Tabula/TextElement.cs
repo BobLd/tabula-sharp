@@ -40,6 +40,11 @@ namespace Tabula
         public string GetText() => text;
 
         /// <summary>
+        /// Gets the PdfPig letter associated.
+        /// </summary>
+        public Letter Letter => letter;
+        
+        /// <summary>
         /// The direction of the text (0, 90, 180, or 270). Can be any number with PdfPig.
         /// </summary>
         public double Direction { get; }
