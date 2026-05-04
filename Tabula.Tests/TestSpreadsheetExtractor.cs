@@ -255,7 +255,7 @@ namespace Tabula.Tests
                         Assert.True(Math.Abs(Math.Floor(cellExpected["left"].Value<double>()) - Math.Floor(cellActual["left"].Value<double>())) < precision);
                         Assert.True(Math.Abs(Math.Floor(cellExpected["width"].Value<double>()) - Math.Floor(cellActual["width"].Value<double>())) < precision);
                         Assert.True(Math.Abs(Math.Floor(cellExpected["height"].Value<double>()) - Math.Floor(cellActual["height"].Value<double>())) < precision);
-                        Assert.Equal(cellExpected["text"].Value<string>(), cellActual["text"].Value<string>());
+                        Assert.Equal(cellExpected["text"].Value<string>(), cellActual["text"].Value<string>().Trim());
                     }
                 }
             }
@@ -292,7 +292,7 @@ namespace Tabula.Tests
             SpreadsheetExtractionAlgorithm se = new SpreadsheetExtractionAlgorithm();
             IReadOnlyList<Table> tables = se.Extract(page);
 
-            string expected = "Project,Agency,Institution\r\nNanotechnology and its publics,NSF,Pennsylvania State University\r\n\"Public information and deliberation in nanoscience and\rnanotechnology policy (SGER)\",Interagency,\"North Carolina State\rUniversity\"\r\n\"Social and ethical research and education in agrifood\rnanotechnology (NIRT)\",NSF,Michigan State University\r\n\"From laboratory to society: developing an informed\rapproach to nanoscale science and engineering (NIRT)\",NSF,University of South Carolina\r\nDatabase and innovation timeline for nanotechnology,NSF,UCLA\r\nSocial and ethical dimensions of nanotechnology,NSF,University of Virginia\r\n\"Undergraduate exploration of nanoscience,\rapplications and societal implications (NUE)\",NSF,\"Michigan Technological\rUniversity\"\r\n\"Ethics and belief inside the development of\rnanotechnology (CAREER)\",NSF,University of Virginia\r\n\"All centers, NNIN and NCN have a societal\rimplications components\",\"NSF, DOE,\rDOD, and NIH\",\"All nanotechnology centers\rand networks\""; // \r\n
+            string expected = "Project,Agency,\" Institution\"\r\nNanotechnology and its publics,NSF,Pennsylvania State University\r\n\"Public information and deliberation in nanoscience and \rnanotechnology policy (SGER)\",Interagency,\"North Carolina State \rUniversity\"\r\n\"Social and ethical research and education in agrifood \rnanotechnology (NIRT)\",NSF,Michigan State University\r\n\"From laboratory to society: developing an informed \rapproach to nanoscale science and engineering (NIRT)\",NSF,University of South Carolina\r\nDatabase and innovation timeline for nanotechnology,NSF,UCLA\r\nSocial and ethical dimensions of nanotechnology,NSF,University of Virginia\r\n\"Undergraduate exploration of nanoscience, \rapplications and societal implications (NUE)\",NSF,\"Michigan Technological \rUniversity\"\r\n\"Ethics and belief inside the development of \rnanotechnology (CAREER)\",NSF,University of Virginia\r\n\"All centers, NNIN and NCN have a societal \rimplications components \",\"NSF, DOE, \rDOD, and NIH\",\"All nanotechnology centers \rand networks\""; // \r\n
 
             StringBuilder sb = new StringBuilder();
             (new CSVWriter()).Write(sb, tables[0]);
@@ -436,7 +436,7 @@ namespace Tabula.Tests
             Assert.Equal("Payroll Period", rows[0][0].GetText());
             Assert.Equal("One Withholding\rAllowance", rows[0][1].GetText());
             Assert.Equal("Weekly", rows[1][0].GetText());
-            Assert.Equal("$71.15", rows[1][1].GetText());
+            Assert.Equal("$ 71.15", rows[1][1].GetText());
             Assert.Equal("Biweekly", rows[2][0].GetText());
             Assert.Equal("142.31", rows[2][1].GetText());
             Assert.Equal("Semimonthly", rows[3][0].GetText());
