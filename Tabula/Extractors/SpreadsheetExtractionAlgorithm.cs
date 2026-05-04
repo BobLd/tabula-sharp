@@ -287,7 +287,6 @@ namespace Tabula.Extractors
             HashSet<PdfPoint> pointSet = new HashSet<PdfPoint>();
             Dictionary<PdfPoint, PdfPoint> edgesH = new Dictionary<PdfPoint, PdfPoint>();
             Dictionary<PdfPoint, PdfPoint> edgesV = new Dictionary<PdfPoint, PdfPoint>();
-            int i = 0;
 
             cells = new List<TableRectangle>(new HashSet<TableRectangle>(cells));
 
@@ -316,26 +315,27 @@ namespace Tabula.Extractors
             List<PdfPoint> pointsSortY = new List<PdfPoint>(pointSet);
             pointsSortY.Sort(new POINT_COMPARER());
 
-            while (i < pointSet.Count)
+            // Pair consecutive points sharing a Y / X coordinate. Using a for-loop with an
+            // unconditional increment (rather than the upstream tabula-java nested while)
+            // prevents an infinite loop when a coordinate is NaN or Infinity, since Feq
+            // returns false for any NaN comparison and would otherwise leave i unchanged.
+            for (int i = 0; i + 1 < pointSet.Count; i++)
             {
-                float currY = (float)pointsSortY[i].Y;
-                while (i < pointSet.Count && Utils.Feq(pointsSortY[i].Y, currY))
+                if (Utils.Feq(pointsSortY[i].Y, pointsSortY[i + 1].Y))
                 {
                     edgesH[pointsSortY[i]] = pointsSortY[i + 1];
                     edgesH[pointsSortY[i + 1]] = pointsSortY[i];
-                    i += 2;
+                    i++;
                 }
             }
 
-            i = 0;
-            while (i < pointSet.Count)
+            for (int i = 0; i + 1 < pointSet.Count; i++)
             {
-                float currX = (float)pointsSortX[i].X;
-                while (i < pointSet.Count && Utils.Feq(pointsSortX[i].X, currX))
+                if (Utils.Feq(pointsSortX[i].X, pointsSortX[i + 1].X))
                 {
                     edgesV[pointsSortX[i]] = pointsSortX[i + 1];
                     edgesV[pointsSortX[i + 1]] = pointsSortX[i];
-                    i += 2;
+                    i++;
                 }
             }
 
