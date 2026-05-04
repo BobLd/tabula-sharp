@@ -44,7 +44,7 @@ namespace Tabula
 
                 double wos = GetExpectedWhitespaceSize(letter);
 
-                TextElement te = new TextElement(GetBbox(letter), letter.Font, letter.PointSize, c, wos, letter.GlyphRectangle.Rotation)
+                TextElement te = new TextElement(GetBbox(letter), letter.FontDetails, letter.PointSize, c, wos, letter.BoundingBox.Rotation)
                 {
                     letter = letter
                 };
@@ -90,10 +90,10 @@ namespace Tabula
 
         private static bool IsSpecial(char c)
         {
-#if NETCOREAPP3_1
-            return c >= System.Text.Unicode.UnicodeRanges.Specials.FirstCodePoint && c < (System.Text.Unicode.UnicodeRanges.Specials.FirstCodePoint + System.Text.Unicode.UnicodeRanges.Specials.Length);
-#else
+#if NETSTANDARD || NETFRAMEWORK
             return c >= '\uFFF0' && c <= '\uFFFF';
+#else
+            return c >= System.Text.Unicode.UnicodeRanges.Specials.FirstCodePoint && c < (System.Text.Unicode.UnicodeRanges.Specials.FirstCodePoint + System.Text.Unicode.UnicodeRanges.Specials.Length);
 #endif
         }
 
@@ -112,39 +112,39 @@ namespace Tabula
             {
                 case TextOrientation.Horizontal:
                     double add = 0;
-                    if (letter.GlyphRectangle.Height == 0)
+                    if (letter.BoundingBox.Height == 0)
                     {
                         add = 1; // force minimum height to be 1
                     }
                     else if (letter.Value == " ")
                     {
-                        add = -(letter.GlyphRectangle.Height - 1); // force height of space to be 1
+                        add = -(letter.BoundingBox.Height - 1); // force height of space to be 1
                     }
                     return new PdfRectangle(Utils.Round(letter.StartBaseLine.X, 2),
                                             Utils.Round(letter.StartBaseLine.Y, 2),
-                                            Utils.Round(letter.StartBaseLine.X + Math.Max(letter.Width, letter.GlyphRectangle.Width), 2),
-                                            Utils.Round(letter.GlyphRectangle.TopLeft.Y + add, 2));
+                                            Utils.Round(letter.StartBaseLine.X + Math.Max(letter.Width, letter.BoundingBox.Width), 2),
+                                            Utils.Round(letter.BoundingBox.TopLeft.Y + add, 2));
 
                 case TextOrientation.Rotate180:
                     // need to force min height = 1 and height of space to be 1
                     return new PdfRectangle(Utils.Round(letter.StartBaseLine.X, 2),
                                             Utils.Round(letter.StartBaseLine.Y, 2),
-                                            Utils.Round(letter.StartBaseLine.X - Math.Max(letter.Width, letter.GlyphRectangle.Width), 2),
-                                            Utils.Round(letter.GlyphRectangle.TopRight.Y, 2));
+                                            Utils.Round(letter.StartBaseLine.X - Math.Max(letter.Width, letter.BoundingBox.Width), 2),
+                                            Utils.Round(letter.BoundingBox.TopRight.Y, 2));
 
                 case TextOrientation.Rotate90:
                     // need to force min height = 1 and height of space to be 1
-                    return new PdfRectangle(new PdfPoint(Utils.Round(letter.StartBaseLine.X + letter.GlyphRectangle.Height, 2), Utils.Round(letter.GlyphRectangle.BottomLeft.Y, 2)),
-                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X + letter.GlyphRectangle.Height, 2), Utils.Round(letter.EndBaseLine.Y, 2)),
-                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X, 2), Utils.Round(letter.GlyphRectangle.BottomLeft.Y, 2)),
+                    return new PdfRectangle(new PdfPoint(Utils.Round(letter.StartBaseLine.X + letter.BoundingBox.Height, 2), Utils.Round(letter.BoundingBox.BottomLeft.Y, 2)),
+                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X + letter.BoundingBox.Height, 2), Utils.Round(letter.EndBaseLine.Y, 2)),
+                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X, 2), Utils.Round(letter.BoundingBox.BottomLeft.Y, 2)),
                                             new PdfPoint(Utils.Round(letter.StartBaseLine.X, 2), Utils.Round(letter.EndBaseLine.Y, 2)));
 
                 case TextOrientation.Rotate270:
                     // need to force min height = 1 and height of space to be 1
-                    return new PdfRectangle(new PdfPoint(Utils.Round(letter.StartBaseLine.X - letter.GlyphRectangle.Height, 2), Utils.Round(letter.StartBaseLine.Y, 2)),
-                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X - letter.GlyphRectangle.Height, 2), Utils.Round(letter.GlyphRectangle.BottomRight.Y, 2)),
+                    return new PdfRectangle(new PdfPoint(Utils.Round(letter.StartBaseLine.X - letter.BoundingBox.Height, 2), Utils.Round(letter.StartBaseLine.Y, 2)),
+                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X - letter.BoundingBox.Height, 2), Utils.Round(letter.BoundingBox.BottomRight.Y, 2)),
                                             new PdfPoint(Utils.Round(letter.StartBaseLine.X, 2), Utils.Round(letter.StartBaseLine.Y, 2)),
-                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X, 2), Utils.Round(letter.GlyphRectangle.BottomRight.Y, 2)));
+                                            new PdfPoint(Utils.Round(letter.StartBaseLine.X, 2), Utils.Round(letter.BoundingBox.BottomRight.Y, 2)));
 
                 case TextOrientation.Other:
                 default:
@@ -161,8 +161,8 @@ namespace Tabula
             {
                 letter.StartBaseLine,
                 letter.EndBaseLine,
-                letter.GlyphRectangle.TopLeft,
-                letter.GlyphRectangle.TopRight
+                letter.BoundingBox.TopLeft,
+                letter.BoundingBox.TopRight
             };
 
             // Candidates bounding boxes
@@ -174,7 +174,7 @@ namespace Tabula
             // Find the orientation of the OBB, using the baseline angle
             // Assumes line order is correct
 
-            var baseLineAngle = Distances.BoundAngle180(Distances.Angle(letter.GlyphRectangle.BottomLeft, letter.GlyphRectangle.BottomRight));
+            var baseLineAngle = Distances.BoundAngle180(Distances.Angle(letter.BoundingBox.BottomLeft, letter.BoundingBox.BottomRight));
 
             double deltaAngle = Math.Abs(Distances.BoundAngle180(obb.Rotation - baseLineAngle));
             double deltaAngle1 = Math.Abs(Distances.BoundAngle180(obb1.Rotation - baseLineAngle));
