@@ -1,31 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net462;net471;net6.0;net8.0</TargetFrameworks>
-    <Description>Extract tables from PDF files (port of tabula-java using PdfPig).</Description>
-    <PackageProjectUrl>https://github.com/BobLd/tabula-sharp</PackageProjectUrl>
-    <Version>0.1.5</Version>
-    <Authors>BobLd</Authors>
-    <Company>BobLd</Company>
-    <PackageTags>pdf, extract, table, tabula, pdfpig, parse, extraction, export</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/BobLd/tabula-sharp</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>Tabula.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net462;net471;net6.0;net8.0;net9.0</TargetFrameworks>
+		<Description>Extract tables from PDF files (port of tabula-java using PdfPig).</Description>
+		<PackageProjectUrl>https://github.com/BobLd/tabula-sharp</PackageProjectUrl>
+		<Version>1.0.0</Version>
+		<Authors>BobLd</Authors>
+		<Company>BobLd</Company>
+		<PackageTags>pdf, extract, table, tabula, pdfpig, parse, extraction, export</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/BobLd/tabula-sharp</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>Tabula.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="PdfPig" Version="0.1.10" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="PdfPig" Version="0.1.14" />
+	</ItemGroup>
 
 </Project>
