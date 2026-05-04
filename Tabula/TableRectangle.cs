@@ -11,7 +11,7 @@ namespace Tabula
     /// <summary>
     /// A tabula rectangle.
     /// </summary>
-    public class TableRectangle : IComparable<TableRectangle>
+    public class TableRectangle : IComparable<TableRectangle>, IEquatable<TableRectangle>
     {
         /// <summary>
         /// Sort top to bottom (as in reading order).
@@ -212,28 +212,24 @@ namespace Tabula
 
         public override int GetHashCode()
         {
-            int prime = 31;
-            int result = base.GetHashCode();
-            // need to implement hash and equal in PdfPig's PdfRectangle
-            result = prime * result + BoundingBox.BottomLeft.GetHashCode();
-            result = prime * result + BoundingBox.TopLeft.GetHashCode();
-            result = prime * result + BoundingBox.TopRight.GetHashCode();
-            result = prime * result + BoundingBox.BottomRight.GetHashCode();
-            result = prime * result + BitConverter.ToInt32(BitConverter.GetBytes(BoundingBox.Rotation), 0);
-            return result;
+            return BoundingBox.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
             if (obj is TableRectangle other)
             {
-                if (!this.BoundingBox.BottomLeft.Equals(other.BoundingBox.BottomLeft)) return false;
-                if (!this.BoundingBox.TopLeft.Equals(other.BoundingBox.TopLeft)) return false;
-                if (!this.BoundingBox.TopRight.Equals(other.BoundingBox.TopRight)) return false;
-                if (!this.BoundingBox.BottomRight.Equals(other.BoundingBox.BottomRight)) return false;
-                return true;
+                return Equals(other);
             }
+
             return false;
+        }
+
+        public bool Equals(TableRectangle other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return BoundingBox.Equals(other.BoundingBox);
         }
 
         public override string ToString()

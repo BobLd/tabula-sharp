@@ -110,7 +110,7 @@ namespace Tabula.Detectors
             List<Ruling> allEdges = new List<Ruling>(horizontalRulings);
             allEdges.AddRange(verticalRulings);
 
-            List<TableRectangle> tableAreas = new List<TableRectangle>();
+            HashSet<TableRectangle> tableAreas = new HashSet<TableRectangle>();
 
             // if we found some edges, try to find some tables based on them
             if (allEdges.Count > 0)
@@ -236,13 +236,14 @@ namespace Tabula.Detectors
 
                 // get rid of any text lines contained within existing tables, this allows us to find more tables
                 //for (Iterator<TableLine> iterator = lines.iterator(); iterator.hasNext();)
-                foreach (var textRow in lines.ToList())
+                for (int i = lines.Count - 1; i >= 0; i--)
                 {
-                    foreach (TableRectangle table in tableAreas)
+                    var textRow = lines[i];
+                    foreach (var table in tableAreas)
                     {
                         if (table.Contains(textRow))
                         {
-                            lines.Remove(textRow);
+                            lines.RemoveAt(i);
                             break;
                         }
                     }
@@ -278,8 +279,7 @@ namespace Tabula.Detectors
 
                     if (table != null)
                     {
-                        foundTable = true;
-                        tableAreas.Add(table);
+                        foundTable = tableAreas.Add(table);
                     }
                 }
             } while (foundTable);
@@ -725,7 +725,7 @@ namespace Tabula.Detectors
             return new TextEdges(leftTextEdges, midTextEdges, rightTextEdges);
         }
 
-        private List<TableRectangle> getTableAreasFromCells(List<TableRectangle> cells)
+        private HashSet<TableRectangle> getTableAreasFromCells(List<TableRectangle> cells)
         {
             List<List<TableRectangle>> cellGroups = new List<List<TableRectangle>>();
             foreach (TableRectangle cell in cells)
@@ -764,7 +764,7 @@ namespace Tabula.Detectors
             }
 
             // create table areas based on cell group
-            List<TableRectangle> tableAreas = new List<TableRectangle>();
+            HashSet<TableRectangle> tableAreas = new HashSet<TableRectangle>();
             foreach (List<TableRectangle> cellGroup in cellGroups)
             {
                 // less than four cells should not make a table
