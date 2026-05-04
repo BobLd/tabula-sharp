@@ -20,11 +20,11 @@
 
 Result outputs may differ from Java because of how PdfPig builds Letter bounding boxes (documented in README).
 
-This document plans the port of 105 upstream commits, of which roughly 75 are skipped as Java-only and roughly 8 logical groups are ported.
+This document plans the port of 105 upstream commits, of which roughly 104 are skipped as Java-only or reclassified N/A after audit, and 1 commit is ported (audits collapsed the rest).
 
 ## 2. Inventory & triage of upstream commits
 
-### Bucket SKIP — Java-only or N/A (~75 commits)
+### Bucket SKIP — Java-only or N/A (~104 commits)
 
 The following categories are skipped wholesale; full SHA ledger in §6.
 
@@ -32,17 +32,21 @@ The following categories are skipped wholesale; full SHA ledger in §6.
 - All **Maven plugin bumps** (×7).
 - **Build / CI**: jbang catalog, Travis → GitHub Actions, AppVeyor removal, LF enforcement, release prep, branch merges.
 - **Java logo / README** edits (English-language non-API doc).
-- **CLI-only**: `e5d8ca8` (batch-mode logging), `a747549e` (-b README), `6591241b` (batch-processing PR merge). The C# port has no CLI front-end.
+- **CLI-only**: `e5d8ca8` (batch-mode logging), `a747549e` (-b README), `6591241b` (batch-processing PR merge). The C# port has no CLI front-end. Additional CLI-only commits found during pre-execution audit: `00bee45`, `2ab8579`, `6ea9d3a` (Issue #379 series).
 - **N/A after audit**:
     - `a6c322e6` + `6ba8ad89` + `96ac1829` — `ObjectExtractor implements Closeable` plumbing. Audited (see §3 audit notes); no behavior change. C# `ObjectExtractor` is `static`; tests own `PdfDocument` lifetime via `using`. Skip.
     - `20b1053a` + `a0173066` — OOM fix in `NurminenDetectionAlgorithm.removeText(PDPage)`. Audited; OOM trigger is unbounded growth in PDFBox token-stream rewriting. C# `SimpleNurminenDetectionAlgorithm` works on already-parsed PdfPig data and has no token rewriting (`grep -r removeText|parseNextToken|newTokens` returns no matches). Trigger condition does not exist. Skip.
+    - Pre-execution audit reclassifications: `f7e1976`, `14b3d26`, `d0241fb`, `84aef7f`, `3c2af18` — all refactor-only or N/A (see §6).
+    - Task 2 audit (Page-class refactor): `008c395`, `c059262`, `62e6b5f`, `c3c3b9d`, `8a78148`, `6e81297`, `4519596`, `b8d44f6`, `d498a5e`, `1deb2c9`, `9c219de`, `8c4a002` — all REFACTOR-ONLY or N/A (see §6).
+    - Task 3 audit (SpreadsheetExtractionAlgorithm cleanup): `df3653b`, `cbb6d73`, `3452fe1`, `6923895`, `6286f85`, `1192887` — all REFACTOR-ONLY or N/A (see §6).
+    - Task 4 audit: `2cdf3b4f` — test assertion change driven by PDFBox 3.0.4 `/ActualText` support; no algorithmic change (see §6).
 - **JSON schema / public API**:
     - `19ddc51b` + `56cd7131` — adds `pageNumber` field to JSON output. Excluded by user decision (keep current C# JSON shape stable).
     - `4fd6cafe` — keep public ctors deprecated. Excluded by user decision (don't churn C# public API).
 
-### Bucket PORT — behaviorally relevant (~8 commit groups, see §4)
+### Bucket PORT — 1 commit ported (`21a4932b`)
 
-One PORT item — `2cdf3b4f` ("Adjust test") in §4.7 — is investigate-then-decide: the paired upstream `88154e2c` PDFBox bump itself is N/A, but the accompanying test adjustment may signal a real behavior change. If the audit shows it's a PDFBox-3 API rename only, it moves to the skipped ledger.
+After Tasks 2–4 audits and pre-execution patch fetches, only `21a4932b` (whitespace heuristic) was actually ported to C#. All other original PORT candidates were reclassified SKIP/N/A during audit. Full ledger in §6.
 
 ## 3. Audit findings (already performed during brainstorming)
 
@@ -61,25 +65,39 @@ Each item below becomes one commit on `v1`. Commit messages reference the upstre
 Refines the heuristic that filters tall-ish whitespace elements affecting text chunking by considering realistic font sizes. Audit Java diff to find the C# equivalent (likely in `TextChunk.cs` or `TextElement.cs`), port the heuristic.
 
 ### 4.2. Issue #379 fix series — `00bee45` + `2ab8579` + `6ea9d3a`
-Three related commits (initial fix, follow-up bugfix, code removal). Read all three diffs in date order, apply the resulting net change as one C# commit. Test PDF from upstream `src/test/resources/...` to be copied to `Tabula.Tests/Resources/` if the upstream test references one.
+~~Three related commits (initial fix, follow-up bugfix, code removal). Read all three diffs in date order, apply the resulting net change as one C# commit. Test PDF from upstream `src/test/resources/...` to be copied to `Tabula.Tests/Resources/` if the upstream test references one.~~
+
+**AUDIT RESULT (pre-execution): CLI-only. All three commits touch only `CommandLineApp.java`. C# port has no CLI. Moved to §6 "CLI-only — found during pre-execution audit" bucket. No port required.**
 
 ### 4.3. Path-by-segment-type filtering — `f7e19764`
-Behaviorally-relevant slice of the Page-class refactor. Affects how clipping/non-stroke path segments are filtered when building rulings. Lives in `PageArea.cs` / `ObjectExtractor.cs` path-extraction code.
+~~Behaviorally-relevant slice of the Page-class refactor. Affects how clipping/non-stroke path segments are filtered when building rulings. Lives in `PageArea.cs` / `ObjectExtractor.cs` path-extraction code.~~
+
+**AUDIT RESULT (pre-execution): Extract-method refactor only; equivalent C# logic already inline in `ObjectExtractor.cs:80–95`. No behavior change. Moved to §6 "Refactor-only or N/A — found during pre-execution audit" bucket. No port required.**
 
 ### 4.4. Page-class internal refactor (behavior-preserving slice) — `008c395..9c219de5` + `8c4a0027`
-Port the helper extractions, point-attribute encapsulation, and method grouping that improve internal readability. Skip the parts that exist solely to support the `4fd6cafe` deprecated-ctor migration. Public C# `PageArea` API stays unchanged.
+~~Port the helper extractions, point-attribute encapsulation, and method grouping that improve internal readability. Skip the parts that exist solely to support the `4fd6cafe` deprecated-ctor migration. Public C# `PageArea` API stays unchanged.~~
+
+**AUDIT RESULT (Task 2): All 12 commits in this cluster are REFACTOR-ONLY or N/A (`4519596`, `b8d44f6`, `d498a5e`, `1deb2c9`, `9c219de` relate to CohenSutherlandClipping which C# replaces with Clipper; `8c4a002` is a Builder pattern addition that per Q2=A causes no public-API churn). Moved to §6 "Page-class refactor cluster — Task 2 audit" bucket. No port required.**
 
 ### 4.5. `SpreadsheetExtractionAlgorithm` cleanup + extracted rounded comparator — `df3653b1` + `cbb6d73a` + `3452fe14` + `6923895e` + `6286f85` + `11928877`
-Six interrelated cleanup commits. Apply only the parts that improve C# code we'll keep; drop pure Java-isms (e.g., `computeIfAbsent`, dependency-injection-style refactors that don't add value in C#) to the skipped ledger.
+~~Six interrelated cleanup commits. Apply only the parts that improve C# code we'll keep; drop pure Java-isms (e.g., `computeIfAbsent`, dependency-injection-style refactors that don't add value in C#) to the skipped ledger.~~
+
+**AUDIT RESULT (Task 3): All 6 commits are REFACTOR-ONLY or N/A. `df3653b` renames a comparator constant; `cbb6d73` uses Java labeled-break (C# keeps `doBreak`); `3452fe1`/`6923895` encapsulate TextStripper fields with no C# counterpart; `6286f85` refactors NurminenDetectionAlgorithm (C# uses SimpleNurminenDetectionAlgorithm); `1192887` moves textElements to base class (C# hierarchy diverges). Moved to §6 "SpreadsheetExtractionAlgorithm cleanup cluster — Task 3 audit" bucket. No port required.**
 
 ### 4.6. Light cleanup — `14b3d261` + `d0241fb5`
-Opportunistic, applied while in those files for other commits.
+~~Opportunistic, applied while in those files for other commits.~~
+
+**AUDIT RESULT (pre-execution): `14b3d26` is Java idiom modernization (Collections.sort, Float.compare) with no behavior change; `d0241fb` removes a variable that doesn't exist in C# `SpreadsheetDetectionAlgorithm.cs`. Moved to §6 "Refactor-only or N/A — found during pre-execution audit" bucket. No port required.**
 
 ### 4.7. Investigate "Adjust test" — `2cdf3b4f`
-Read the Java test diff. If it reveals a behavior fix (not just a PDFBox-3 API rename), apply the analogous C# change. Otherwise document as N/A and add to the skipped ledger.
+~~Read the Java test diff. If it reveals a behavior fix (not just a PDFBox-3 API rename), apply the analogous C# change. Otherwise document as N/A and add to the skipped ledger.~~
+
+**AUDIT RESULT (Task 4): N/A. The assertion change is driven by PDFBox 3.0.4 `/ActualText` rendering support; there is no algorithmic change in tabula extraction logic. PdfPig produces matching output to PDFBox 3.0.3, so existing C# assertions pass unchanged. Moved to §6 "Investigate-then-N/A — Task 4 audit" bucket. No port required.**
 
 ### 4.8. README API usage example — `84aef7f0` + `3c2af18f`
-Port the spirit of the upstream `SpreadsheetExtractionAlgorithm` example to the C# `README.md`, adapted to PdfPig API.
+~~Port the spirit of the upstream `SpreadsheetExtractionAlgorithm` example to the C# `README.md`, adapted to PdfPig API.~~
+
+**AUDIT RESULT (pre-execution): `84aef7f` adds a Java API example to the upstream README; C# README already has equivalent examples (lines 22–50). `3c2af18` is a markdown formatting fix to upstream README. Both N/A. Moved to §6 "Refactor-only or N/A — found during pre-execution audit" bucket. No port required.**
 
 ## 5. Per-commit-group execution recipe
 
@@ -202,12 +220,49 @@ Every one of the 105 upstream SHAs is accounted for here.
 - `6fdf554` Refactoring JSON serializers — internal Java refactor of `Tabula.Json` writer; no output change. C# `Tabula.Json` is small and clean. Skip.
 - `a9932a8` Refactoring writers — internal Java refactor of writer infrastructure; no behavior change. Skip.
 
-### To port (see §4)
-- `21a4932`, `00bee45`, `2ab8579`, `6ea9d3a`, `008c395`, `c059262`, `62e6b5f`, `c3c3b9d`, `8a78148`, `f7e1976`, `6e81297`, `4519596`, `b8d44f6`, `d498a5e`, `1deb2c9`, `9c219de`, `8c4a002`, `6286f85`, `1192887`, `3452fe1`, `6923895`, `df3653b`, `cbb6d73`, `14b3d26`, `d0241fb`, `2cdf3b4`, `84aef7f`, `3c2af18`
+### CLI-only — found during pre-execution audit (skip)
+- `00bee45` Issue #379 fix — `CommandLineApp.java` only
+- `2ab8579` Issue #379 follow-up — `CommandLineApp.java` only
+- `6ea9d3a` Issue #379 cleanup — `CommandLineApp.java` only
 
-**Tally**: 28 PORT (incl. 1 investigate-then-decide: `2cdf3b4`) + 77 SKIP/N/A = 105.
+### Refactor-only or N/A — found during pre-execution audit (skip)
+- `f7e1976` filter path by segment type — extract-method refactor only; equivalent C# logic already inline in `ObjectExtractor.cs:80–95`
+- `14b3d26` light Java cleanup — Java idiom modernization (Collections.sort, Float.compare); no behavior change
+- `d0241fb` remove unused variable — variable doesn't exist in C# `SpreadsheetDetectionAlgorithm.cs`; already clean
+- `84aef7f` README API example — C# README already has equivalent examples (lines 22–50)
+- `3c2af18` README markdown fix — same; N/A
 
-Breakdown of the 77 SKIP/N/A: 45 dependency bumps + 11 build/CI + 8 merge commits + 3 CLI-only + 5 N/A-after-audit + 3 excluded-by-user + 2 refactor-only-Java = 77.
+### Page-class refactor cluster — Task 2 audit (skip; all REFACTOR-ONLY or N/A)
+- `008c395` Variable renaming + convenience constructor; no logic change
+- `c059262` Field renames (texts→textElements etc.), method reorder
+- `62e6b5f` Extract `getCollapsedVerticalRulings`/`getCollapsedHorizontalRulings` from `getRulings`; identical logic
+- `c3c3b9d` Extract `getMinimumCharWidth/HeightFrom`, `addBorderRulingsTo` + `DEFAULT_MIN_CHAR_LENGTH=7`
+- `8a78148` Constructor renames in ObjectExtractorStreamEngine; remove unused `debugClippingPaths`
+- `6e81297` Extract `getStartPoint`, `getLineBetween`, `verifyLineIntersectsClipping`
+- `4519596` New TestCohenSutherland.java; minor style; C# uses Clipper — N/A
+- `b8d44f6` CohenSutherlandClipping variable renaming — N/A (C# uses Clipper)
+- `d498a5e` Extract `delta()` helper with MINIMUM_DELTA=0.01f — N/A (C# uses Clipper)
+- `1deb2c9` Encapsulate point into inner class — N/A (C# uses Clipper)
+- `9c219de` `!= INSIDE` → `!= 0` (mathematical identity) — N/A (C# uses Clipper)
+- `8c4a002` PageDims DTO + Builder pattern; per Q2=A no public-API churn
+
+### SpreadsheetExtractionAlgorithm cleanup cluster — Task 3 audit (skip; all REFACTOR-ONLY or N/A)
+- `df3653b` Extract `compareRounded` helper, rename `POINT_COMPARATOR` → `Y_FIRST_POINT_COMPARATOR`; identical logic
+- `cbb6d73` Import cleanup, `doBreak` removal via Java labeled-break (C# idiom keeps `doBreak`); empty-table `return false` already in C# at line 190–194
+- `3452fe1` Encapsulate TextStripper fields; no exact C# counterpart
+- `6923895` Adapt Page.java to 3452fe1; no C# counterpart
+- `6286f85` Refactor NurminenDetectionAlgorithm only; N/A (C# uses SimpleNurminenDetectionAlgorithm)
+- `1192887` Move textElements up to base class; C# class hierarchy diverges
+
+### Investigate-then-N/A — Task 4 audit (skip)
+- `2cdf3b4` Test assertion updated to match PDFBox 3.0.4 `/ActualText` rendering; no tabula algorithm change. PdfPig produces matching output to PDFBox 3.0.3, so existing C# assertions pass.
+
+### To port (1 commit)
+- `21a4932` Whitespace heuristic for text chunking — ported in commit `53b8bd7` (tabula-sharp). Required updating `Issue30` assertion (2 → 1) per user authorization due to PdfPig PointSize semantics divergence from PDFBox.
+
+**Tally**: 1 PORT (`21a4932`) + 104 SKIP/N/A = 105.
+
+Breakdown of the 104 SKIP/N/A: 45 dependency bumps + 11 build/CI + 8 merge commits + 3 CLI-only (original) + 5 N/A-after-audit (original) + 3 excluded-by-user + 2 refactor-only-Java (original) + 3 CLI-only (pre-execution audit) + 5 refactor-only/N/A (pre-execution audit) + 12 Page-class refactor cluster (Task 2 audit) + 6 SpreadsheetExtractionAlgorithm cleanup (Task 3 audit) + 1 investigate-then-N/A (Task 4 audit) = 104.
 
 ## 7. Risks accepted
 
@@ -232,3 +287,4 @@ Breakdown of the 77 SKIP/N/A: 45 dependency bumps + 11 build/CI + 8 merge commit
 - `dotnet test` green (test project targets `net8.0`). Updated assertions documented per §5 step 7.
 - Skipped-commit ledger (§6) committed alongside this design doc; every one of the 105 upstream SHAs accounted for.
 - `v1` branch ready to ship without further cleanup.
+- Final outcome: 1 behavioral port (`21a4932b` → `tabula-sharp` commit `53b8bd7`); 104 commits classified SKIP/N/A across the categories in §6.
