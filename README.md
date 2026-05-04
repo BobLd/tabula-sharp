@@ -5,7 +5,7 @@
 ![Linux](https://github.com/BobLd/tabula-sharp/workflows/Linux/badge.svg)
 ![Mac OS](https://github.com/BobLd/tabula-sharp/workflows/Mac%20OS/badge.svg)
 
-- Supports netstandard2.0, net462, net471, net6.0, net8.0
+- Supports netstandard2.0 / 2.1, net462, net471, net6.0, net8.0 and net9.0
 - No java bindings
 
 NuGet packages available on the [releases](https://github.com/BobLd/tabula-sharp/releases) page and on www.nuget.org:
