@@ -28,20 +28,7 @@ namespace Tabula
         }
 
         /// <inheritdoc/>
-        public PageArea Current
-        {
-            get
-            {
-                try
-                {
-                    return ObjectExtractor.ExtractPage(this.pdfDocument, pageIndexIterator.Current);
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-            }
-        }
+        public PageArea Current => ObjectExtractor.ExtractPage(this.pdfDocument, pageIndexIterator.Current);
 
         /// <inheritdoc/>
         object IEnumerator.Current => Current;

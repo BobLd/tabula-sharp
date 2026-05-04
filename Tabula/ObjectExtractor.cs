@@ -75,7 +75,7 @@ namespace Tabula
             // se.processPage(p);
             var rulings = new List<Ruling>();
 
-            foreach (var path in page.ExperimentalAccess.Paths)
+            foreach (var path in page.Paths)
             {
                 if (!path.IsFilled && !path.IsStroked) continue; // strokeOrFillPath operator => filter stroke and filled
 
