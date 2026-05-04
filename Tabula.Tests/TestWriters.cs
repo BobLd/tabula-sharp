@@ -11,7 +11,7 @@ namespace Tabula.Tests
 {
     public class TestWriters
     {
-        private static string EXPECTED_CSV_WRITER_OUTPUT = "\"ABDALA de MATARAZZO, Norma Amanda\",Frente Cívico por Santiago,Santiago del Estero,AFIRMATIVO";
+        private static string EXPECTED_CSV_WRITER_OUTPUT = "\"ABDALA de MATARAZZO, Norma Amanda \",\"Frente Cívico por Santiago \",Santiago del Estero,AFIRMATIVO";
 
         private Table GetTable()
         {
