@@ -14,6 +14,8 @@ namespace Tabula
     {
         private const string NBSP = "\u00A0";
         private static float AVG_HEIGHT_MULT_THRESHOLD = 6.0f;
+        private static float MAX_BLANK_FONT_SIZE = 40.0f;
+        private static float MIN_BLANK_FONT_SIZE = 2.0f;
 
         /// <summary>
         /// Process the page.
@@ -54,9 +56,17 @@ namespace Tabula
                 totalHeight += Math.Max(te.Height, 1); // added by bobld: min height value to 1
                 double avgHeight = totalHeight / countHeight;
 
-                if (avgHeight > 0 && te.Height >= (avgHeight * AVG_HEIGHT_MULT_THRESHOLD) && (te.GetText()?.Trim().Equals("") != false))
+                if (te.GetText()?.Trim().Equals("") != false)
                 {
-                    continue;
+                    if (avgHeight > 0 && te.Height >= (avgHeight * AVG_HEIGHT_MULT_THRESHOLD))
+                    {
+                        continue;
+                    }
+
+                    if (letter.PointSize > MAX_BLANK_FONT_SIZE || letter.PointSize < MIN_BLANK_FONT_SIZE)
+                    {
+                        continue;
+                    }
                 }
 
                 textElements.Add(te);

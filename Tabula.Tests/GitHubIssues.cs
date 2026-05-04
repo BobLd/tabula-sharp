@@ -15,7 +15,8 @@ namespace Tabula.Tests
 
                 SimpleNurminenDetectionAlgorithm detector = new SimpleNurminenDetectionAlgorithm();
                 var regions = detector.Detect(page);
-                Assert.Equal(2, regions.Count);
+                // Updated from 2 to 1: PdfPig Letter.PointSize differs from PDFBox TextPosition.getFontSizeInPt; the new MIN/MAX_BLANK_FONT_SIZE filter from upstream 21a4932b removes blank glyphs PdfPig produces for issue.pdf, eliminating one of the two previously-detected regions.
+                Assert.Single(regions);
             }
         }
     }
